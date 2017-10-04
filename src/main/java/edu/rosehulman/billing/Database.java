@@ -3,9 +3,13 @@ package edu.rosehulman.billing;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -14,25 +18,24 @@ import edu.rosehulman.billing.Database;
 public class Database {
 	private static Database instance;
 
-	  private MongoCollection<Document> partnerCollection;
+	 // private List<Document> partnerCollection;
+	  
+	  List<Document> partnerCollection = new ArrayList<Document>();
 
-	  private Database() {
-	    MongoClient mongoClient = new MongoClient("localhost", 27017); // TODO set these in config
-	    MongoDatabase database = mongoClient.getDatabase("quotabilling");
-	    partnerCollection = database.getCollection("partner");
-	  }
-
-	  public static synchronized Database getInstance() {
-	    if (instance == null) {
-	      instance = new Database();
-	    }
-	    return instance;
-	  }
-
-	  public void addUser(String partnerId, String productId, String userId) {
+	  public static void addUser(String partnerId, String productId, String userId) {
+		 
+		  MongoClientURI uri  = new MongoClientURI("mongodb://admin:admin@ds159662.mlab.com:59662/srproj-test1"); 
+		  MongoClient client = new MongoClient(uri);
+		  MongoDatabase db = client.getDatabase(uri.getDatabase());
+		    
+		  MongoCollection<Document> testdb = db.getCollection("testFromVM");
+		  
+		  
 	    Document userDocument = new Document("$set", new Document("_id", partnerId)
 	        .append("products", new Document("_id", productId)
 	            .append("users", new Document("_id", userId))));
-	    partnerCollection.updateOne(and(eq("_id", partnerId), eq("products", productId)), userDocument); // TODO This does not work, not using lists
+	    
+	    testdb.insertOne(userDocument); 
+	   // partnerCollection.updateOne(and(eq("_id", partnerId), eq("products", productId)), userDocument); // TODO This does not work, not using lists
 	  }
 }
