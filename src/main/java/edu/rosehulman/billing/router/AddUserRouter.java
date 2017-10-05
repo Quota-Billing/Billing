@@ -13,7 +13,7 @@ public class AddUserRouter implements Route {
 
 	    // Add the user to our database
 	   // Database.getInstance().addUser(partnerId, productId, userId);
-	    Database.addUser(partnerId, productId, userId);
+	    Database.getInstance().addUser(partnerId, productId, userId);
 	    // Send the user to Billing
 	    //BillingClient.getInstance().addUser(partnerId, productId, userId);
 
