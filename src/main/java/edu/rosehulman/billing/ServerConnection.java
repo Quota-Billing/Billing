@@ -14,53 +14,7 @@ class SocketConnection extends Thread {
 	public SocketConnection(Socket socket) {
 		super("Thread 1");
 		this.socket = socket;
-		try {
-			input = socket.getInputStream();
-			output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
-	public String[] elementgener(int num, String startst, String commandReads) {
-		String[] element = new String[num];
-		int count=0;
-		int pre=startst.length();
-		for (int i = startst.length(); i < commandReads.length();i++){
-			if(commandReads.charAt(i)=='|'){
-				element[count]=commandReads.substring(pre, i-1);
-				pre=i;
-				count++;
-			}
-		}
-		return element;
-	}
-	@Override
-	public void run() {
-		try {
-			byte array[] = new byte[1024];
-			while (true) {
-				do {
-					int readed = input.read(array);
-					String sendString = "";
-					System.out.println("readed == " + readed + " " + new String(array).trim());
-					String commandReads = new String(array).trim();
-					if (commandReads.startsWith("CheckCollections")) {
-						System.out.println("read Collections successfully");
-					}else {
-						System.err.println("Unknown command");
-						input.close();
-						socket.close();
-						continue;
-					}
-					sendString = new String(sendString.getBytes(), Charset.forName("UTF-8"));
-					output.write(sendString);
-					output.flush();
-				} while (input.available() != 0);
-			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }
 
