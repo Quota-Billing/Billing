@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.bson.Document;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
@@ -54,7 +56,7 @@ public class Database {
 		    return instance;
 		  }
 	  
-	  public static ArrayList getDatabaseInfo() {
+	  public static ArrayList getSharedDatabaseInfo() {
 		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		  
 	        try {
@@ -74,6 +76,34 @@ public class Database {
 	        
 	       
 			return (ArrayList) result;
+	  }
+	  
+	  //add quota to our own database
+	  public static String addTobillingdb(String quotaId, String quotaName, String quotaType) {
+		  String id = quotaId;
+		  String name = quotaName;
+		  String type = quotaType;
+		  
+		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		  
+		  try {
+	            MongoDatabase database = mongoClient.getDatabase("billingpart");
+	            MongoCollection<Document> collection = database.getCollection("quota");
+	            Document doc = new Document("_id", id)
+	                    .append("name", name)
+	                    .append("type", type);
+	            
+	           // .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+	            collection.insertOne(doc);
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        } finally {
+	            mongoClient.close();
+	        }
+		  
+		  return "ok";
+		  
 	  }
 
 	  public void addUser(String partnerId, String productId, String userId) {
