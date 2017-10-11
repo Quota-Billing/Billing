@@ -1,7 +1,9 @@
 package edu.rosehulman.billing;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.Document;
 
@@ -10,12 +12,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 
 public class Database {
 	private static Database instance;
+	static Collection result = new ArrayList();
 
 	Document userDocument;
 	MongoDatabase db;
@@ -24,7 +28,7 @@ public class Database {
 
 		MongoClientURI uri = new MongoClientURI("mongodb://admin:admin@ds159662.mlab.com:59662/srproj-test1");
 		MongoClient client = new MongoClient(uri);
-		MongoDatabase db = client.getDatabase(uri.getDatabase());
+		db = client.getDatabase(uri.getDatabase());
 
 		MongoCollection<Document> testdb = db.getCollection("testFromVM");
 		testdb.insertOne(userDocument);
@@ -37,6 +41,28 @@ public class Database {
 		}
 		return instance;
 	}
+	
+	public static ArrayList getDatabaseInfo() {
+		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		  
+	        try {
+	            MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
+	 
+	            MongoIterable <String> collections = database.listCollectionNames();
+	            for (String collectionName: collections) {
+	                System.out.println(collectionName);
+	                result.add(collectionName);
+	            }
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        } finally {
+	            mongoClient.close();
+	        }
+	        
+	       
+			return (ArrayList) result;
+	  }
 
 	public void addUser(String partnerId, String productId, String userId) {
 

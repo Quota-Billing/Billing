@@ -1,6 +1,6 @@
 package edu.rosehulman.billing;
 
-import static spark.Spark.port;
+import static spark.Spark.*;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
@@ -8,29 +8,36 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.ws.Response;
+
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Environment;
+import com.braintreegateway.Request;
+import com.braintreegateway.Result;
+import com.braintreegateway.Transaction;
+import com.braintreegateway.TransactionRequest;
 
 import edu.rosehulman.billing.router.AddUserRouter;
 import edu.rosehulman.billing.router.Routes;
+import spark.Route;
 
 public class BillingServer {
+	public static ArrayList dbinfo;
 	public static void main(String[] args) {
-		//port(8084); // Set the port to run on
+		port(8084); // Set the port to run on
 
-		staticFiles.location("/public");
+		dbinfo = Database.getDatabaseInfo();
+		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
 
-		post(Routes.ADD_USER, new AddUserRouter());
-
-		try {
-			ServerSocket serverSocket = new ServerSocket(8084);
-			Socket clientSocket = serverSocket.accept();
-			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
-	}
+		
+//		BrainTree br =new BrainTree();
 
+	}
 }

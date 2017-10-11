@@ -27,7 +27,10 @@ public class QuotaReachedHandler implements Route {
 			int current = t.getValue();
 			String name = t.getName();
 			double price = t.getPrice();
-			totalPrice += price;
+			
+			if (current >=max) {				
+				totalPrice += price;
+			}
 			builder.append(name + ": Limit: " + max + " Current: " + current + " Price: " + price +"\n");
 		}
 		
