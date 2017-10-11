@@ -31,7 +31,7 @@ public class Database {
 		db = client.getDatabase(uri.getDatabase());
 
 		MongoCollection<Document> testdb = db.getCollection("testFromVM");
-		testdb.insertOne(userDocument);
+//		testdb.insertOne(userDocument);
 
 	}
 

@@ -8,7 +8,7 @@ import spark.Response;
 import spark.Route;
 
 public class QuotaReachedHandler implements Route {
-	//path /partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/
+	//path /partner/:partnerId/produc/:productId/user/:userId/quotaReached/:quotaId/
 	public Object handle(Request request, Response response) throws Exception {
 		String partnerId = request.params(":partnerId");
 		String productId = request.params(":productId");

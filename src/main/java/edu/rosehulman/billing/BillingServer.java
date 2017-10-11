@@ -24,6 +24,7 @@ import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 
 import edu.rosehulman.billing.router.AddUserRouter;
+import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
 import spark.Route;
 
@@ -36,7 +37,7 @@ public class BillingServer {
 		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
 
 		
-		
+		post("/partner/:partnerId/produc/:productId/user/:userId/quotaReached/:quotaId/", new QuotaReachedHandler());
 //		BrainTree br =new BrainTree();
 
 	}
