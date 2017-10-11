@@ -29,7 +29,7 @@ public class BillingClient {
 		int socketNumber = Integer.parseInt(socketNumberString);
 
 		Socket socket = null;
-		String host = "localhost";
+		String host = "csse@srproj-18.csse.rose-hulman.edu";
 		try {
 			socket = new Socket(host, socketNumber);
 		} catch (IOException e) {
