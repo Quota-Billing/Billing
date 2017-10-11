@@ -22,10 +22,12 @@ public class BillingServer {
 		port(8084); // Set the port to run on
 
 		Database mydb = new Database();
-		dbinfo = mydb.getDatabaseInfo();
+		dbinfo = mydb.getSharedDatabaseInfo();
 		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
 
-		
+		post("/addquota", (req, res) -> {
+			return mydb.addTobillingdb("2", "quotaName", "2");
+		});
 		
 	}
 
