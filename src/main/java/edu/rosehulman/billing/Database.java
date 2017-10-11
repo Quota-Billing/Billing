@@ -5,6 +5,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.Document;
 
@@ -12,6 +13,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 
 import edu.rosehulman.billing.Database;
 
@@ -20,16 +22,27 @@ public class Database {
 	  
 	  Document userDocument;
 	  
-	  private Database() {
+	//  private Database() {
 		  
-		  MongoClientURI uri  = new MongoClientURI("mongodb://admin:admin@ds159662.mlab.com:59662/srproj-test1"); 
-		  MongoClient client = new MongoClient(uri);
-		  MongoDatabase db = client.getDatabase(uri.getDatabase());
-		    
-		  MongoCollection<Document> testdb = db.getCollection("testFromVM");
-		  testdb.insertOne(userDocument); 
+	        
+//		  MongoClientURI uri  = new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"); 
+//		  MongoClient client = new MongoClient(uri);
+//		  MongoDatabase db = client.getDatabase(uri.getDatabase());
+//		    
+//		  //MongoCollection<Document> testdb = db.getCollection("");
+//		  
+//		  Set<String> colls = db.getCollectionNames();
+//
+//		  for (String s : colls) {
+//		  System.out.println(s);
+//		  }
+//		 // testdb.insertOne(userDocument); 
 		  
-	  }
+		  
+		  
+		 
+		  
+	//  }
 	  
 	  public static synchronized Database getInstance() {
 		    if (instance == null) {
@@ -37,6 +50,23 @@ public class Database {
 		    }
 		    return instance;
 		  }
+	  
+	  public static void getDatabaseInfo() {
+		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		  
+	        try {
+	            MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
+	 
+	            MongoIterable <String> collections = database.listCollectionNames();
+	            for (String collectionName: collections) {
+	                System.out.println(collectionName);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        } finally {
+	            mongoClient.close();
+	        }
+	  }
 
 	  public void addUser(String partnerId, String productId, String userId) {
 		 
