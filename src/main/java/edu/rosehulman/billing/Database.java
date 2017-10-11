@@ -4,6 +4,7 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,8 @@ import edu.rosehulman.billing.Database;
 
 public class Database {
 	private static Database instance;
+	static Collection result = new ArrayList();
+	
 	  
 	  Document userDocument;
 	  
@@ -51,7 +54,7 @@ public class Database {
 		    return instance;
 		  }
 	  
-	  public static void getDatabaseInfo() {
+	  public static ArrayList getDatabaseInfo() {
 		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		  
 	        try {
@@ -60,12 +63,17 @@ public class Database {
 	            MongoIterable <String> collections = database.listCollectionNames();
 	            for (String collectionName: collections) {
 	                System.out.println(collectionName);
+	                result.add(collectionName);
 	            }
+	            
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        } finally {
 	            mongoClient.close();
 	        }
+	        
+	       
+			return (ArrayList) result;
 	  }
 
 	  public void addUser(String partnerId, String productId, String userId) {
