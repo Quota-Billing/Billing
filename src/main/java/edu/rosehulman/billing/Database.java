@@ -1,31 +1,25 @@
 package edu.rosehulman.billing;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import org.bson.Document;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 
-import edu.rosehulman.billing.Database;
-
 public class Database {
 	private static Database instance;
-	static Collection result = new ArrayList();
+	private static Collection<String> result = new ArrayList<String>();
 	
 	  
 	  Document userDocument;
+	  private Database(){
+		  
+	  }
 	  
 	//  private Database() {
 		  
@@ -56,7 +50,7 @@ public class Database {
 		    return instance;
 		  }
 	  
-	  public static ArrayList getSharedDatabaseInfo() {
+	  public static ArrayList<String> getSharedDatabaseInfo() {
 		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		  
 	        try {
@@ -75,7 +69,7 @@ public class Database {
 	        }
 	        
 	       
-			return (ArrayList) result;
+			return (ArrayList<String>) result;
 	  }
 	  
 	  //add quota to our own database
