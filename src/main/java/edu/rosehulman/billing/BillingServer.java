@@ -1,50 +1,33 @@
 package edu.rosehulman.billing;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.port;
 import static spark.Spark.post;
-import static spark.Spark.staticFiles;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.xml.ws.Response;
-
-import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Environment;
-import com.braintreegateway.Request;
-import com.braintreegateway.Result;
-import com.braintreegateway.Transaction;
-import com.braintreegateway.TransactionRequest;
-
-import edu.rosehulman.billing.router.AddUserRouter;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
-import edu.rosehulman.billing.router.Routes;
-import spark.Route;
 
 public class BillingServer {
-	public static ArrayList dbinfo;
+	public static ArrayList<String> dbinfo;
+
 	public static void main(String[] args) {
-		port(8084); // Set the port to run on
-		
+		port(8085); // Set the port to run on
 
-		Database mydb = Database.getInstance();
-		dbinfo = mydb.getSharedDatabaseInfo();
-		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
+		dbinfo = Database.getInstance().getSharedDatabaseInfo();
+		get("/getdb", (req, res) -> "database information get all table name: " + dbinfo);
 
+		post("/addUser/partner/:partnerId/quota/:quotaId/user/:userId", (req, res) -> {
+			return Database.getInstance().addTobillingdb(req.params(":partnerId"), req.params(":quotaId"),
+					req.params(":userId"));
+		});
 		post("/partner/:partnerId/produc/:productId/user/:userId/quotaReached/:quotaId/", new QuotaReachedHandler());
 
 		post("/addquota", (req, res) -> {
-			return mydb.addTobillingdb("2", "quotaName", "2");
+			return Database.getInstance().addTobillingdb("2", "quotaName", "2");
 		});
 
-//		BrainTree br =new BrainTree();
+		// BrainTree br =new BrainTree();
 
 	}
 }
