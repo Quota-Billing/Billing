@@ -8,6 +8,7 @@ import java.util.Set;
 import org.bson.Document;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
@@ -31,7 +32,7 @@ public class Database {
 		db = client.getDatabase(uri.getDatabase());
 
 		MongoCollection<Document> testdb = db.getCollection("testFromVM");
-//		testdb.insertOne(userDocument);
+		// testdb.insertOne(userDocument);
 
 	}
 
@@ -41,28 +42,55 @@ public class Database {
 		}
 		return instance;
 	}
-	
-	public static ArrayList getDatabaseInfo() {
-		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		  
-	        try {
-	            MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
-	 
-	            MongoIterable <String> collections = database.listCollectionNames();
-	            for (String collectionName: collections) {
-	                System.out.println(collectionName);
-	                result.add(collectionName);
-	            }
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        } finally {
-	            mongoClient.close();
-	        }
-	        
-	       
-			return (ArrayList) result;
-	  }
+
+	public static ArrayList getSharedDatabaseInfo() {
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+
+		try {
+			MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
+
+			MongoIterable<String> collections = database.listCollectionNames();
+			for (String collectionName : collections) {
+				System.out.println(collectionName);
+				result.add(collectionName);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return (ArrayList) result;
+	}
+
+	// add quota to our own database
+	public static String addTobillingdb(String quotaId, String quotaName, String quotaType) {
+		String id = quotaId;
+		String name = quotaName;
+		String type = quotaType;
+
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> collection = database.getCollection("quota");
+			Document doc = new Document("_id", id).append("name", name).append("type", type);
+
+			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+			collection.insertOne(doc);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
+
+	}
 
 	public void addUser(String partnerId, String productId, String userId) {
 
@@ -86,17 +114,20 @@ public class Database {
 		tiers.add(new Tier("1", "free", 200, 200, 0));
 		tiers.add(new Tier("2", "premium", 1000, 0, 20));
 		quota.setTiers(tiers);
-		
+
 		return quota;
 	}
 
 	public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
-//		BasicDBObject partnerQuery = new BasicDBObject("_id", partnerId);
-//		String partnerName = db.getCollection("testFromVM").find(partnerQuery).first().getString("Name");
+		// BasicDBObject partnerQuery = new BasicDBObject("_id", partnerId);
+		// String partnerName =
+		// db.getCollection("testFromVM").find(partnerQuery).first().getString("Name");
 
-//		BasicDBObject productQuery = partnerQuery.append("Products", new BasicDBObject("_id", productId));
-//		String productName = db.getCollection("testFromVM").find(productQuery).first().getString("Name");
-		
+		// BasicDBObject productQuery = partnerQuery.append("Products", new
+		// BasicDBObject("_id", productId));
+		// String productName =
+		// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
+
 		String partnerName = "Partner 1";
 		String productName = "Product 1";
 

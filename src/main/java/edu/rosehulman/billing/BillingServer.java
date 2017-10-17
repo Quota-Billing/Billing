@@ -32,12 +32,18 @@ public class BillingServer {
 	public static ArrayList dbinfo;
 	public static void main(String[] args) {
 		port(8084); // Set the port to run on
+		
 
-		dbinfo = Database.getDatabaseInfo();
+		Database mydb = Database.getInstance();
+		dbinfo = mydb.getSharedDatabaseInfo();
 		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
 
-		
 		post("/partner/:partnerId/produc/:productId/user/:userId/quotaReached/:quotaId/", new QuotaReachedHandler());
+
+		post("/addquota", (req, res) -> {
+			return mydb.addTobillingdb("2", "quotaName", "2");
+		});
+
 //		BrainTree br =new BrainTree();
 
 	}
