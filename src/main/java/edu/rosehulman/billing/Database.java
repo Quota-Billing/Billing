@@ -2,6 +2,7 @@ package edu.rosehulman.billing;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.bson.Document;
 
@@ -10,6 +11,9 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
+
+import edu.rosehulman.billing.models.Quota;
+import edu.rosehulman.billing.models.Tier;
 
 public class Database {
 	private static Database instance;
@@ -166,4 +170,39 @@ public class Database {
 	    
 	  }
 	  
+		public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
+			// BasicDBObject query = new BasicDBObject("_id",
+			// partnerId).append("Products", new BasicDBObject("_id", productId)
+			// .append("Users", new BasicDBObject("_id", userId).append("Quotas",
+			// new BasicDBObject("_id", quotaId))));
+
+			// Fake data first, will change later
+			Quota quota = new Quota(0, "Data", "number");
+			List<Tier> tiers = new ArrayList<Tier>();
+			tiers.add(new Tier("1", "free", 200, 200, 0));
+			tiers.add(new Tier("2", "premium", 1000, 0, 20));
+			quota.setTiers(tiers);
+
+			return quota;
+		}
+
+		public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
+			// BasicDBObject partnerQuery = new BasicDBObject("_id", partnerId);
+			// String partnerName =
+			// db.getCollection("testFromVM").find(partnerQuery).first().getString("Name");
+
+			// BasicDBObject productQuery = partnerQuery.append("Products", new
+			// BasicDBObject("_id", productId));
+			// String productName =
+			// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
+
+			String partnerName = "Partner 1";
+			String productName = "Product 1";
+
+			StringBuilder builder = new StringBuilder("Partner: " + partnerId + " ");
+			builder.append(partnerName + "\n");
+			builder.append("Product: " + productId + " " + productName + "\n");
+			builder.append("User: " + userId + "\n");
+			return builder.toString();
+		}
 }
