@@ -133,9 +133,9 @@ public class Database {
 			MongoCollection<Document> collection = database.getCollection("Product");
 
 			/*
-			 * DBObject findQuery = new BasicDBObject("_id", 1); DBObject
-			 * listItem = new BasicDBObject("user", 5); DBObject updateQuery =
-			 * new BasicDBObject("$push", listItem);
+			 * DBObject findQuery = new BasicDBObject("_id", 1); DBObject listItem = new
+			 * BasicDBObject("user", 5); DBObject updateQuery = new BasicDBObject("$push",
+			 * listItem);
 			 */
 			collection.updateOne(new Document("_id", productId), new Document("$push", new Document("user", i)));
 
@@ -147,62 +147,62 @@ public class Database {
 
 		return "ok";
 	}
-	
+
 	// add a product connecting to a partner
 	public String addProductToPartner(int partnerId, int productId) {
-	    MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-	    
-	    try {
-	            MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
-	            MongoCollection<Document> collection = database.getCollection("Partner");
-	            
-	            collection.updateOne(new Document("_id", partnerId),
-	                new Document("$push", new Document("product", productId)));
-	            
-	            
-	    } catch (Exception e) {
-	            e.printStackTrace();
-	        } finally {
-	            mongoClient.close();
-	        }
-	    
-	    return "ok";
-	    
-	  }
-	  
-		public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
-			// BasicDBObject query = new BasicDBObject("_id",
-			// partnerId).append("Products", new BasicDBObject("_id", productId)
-			// .append("Users", new BasicDBObject("_id", userId).append("Quotas",
-			// new BasicDBObject("_id", quotaId))));
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 
-			// Fake data first, will change later
-			Quota quota = new Quota(0, "Data", "number");
-			List<Tier> tiers = new ArrayList<Tier>();
-			tiers.add(new Tier("1", "free", 200, 200, 0));
-			tiers.add(new Tier("2", "premium", 1000, 0, 20));
-			quota.setTiers(tiers);
+		try {
+			MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
+			MongoCollection<Document> collection = database.getCollection("Partner");
 
-			return quota;
+			collection.updateOne(new Document("_id", partnerId),
+					new Document("$push", new Document("product", productId)));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
 		}
 
-		public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
-			// BasicDBObject partnerQuery = new BasicDBObject("_id", partnerId);
-			// String partnerName =
-			// db.getCollection("testFromVM").find(partnerQuery).first().getString("Name");
+		return "ok";
 
-			// BasicDBObject productQuery = partnerQuery.append("Products", new
-			// BasicDBObject("_id", productId));
-			// String productName =
-			// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
+	}
 
-			String partnerName = "Partner 1";
-			String productName = "Product 1";
+	public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
+		// BasicDBObject query = new BasicDBObject("_id",
+		// partnerId).append("Products", new BasicDBObject("_id", productId)
+		// .append("Users", new BasicDBObject("_id", userId).append("Quotas",
+		// new BasicDBObject("_id", quotaId))));
 
-			StringBuilder builder = new StringBuilder("Partner: " + partnerId + " ");
-			builder.append(partnerName + "\n");
-			builder.append("Product: " + productId + " " + productName + "\n");
-			builder.append("User: " + userId + "\n");
-			return builder.toString();
-		}
+		// Fake data first, will change later
+		Quota quota = new Quota(0, "Data", "number");
+		List<Tier> tiers = new ArrayList<Tier>();
+		tiers.add(new Tier("1", "free", 200, 200, 0));
+		tiers.add(new Tier("2", "premium", 1000, 0, 20));
+		quota.setTiers(tiers);
+
+		return quota;
+	}
+
+	public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
+		// BasicDBObject partnerQuery = new BasicDBObject("_id", partnerId);
+		// String partnerName =
+		// db.getCollection("testFromVM").find(partnerQuery).first().getString("Name");
+
+		// BasicDBObject productQuery = partnerQuery.append("Products", new
+		// BasicDBObject("_id", productId));
+		// String productName =
+		// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
+
+		String partnerName = "Partner 1";
+		String productName = "Product 1";
+
+		StringBuilder builder = new StringBuilder("Partner: " + partnerId + " ");
+		builder.append(partnerName + "\n");
+		builder.append("Product: " + productId + " " + productName + "\n");
+		builder.append("User: " + userId + "\n");
+		return builder.toString();
+	}
 }
