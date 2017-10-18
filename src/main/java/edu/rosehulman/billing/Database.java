@@ -206,13 +206,47 @@ public class Database {
 		return builder.toString();
 	}
 
-	public void addPartner(int parseInt, String partnerName, int parseInt2) {
+	public String addPartner(int partnerId, String password, String partnerName, int productId) {
 		// TODO Auto-generated method stub
-		
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> collection = database.getCollection("partner");
+			Document doc = new Document("_id", partnerId).append("password", password).append("partnerName", partnerName).append("productId", productId);
+
+			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+			collection.insertOne(doc);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
 	}
 
-	public void addProduct(int parseInt, String productName, int parseInt2) {
+	public String addProduct(int productId, String productName, int userId) {
 		// TODO Auto-generated method stub
-		
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> collection = database.getCollection("product");
+			Document doc = new Document("_id", productId).append("productName", productName).append("userId", userId);
+
+			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+			collection.insertOne(doc);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
 	}
 }

@@ -14,7 +14,7 @@ public class AddPartnerRouter implements Route {
 		String productId = request.params(":productId");
 		String password = request.params(":password");
 
-		Database.getInstance().addPartner(Integer.parseInt(partnerId), partnerName, Integer.parseInt(productId));
+		Database.getInstance().addPartner(Integer.parseInt(partnerId), password, partnerName, Integer.parseInt(productId));
 
 		// Add the user to our database
 		// Database.getInstance().addUser(partnerId, productId, userId);
