@@ -205,4 +205,14 @@ public class Database {
 		builder.append("User: " + userId + "\n");
 		return builder.toString();
 	}
+
+	public void addPartner(int parseInt, String partnerName, int parseInt2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void addProduct(int parseInt, String productName, int parseInt2) {
+		// TODO Auto-generated method stub
+		
+	}
 }

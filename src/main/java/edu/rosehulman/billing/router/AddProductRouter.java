@@ -13,12 +13,11 @@ public class AddProductRouter implements Route {
 		String productName = request.params(":productName");
 		String userId = request.params(":userId");
 
-		Database.getInstance().addProductToPartner(Integer.parseInt(userId), Integer.parseInt(partnerId),
-				Integer.parseInt(productId));
+		Database.getInstance().addProduct(Integer.parseInt(productId), productName, Integer.parseInt(userId));
 
 		// Add the user to our database
 		// Database.getInstance().addUser(partnerId, productId, userId);
-		Database.getInstance().addProductToPartner(Integer.parseInt(userId), Integer.parseInt(productId));
+		// Database.getInstance().addProductToPartner(Integer.parseInt(productId));
 		// Send the user to Billing
 		// BillingClient.getInstance().addUser(partnerId, productId, userId);
 

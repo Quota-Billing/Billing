@@ -10,13 +10,15 @@ public class AddPartnerRouter implements Route {
 	public Object handle(Request request, Response response) throws Exception {
 		// TODO Auto-generated method stub
 		String partnerId = request.params(":partnerId");
-		String productId = request.params(":apikey");
+		String partnerName = request.params(":partnerName");
+		String productId = request.params(":productId");
+		String password = request.params(":password");
 
-		Database.getInstance().addProductToPartner(Integer.parseInt(partnerId), Integer.parseInt(productId));
+		Database.getInstance().addPartner(Integer.parseInt(partnerId), partnerName, Integer.parseInt(productId));
 
 		// Add the user to our database
 		// Database.getInstance().addUser(partnerId, productId, userId);
-		Database.getInstance().addProductToPartner(Integer.parseInt(partnerId), Integer.parseInt(productId));
+//		Database.getInstance().addProductToPartner(Integer.parseInt(partnerId), Integer.parseInt(productId));
 		// Send the user to Billing
 		// BillingClient.getInstance().addUser(partnerId, productId, userId);
 
