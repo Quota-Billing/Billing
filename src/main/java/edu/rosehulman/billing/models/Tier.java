@@ -8,8 +8,8 @@ public class Tier {
 	private int value;
 	private double price; // TODO: Not a good idea to save price in a double
 							// format
-	
-	public Tier(String id, String name, int max, int value, int price) {
+
+	public Tier(String id, String name, int max, int value, double price) {
 		this.id = id;
 		this.name = name;
 		this.max = max;
@@ -55,5 +55,9 @@ public class Tier {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public String toString() {
+		return "Tier: " + this.id + "\n";
 	}
 }

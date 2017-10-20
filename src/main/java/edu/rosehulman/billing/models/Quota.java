@@ -1,5 +1,6 @@
 package edu.rosehulman.billing.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Quota {
@@ -12,6 +13,7 @@ public class Quota {
 		this.id = id;
 		this.name = name;
 		this.type = type;
+		this.tiers = new ArrayList<Tier>();
 	}
 
 	@Override
