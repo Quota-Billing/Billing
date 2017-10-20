@@ -20,17 +20,23 @@ public class Product {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Product: "  + id + "\n");
-		for(Integer id : this.quotas.keySet()) {
+		builder.append("Product: " + id + "\n");
+		for (Integer id : this.quotas.keySet()) {
 			builder.append(this.quotas.get(id).toString());
 		}
 		return builder.toString();
 	}
+
 	public int getId() {
 		return this.id;
 	}
-	public String getName(){
+
+	public String getName() {
 		return this.name;
+	}
+	
+	public void removeQuota(Quota q) {
+		this.quotas.remove(q.getId());
 	}
 
 }
