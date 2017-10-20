@@ -45,4 +45,12 @@ public class Quota {
 	public void setTiers(List<Tier> tiers) {
 		this.tiers = tiers;
 	}
+	
+	public void addTiers(Tier tier) {
+		this.tiers.add(tier);
+	}
+	
+	public void removeTiers(Tier tier) {
+		this.tiers.remove(tier);
+	}
 }
