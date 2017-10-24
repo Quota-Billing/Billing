@@ -1,8 +1,9 @@
-package edu.rosehulman.billing;
+package edu.rosehulman.billing.datamodels;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+
 import org.junit.Test;
 
 import edu.rosehulman.billing.models.Partner;
@@ -10,42 +11,7 @@ import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 
-public class ATest {
-
-	@Test
-	public void SimplePartnerTest() {
-		Partner a = new Partner(1, "a");
-		assertEquals("a", a.getName());
-		assertEquals(1, a.getId());
-		assertEquals("Partner: 1\n", a.toString());
-	}
-
-	@Test
-	public void SimpleProductTest() {
-		Product a = new Product(1, "b");
-		assertEquals("b", a.getName());
-		assertEquals(1, a.getId());
-		assertEquals("Product: 1\n", a.toString());
-	}
-
-	@Test
-	public void SimpleQuotaTest() {
-		Quota a = new Quota(1, "a", "b");
-		assertEquals("a", a.getName());
-		assertEquals("b", a.getType());
-		assertEquals(1, a.getId());
-		assertEquals("Quota: 1\n", a.toString());
-	}
-
-	@Test
-	public void SimpleTierTest() {
-		Tier a = new Tier("1", "a", 1000, 2, 3);
-		assertEquals("1", a.getId());
-		assertEquals("a", a.getName());
-		assertEquals(1000, a.getMax());
-		assertEquals(2, a.getValue());
-		assertEquals(3, a.getPrice(), 0.001);
-	}
+public class IntegrationTest {
 
 	@Test
 	public void AddProductToPartnerTest() {
@@ -218,4 +184,5 @@ public class ATest {
 		tiers.remove(tier2);
 		assertEquals(tiers, quota.getTiers());
 	}
+
 }

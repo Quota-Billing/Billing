@@ -9,6 +9,10 @@ public class Tier {
 	private double price; // TODO: Not a good idea to save price in a double
 							// format
 
+	public Tier() {
+		
+	}
+	
 	public Tier(String id, String name, int max, int value, double price) {
 		this.id = id;
 		this.name = name;
@@ -57,6 +61,7 @@ public class Tier {
 		this.price = price;
 	}
 
+	@Override
 	public String toString() {
 		return "Tier: " + this.id + "\n";
 	}
