@@ -5,3 +5,4 @@
 
 
 ## API Endpoints Reference
+[API Endpoints](Billing/documentation/EndpointsReference.md)
