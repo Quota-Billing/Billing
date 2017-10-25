@@ -1,4 +1,8 @@
 # API Endpoints
+1. [GET Request](/documentation/EndpointsReference.md#get-request)
+2. [POST Request](/documentation/EndpointsReference.md#post-request)
+3. [PUT Request](/documentation/EndpointsReference.md#put-request)
+4. [DELETE Request](/documentation/EndpointsReference.md#delete-request)
 
 ## GET Request
 | HTTP Request Type       | URI| What does it do  |
