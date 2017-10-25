@@ -1,6 +1,7 @@
 package edu.rosehulman.billing.router;
 
 import edu.rosehulman.billing.Database;
+import edu.rosehulman.billing.QuotaClient;
 import edu.rosehulman.billing.models.Quota;
 import spark.Request;
 import spark.Response;
@@ -18,12 +19,7 @@ public class QuotaUpdateHandler implements Route{
 	    String productId = request.params(":productId");
 	    String userId = request.params(":userId");
 	    
-	    // if (this.quota.type == TIME_RECURRING){
-	    //	
-	    //	if(quota.timeReached()){
-	    //    QuotaService.send()
-	    //  }
-	    //}
+	    QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 
 	   
 	    return "";
