@@ -14,11 +14,24 @@ public class BillingHistoryTest {
 		assertEquals(1, bh.getBillingHistoryId());
 	}
 	
+	@Test
 	public void TestSetBillingHistoryId() {
 		BillingHistory bh = new BillingHistory(1);
 		bh.setBillingHistoryId(2);
 		assertEquals(2, bh.getBillingHistoryId());
 	}
 	
-	public void Test
+	@Test
+	public void TestSetTimeStamp() {
+		BillingHistory bh = new BillingHistory(1);
+		bh.setTimeStamp("One month");
+		assertEquals("One month", bh.getTimeStamp());
+	}
+	
+	@Test
+	public void TestSetFee() {
+		BillingHistory bh = new BillingHistory(1);
+		bh.setFee(1.23);
+		assertEquals(1.23, bh.getFee(), 0.0001);
+	}
 }

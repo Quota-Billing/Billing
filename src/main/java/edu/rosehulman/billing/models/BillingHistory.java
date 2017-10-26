@@ -21,16 +21,24 @@ public class BillingHistory {
 	public void setBillingHistoryId(int id) {
 		this.billinghistoryId = id;
 	}
+	
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
+
+	public void setTimeStamp(String st) {
+		this.time_stamp = st;
+	}
 
 	public int getBillingHistoryId() {
 		return this.billinghistoryId;
 	}
 
-	public double getFee(int billingid) {
+	public double getFee() {
 		return this.fee;
 	}
 
-	public String getTimeStamp(int billingid) {
+	public String getTimeStamp() {
 		return this.time_stamp;
 	}
 
@@ -58,14 +66,6 @@ public class BillingHistory {
 
 	public void addBilling(Billing bl) {
 		this.billing.put(bl.getBillingID(), bl);
-	}
-
-	public void setFee(double fee) {
-		this.fee = fee;
-	}
-
-	public void setTimeStamp(String st) {
-		this.time_stamp = st;
 	}
 
 	public ArrayList<Billing> getBillingList() {
