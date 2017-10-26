@@ -17,8 +17,12 @@ public class BillingHistory {
 		time_stamp = new ArrayList<String>();
 		fee = new ArrayList<Double>();
 	}
+	
+	public void setBillingHistoryId(int id) {
+		this.billinghistoryId = id;
+	}
 
-	public int getHistoryId() {
+	public int getBillingHistoryId() {
 		return this.billinghistoryId;
 	}
 
@@ -40,4 +44,5 @@ public class BillingHistory {
 		this.time_stamp.add(timestamp);
 		this.fee.add(fee);
 	}
+	
 }
