@@ -10,8 +10,15 @@ public class BillingHistoryTest {
 	@Test
 	public void TestBillingHistory() {
 		BillingHistory bh = new BillingHistory(1);
+
+		assertEquals(1, bh.getBillingHistoryId());
+	}
+	
+	public void TestSetBillingHistoryId() {
+		BillingHistory bh = new BillingHistory(1);
 		bh.setBillingHistoryId(2);
 		assertEquals(2, bh.getBillingHistoryId());
 	}
-
+	
+	public void Test
 }

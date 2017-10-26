@@ -1,23 +1,23 @@
 package edu.rosehulman.billing.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class BillingHistory {
 
 	private int billinghistoryId;
-	private ArrayList<Billing> billing;
-	private ArrayList<Integer> billingId;
-	private ArrayList<String> time_stamp;
-	private ArrayList<Double> fee;
-	
+	private HashMap<Integer, Billing> billing;
+	private String time_stamp;
+	private Double fee;
 
 	public BillingHistory(int id) {
 		this.billinghistoryId = id;
-		billingId = new ArrayList<Integer>();
-		time_stamp = new ArrayList<String>();
-		fee = new ArrayList<Double>();
+		billing = new HashMap<Integer, Billing>();
+		time_stamp = "";
+		fee = 0.0;
 	}
-	
+
 	public void setBillingHistoryId(int id) {
 		this.billinghistoryId = id;
 	}
@@ -26,23 +26,58 @@ public class BillingHistory {
 		return this.billinghistoryId;
 	}
 
-	public void addBilling(int billingid) {
-		this.billingId.add(billingid);
-	}
-
 	public double getFee(int billingid) {
-		return this.fee.get(this.billingId.indexOf(billingid));
+		return this.fee;
 	}
 
 	public String getTimeStamp(int billingid) {
-		return this.time_stamp.get(this.billingId.indexOf(billingid));
+		return this.time_stamp;
 	}
-	
-	public void addBilling(Billing bl, String timestamp, double fee) {
-		this.billing.add(bl);
-		this.billingId.add(bl.getBillingID());
-		this.time_stamp.add(timestamp);
-		this.fee.add(fee);
+
+	public void UpdateExistingBilling(Billing newBill) {
+		int index = newBill.getBillingID();
+		this.billing.put(index, newBill);
 	}
-	
+
+	public void deleteBilling(Billing oldBill) {
+		int index = oldBill.getBillingID();
+		this.billing.remove(index);
+	}
+
+	public void deleteBilling(int billingid) {
+		this.billing.remove(billingid);
+	}
+
+	public boolean findBilling(Billing bill) {
+		return this.billing.containsKey(bill.getBillingID());
+	}
+
+	public boolean findBilling(int billingid) {
+		return this.billing.keySet().contains(billingid);
+	}
+
+	public void addBilling(Billing bl) {
+		this.billing.put(bl.getBillingID(), bl);
+	}
+
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
+
+	public void setTimeStamp(String st) {
+		this.time_stamp = st;
+	}
+
+	public ArrayList<Billing> getBillingList() {
+		ArrayList<Billing> bill = new ArrayList<Billing>();
+		for (int i : this.billing.keySet()) {
+			bill.add(this.billing.get(i));
+		}
+		return bill;
+	}
+
+	public Set<Integer> getBillingIdList() {
+		return this.billing.keySet();
+	}
+
 }
