@@ -3,27 +3,36 @@ package edu.rosehulman.billing.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
+@Entity("quota")
 public class Quota {
-	private int id;
+	@Id
+	private ObjectId id;
+	@Property
 	private String name;
+	@Property
 	private String type;
+	@Property
 	private List<Tier> tiers = new ArrayList<Tier>();
 
 	public Quota() {
 
 	}
 
-	public Quota(int id, String name, String type) {
+	public Quota(ObjectId id, String name, String type) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
 	}
 
-	public int getId() {
+	public ObjectId getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

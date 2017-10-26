@@ -1,30 +1,39 @@
 package edu.rosehulman.billing.models;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
 
-public final class User {
-	private ObjectId id;
-	private ObjectId productId;
-	private ObjectId partnerId;
+@Entity("user")
+
+
+public class User {
+	@Property("id")
+	private String id;
+	@Reference
+	private Product product;
+	@Reference
+	private Partner partner;
 	
 	public User(){
 		
 	}
 	
-	public User(ObjectId id, ObjectId productId, ObjectId partnerId){
+	public User(String id, Product product, Partner partner){
 		this.id = id;
-		this.productId = productId;
-		this.partnerId = partnerId;
+		this.product = product;
+		this.partner = partner;
 	}
 	
-	public ObjectId getId(){
+	public String getId(){
 		return this.id;
 	}
 	
-	public ObjectId getProductId(){
-		return this.productId;
+	public Product getProductId(){
+		return this.product;
 	}
 	
-	public ObjectId getPartnerId(){
-		return this.partnerId;
+	public Partner getPartnerId(){
+		return this.partner;
 	}
 }

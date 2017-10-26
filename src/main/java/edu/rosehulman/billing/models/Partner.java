@@ -2,16 +2,24 @@ package edu.rosehulman.billing.models;
 
 import java.util.HashMap;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
+@Entity("partner")
 public class Partner {
-	private int id;
+	@Id
+	private ObjectId id;
+	@Property
 	private String name;
-	private HashMap<Integer, Product> products = new HashMap<Integer, Product>();
+	@Property
+	private HashMap<ObjectId, Product> products = new HashMap<ObjectId, Product>();
 
 	public Partner() {
 
 	}
 
-	public Partner(int partnerId, String name) {
+	public Partner(ObjectId partnerId, String name) {
 		this.id = partnerId;
 		this.name = name;
 	}
@@ -28,11 +36,11 @@ public class Partner {
 		this.products.remove(product.getId());
 	}
 
-	public void setId(int id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 
-	public int getId() {
+	public ObjectId getId() {
 		return this.id;
 	}
 
@@ -48,7 +56,7 @@ public class Partner {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Partner: " + id + "\n");
-		for (Integer id : this.products.keySet()) {
+		for (ObjectId id : this.products.keySet()) {
 			builder.append(this.products.get(id).toString());
 		}
 		return builder.toString();
