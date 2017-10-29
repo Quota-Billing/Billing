@@ -13,23 +13,27 @@ public class Product {
 	@Property
 	private String name;
 	@Property
-	private HashMap<ObjectId, Quota> quotas = new HashMap<ObjectId, Quota>();
+	private String productId;
+	@Property
+	private HashMap<String, Quota> quotas = new HashMap<String, Quota>();
+	
 
 	public Product() {
 
 	}
 
-	public Product(ObjectId id, String name) {
-		this.id = id;
+	public Product(String productId, String name) {
+		this.id = new ObjectId();
+		this.productId = productId;
 		this.name = name;
 	}
 
-	public void setId(ObjectId id) {
-		this.id = id;
+	public void setId(String id) {
+		this.productId = id;
 	}
 
-	public ObjectId getId() {
-		return this.id;
+	public String getId() {
+		return this.productId;
 	}
 
 	public void setName(String name) {
@@ -44,7 +48,7 @@ public class Product {
 		return this.quotas.get(quotaId);
 	}
 
-	public HashMap<ObjectId, Quota> getQuotas() {
+	public HashMap<String, Quota> getQuotas() {
 		return quotas;
 	}
 
@@ -59,10 +63,10 @@ public class Product {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Product: " + id + "\n");
+		builder.append("Product: " + this.productId + "\n");
 		builder.append("Name: " + name + "\n");
 		builder.append("Quotas: ");
-		for (ObjectId id : this.quotas.keySet()) {
+		for (String id : this.quotas.keySet()) {
 			builder.append(this.quotas.get(id).toString());
 		}
 		return builder.toString();

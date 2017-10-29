@@ -13,14 +13,17 @@ public class Partner {
 	@Property
 	private String name;
 	@Property
-	private HashMap<ObjectId, Product> products = new HashMap<ObjectId, Product>();
+	private HashMap<String, Product> products = new HashMap<String, Product>();
+	@Property
+	private String partnerId;
 
 	public Partner() {
 
 	}
 
-	public Partner(ObjectId partnerId, String name) {
-		this.id = partnerId;
+	public Partner(String partnerId, String name) {
+		this.id = new ObjectId();
+		this.partnerId = partnerId;
 		this.name = name;
 	}
 
@@ -36,12 +39,12 @@ public class Partner {
 		this.products.remove(product.getId());
 	}
 
-	public void setId(ObjectId id) {
-		this.id = id;
+	public void setId(String id) {
+		this.partnerId = id;
 	}
 
-	public ObjectId getId() {
-		return this.id;
+	public String getId() {
+		return this.partnerId;
 	}
 
 	public void setName(String name) {
@@ -55,10 +58,11 @@ public class Partner {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Partner: " + id + "\n");
-		for (ObjectId id : this.products.keySet()) {
+		builder.append("Partner: " + this.partnerId + "\n");
+		for (String id : this.products.keySet()) {
 			builder.append(this.products.get(id).toString());
 		}
 		return builder.toString();
 	}
 }
+

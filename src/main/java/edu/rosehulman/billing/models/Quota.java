@@ -16,24 +16,27 @@ public class Quota {
 	@Property
 	private String type;
 	@Property
+	private String quotaId;
+	@Property
 	private List<Tier> tiers = new ArrayList<Tier>();
 
 	public Quota() {
 
 	}
 
-	public Quota(ObjectId id, String name, String type) {
-		this.id = id;
+	public Quota(String quotaId, String name, String type) {
+		this.id = new ObjectId();
+		this.quotaId = quotaId;
 		this.name = name;
 		this.type = type;
 	}
 
-	public ObjectId getId() {
-		return this.id;
+	public String getId() {
+		return this.quotaId;
 	}
 
-	public void setId(ObjectId id) {
-		this.id = id;
+	public void setId(String id) {
+		this.quotaId = id;
 	}
 
 	public String getName() {
@@ -71,7 +74,7 @@ public class Quota {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Quota: " + id + "\n");
+		builder.append("Quota: " + this.quotaId + "\n");
 		builder.append("Name: " + name + "\n");
 		builder.append("Type: " + type + "\n");
 		builder.append("Tiers: ");

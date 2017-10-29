@@ -1,11 +1,23 @@
 package edu.rosehulman.billing.models;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
+
+@Entity("tier")
 public class Tier {
-	private String id;
+	@Id
+	private ObjectId id;
+	@Property
 	private String name;
+	@Property
+	private String tierId;
+	@Property
 	private int max; // TODO: This might need to be changed to BigInt or
-						// BigDouble
+	@Property
 	private int value;
+	@Property
 	private double price; // TODO: Not a good idea to save price in a double
 							// format
 
@@ -14,7 +26,8 @@ public class Tier {
 	}
 	
 	public Tier(String id, String name, int max, int value, double price) {
-		this.id = id;
+		this.id = new ObjectId();
+		this.tierId = id;
 		this.name = name;
 		this.max = max;
 		this.value = value;
@@ -22,11 +35,11 @@ public class Tier {
 	}
 
 	public String getId() {
-		return id;
+		return this.tierId;
 	}
 
 	public void setId(String id) {
-		this.id = id;
+		this.tierId = id;
 	}
 
 	public String getName() {
@@ -63,6 +76,6 @@ public class Tier {
 
 	@Override
 	public String toString() {
-		return "Tier: " + this.id + "\n";
+		return "Tier: " + this.tierId + "\n";
 	}
 }
