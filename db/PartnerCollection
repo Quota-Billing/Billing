@@ -1,0 +1,2 @@
+{"_id":1,"name":"partner_01","api_key":"API_Key_01","password":"good_pass","product":[1]}
+{"_id":2,"name":"partner_02","api_key":"API_Key_02","password":"good_pass","product":[1,2,3,4]}
