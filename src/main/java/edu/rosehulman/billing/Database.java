@@ -1,5 +1,9 @@
 package edu.rosehulman.billing;
 
+import static com.mongodb.client.model.Filters.eq;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,7 +11,6 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.types.ObjectId;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -15,12 +18,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 
+import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.models.User;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class Database {
 	private static Database instance;
 	private static Collection<String> result = new ArrayList<String>();
@@ -167,8 +168,8 @@ public class Database {
 		//Quota quota = new Quota(0, "Data", "number");
 		Quota quota = new Quota();
 		List<Tier> tiers = new ArrayList<Tier>();
-		tiers.add(new Tier("1", "free", 200, 200, 0));
-		tiers.add(new Tier("2", "premium", 1000, 0, 20));
+		tiers.add(new Tier("1", "free", 200, 0));
+		tiers.add(new Tier("2", "premium", 1000, 20));
 		quota.setTiers(tiers);
 
 		return quota;
@@ -183,6 +184,26 @@ public class Database {
 		// BasicDBObject("_id", productId));
 		// String productName =
 		// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
+		MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> partnerCollection = database.getCollection("partner");
+			Document partnerDoc = partnerCollection.find(eq("_id", partnerId)).first();
+			
+			Partner partner = new Partner(partnerId, (String) partnerDoc.get("name"), partnerDoc.getString("apiKey"));
+//			String billingURL = partner.getBillingURL();
+			
+			MongoCollection<Document> productCollection = database.getCollection("product");
+			
+			MongoCollection<Document> userCollection = database.getCollection("user");
+//			Document userDoc = userDocument.find(eq(""))
+			
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
 
 		String partnerName = "Partner 1";
 		String productName = "Product 1";
@@ -195,7 +216,6 @@ public class Database {
 	}
 
 	public String addPartner(int partnerId, String password, String partnerName, int productId) {
-		// TODO Auto-generated method stub
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 

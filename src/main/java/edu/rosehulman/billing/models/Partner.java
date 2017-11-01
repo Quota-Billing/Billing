@@ -24,7 +24,7 @@ public class Partner {
 	private String password;
 
 	public Partner() {
-
+		this.products = new ArrayList<Product>();
 	}
 
 	public Partner(String partnerId, String name, String apikey) {
@@ -53,7 +53,7 @@ public class Partner {
 	}
 	
 	public void removeProduct(Product product) {
-		this.products.remove(product.getId());
+		this.products.remove(product);
 	}
 
 	public void setId(String id) {
@@ -74,6 +74,10 @@ public class Partner {
 	
 	public void setPassword(String password){
 		this.password = password;
+	}
+	
+	public String getApiKey() {
+		return this.apikey;
 	}
 
 	@Override

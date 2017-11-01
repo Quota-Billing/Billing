@@ -16,8 +16,8 @@ public class QuotaTest {
 	@Test
 	public void testSetAndGetId(){
 		Quota q = new Quota();
-		q.setId(2);
-		assertEquals(2, q.getId());
+		q.setId("2");
+		assertEquals("2", q.getId());
 	}
 	
 	@Test
@@ -78,15 +78,15 @@ public class QuotaTest {
 
 	@Test
 	public void testConstructor() {
-		Quota q = new Quota(1, "a", "b");
+		Quota q = new Quota("1", "a", "b");
 		assertEquals("a", q.getName());
 		assertEquals("b", q.getType());
-		assertEquals(1, q.getId());
+		assertEquals("1", q.getId());
 	}
 	
 	@Test
 	public void testToString() {
-		Quota q = new Quota(1, "quotaName", "time_recurring");
+		Quota q = new Quota("1", "quotaName", "time_recurring");
 		assertEquals("Quota: 1\nName: quotaName\nType: time_recurring\nTiers: ", q.toString());
 	}
 

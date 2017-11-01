@@ -52,7 +52,7 @@ public class Product {
 	}
 
 	public void removeQuota(Quota q) {
-		this.quotas.remove(q.getId());
+		this.quotas.remove(q);
 	}
 
 	public void addQuota(Quota quota) {

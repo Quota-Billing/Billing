@@ -45,17 +45,16 @@ public class TierTest {
 
 	@Test
 	public void testConstructor() {
-		Tier t = new Tier("1", "a", 1000, 2, 3);
+		Tier t = new Tier("1", "a", 1000, 3);
 		assertEquals("1", t.getId());
 		assertEquals("a", t.getName());
 		assertEquals(1000, t.getMax());
-		assertEquals(2, t.getValue());
 		assertEquals(3, t.getPrice(), 0.001);
 	}
 
 	@Test
 	public void testToString() {
-		Tier t = new Tier("1", "name", 1000, 2, 3);
+		Tier t = new Tier("1", "name", 1000,3);
 		assertEquals("Tier: 1\n", t.toString());
 	}
 }
