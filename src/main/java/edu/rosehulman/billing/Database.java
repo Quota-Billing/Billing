@@ -5,13 +5,20 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bson.Document;
+import org.eclipse.jetty.security.UserAuthentication;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
+import static com.mongodb.client.model.Filters.*;
 
+import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 
@@ -195,6 +202,26 @@ public class Database {
 		// BasicDBObject("_id", productId));
 		// String productName =
 		// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
+		MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> partnerCollection = database.getCollection("partner");
+			Document partnerDoc = partnerCollection.find(eq("_id", partnerId)).first();
+			
+			Partner partner = new Partner(Integer.parseInt(partnerId), (String) partnerDoc.get("name"));
+//			String billingURL = partner.getBillingURL();
+			
+			MongoCollection<Document> productCollection = database.getCollection("product");
+			
+			MongoCollection<Document> userCollection = database.getCollection("user");
+//			Document userDoc = userDocument.find(eq(""))
+			
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
 
 		String partnerName = "Partner 1";
 		String productName = "Product 1";
@@ -207,7 +234,6 @@ public class Database {
 	}
 
 	public String addPartner(int partnerId, String password, String partnerName, int productId) {
-		// TODO Auto-generated method stub
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 
