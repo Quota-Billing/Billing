@@ -44,6 +44,6 @@ public class Billing {
 	}
 	
 	public String toString() {
-		return "BillingId: " + this.billingID + "\n UserId: " + this.userID + "\n Plan: "+ this.plan +"\n";
+		return "BillingId: " + this.billingID + "\nUserId: " + this.userID + "\nPlan: "+ this.plan +"\n";
 	}
 }

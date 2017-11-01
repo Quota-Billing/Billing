@@ -104,7 +104,7 @@ public class BillingHistory {
 	public String toString() {
 		String st = "Billing History: " + this.billinghistoryId + "\n";
 		for (int i : this.billing.keySet()) {
-			st += "Billing: " + i + " " + this.billing.get(i) + "\n";
+			st += this.billing.get(i).toString();
 		}
 		return st;
 	}
