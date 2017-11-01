@@ -24,9 +24,7 @@ public class BillingServer {
 		});
 		post("/partner/:partnerId/produc/:productId/user/:userId/quotaReached/:quotaId/", new QuotaReachedHandler());
 
-		post("/addquota", (req, res) -> {
-			return Database.getInstance().addTobillingdb("2", "quotaName", "2");
-		});
+		
 
 		// BrainTree br =new BrainTree();
 
