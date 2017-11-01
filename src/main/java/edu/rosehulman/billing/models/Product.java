@@ -1,27 +1,41 @@
 package edu.rosehulman.billing.models;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
+@Entity("product")
 public class Product {
-	private int id;
+	@Id
+	private ObjectId id;
+	@Property
 	private String name;
-	private HashMap<Integer, Quota> quotas = new HashMap<Integer, Quota>();
+	@Property
+	private String productId;
+	@Reference
+	private List<Quota> quotas = new ArrayList<Quota>();
+	
 
 	public Product() {
 
 	}
 
-	public Product(int id, String name) {
-		this.id = id;
+	public Product(String productId, String name) {
+		this.id = new ObjectId();
+		this.productId = productId;
 		this.name = name;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String id) {
+		this.productId = id;
 	}
 
-	public int getId() {
-		return this.id;
+	public String getId() {
+		return this.productId;
 	}
 
 	public void setName(String name) {
@@ -32,32 +46,38 @@ public class Product {
 		return this.name;
 	}
 
-	public Quota getQuota(int quotaId) {
-		return this.quotas.get(quotaId);
-	}
 
-	public HashMap<Integer, Quota> getQuotas() {
+	public List<Quota> getQuotas() {
 		return quotas;
 	}
 
 	public void removeQuota(Quota q) {
-		this.quotas.remove(q.getId());
+		this.quotas.remove(q);
 	}
 
 	public void addQuota(Quota quota) {
-		this.quotas.put(quota.getId(), quota);
+		this.quotas.add(quota);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Product: " + id + "\n");
+		builder.append("Product: " + this.productId + "\n");
 		builder.append("Name: " + name + "\n");
 		builder.append("Quotas: ");
-		for (Integer id : this.quotas.keySet()) {
-			builder.append(this.quotas.get(id).toString());
+		for (Quota q : this.quotas) {
+			builder.append(q.toString());
 		}
 		return builder.toString();
+	}
+
+	public Quota getQuota(String quotaId) {
+		for(Quota q: this.quotas){
+			if(q.getId().equals(quotaId)){
+				return q;
+			}
+		}
+		return null;
 	}
 
 }

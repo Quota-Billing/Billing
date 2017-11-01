@@ -56,7 +56,8 @@ public class SharedClient {
 //		 JSONObject ids = result.getObject();
 		 // will use for adding other models.
 		 //Database.getInstance().addUser(ids.getString("partnerId"), ids.getString("productId"), ids.getString("userId"));
-		 Database.getInstance().addUser(partnerId, productId, userId);
+		System.out.println(productId);
+		Database.getInstance().addUser(partnerId, productId, userId);
 		 return "ok";
 	}
 }

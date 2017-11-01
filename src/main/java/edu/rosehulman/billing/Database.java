@@ -1,36 +1,44 @@
 package edu.rosehulman.billing;
 
+import static com.mongodb.client.model.Filters.eq;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.bson.Document;
-import org.eclipse.jetty.security.UserAuthentication;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
-import static com.mongodb.client.model.Filters.*;
 
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
-
+import edu.rosehulman.billing.models.User;
 public class Database {
 	private static Database instance;
 	private static Collection<String> result = new ArrayList<String>();
-
-	Document userDocument;
-
+	private static MongoClient mongoClient;
+	private static MongoClient sharedMongoClient;
+	private static MongoDatabase billingDB;
+	private static MongoDatabase sharedDB;
 	private Database() {
+        mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+        sharedMongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+        billingDB = mongoClient.getDatabase("billingpart").withCodecRegistry(pojoCodecRegistry);
+        sharedDB = sharedMongoClient.getDatabase("quotabillingshare").withCodecRegistry(pojoCodecRegistry);
 
 	}
+	
 
 	// private Database() {
 
@@ -58,13 +66,10 @@ public class Database {
 	}
 
 	public static ArrayList<String> getSharedDatabaseInfo() {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-
+		
 		try {
-			MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
 
-			MongoIterable<String> collections = database.listCollectionNames();
+			MongoIterable<String> collections = sharedDB.listCollectionNames();
 			for (String collectionName : collections) {
 				System.out.println(collectionName);
 				result.add(collectionName);
@@ -79,43 +84,22 @@ public class Database {
 		return (ArrayList<String>) result;
 	}
 
-	// this will be deprecated soon, now just a test for connection
-	public static String addTobillingdb(String partnerId, String productid, String userId) {
-
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
-		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> collection = database.getCollection("user");
-			Document doc = new Document("_id", userId);
-
-			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(doc);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
-		}
-
-		return "ok";
-
-	}
+	
 
 	// add a user
 	public static String addUser(String partnerId, String productId, String userId) {
-
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		System.out.println(productId);
+		
+		
+		//User user = new User(userId, new ObjectId(productId), new ObjectId(partnerId));
+		User user = new User();
 
 		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> collection = database.getCollection("user");
-			Document doc = new Document("_id", userId);
+			MongoCollection<User> collection = billingDB.getCollection("user", User.class);
 
+			//Document doc = new Document("_id", userId);
 			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(doc);
+			collection.insertOne(user);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -157,12 +141,9 @@ public class Database {
 
 	// add a product connecting to a partner
 	public String addProductToPartner(int partnerId, int productId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
+		
 		try {
-			MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
-			MongoCollection<Document> collection = database.getCollection("Partner");
+			MongoCollection<Document> collection = billingDB.getCollection("Partner");
 
 			collection.updateOne(new Document("_id", partnerId),
 					new Document("$push", new Document("product", productId)));
@@ -184,10 +165,11 @@ public class Database {
 		// new BasicDBObject("_id", quotaId))));
 
 		// Fake data first, will change later
-		Quota quota = new Quota(0, "Data", "number");
+		//Quota quota = new Quota(0, "Data", "number");
+		Quota quota = new Quota();
 		List<Tier> tiers = new ArrayList<Tier>();
-		tiers.add(new Tier("1", "free", 200, 200, 0));
-		tiers.add(new Tier("2", "premium", 1000, 0, 20));
+		tiers.add(new Tier("1", "free", 200, 0));
+		tiers.add(new Tier("2", "premium", 1000, 20));
 		quota.setTiers(tiers);
 
 		return quota;
@@ -208,7 +190,7 @@ public class Database {
 			MongoCollection<Document> partnerCollection = database.getCollection("partner");
 			Document partnerDoc = partnerCollection.find(eq("_id", partnerId)).first();
 			
-			Partner partner = new Partner(Integer.parseInt(partnerId), (String) partnerDoc.get("name"));
+			Partner partner = new Partner(partnerId, (String) partnerDoc.get("name"), partnerDoc.getString("apiKey"));
 //			String billingURL = partner.getBillingURL();
 			
 			MongoCollection<Document> productCollection = database.getCollection("product");

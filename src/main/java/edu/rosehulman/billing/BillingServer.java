@@ -25,9 +25,7 @@ public class BillingServer {
 		});
 		post(Routes.QUOTA_REACHED, new QuotaReachedHandler());
 
-		post("/addquota", (req, res) -> {
-			return Database.getInstance().addTobillingdb("2", "quotaName", "2");
-		});
+		
 
 		// BrainTree br =new BrainTree();
 

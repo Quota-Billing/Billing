@@ -3,28 +3,53 @@ package edu.rosehulman.billing.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
+@Entity("quota")
 public class Quota {
-	private int id;
+	@Id
+	private ObjectId id;
+	@Property
 	private String name;
+	@Property
 	private String type;
+	@Property
+	private String quotaId;
+	@Reference
 	private List<Tier> tiers = new ArrayList<Tier>();
+	@Reference
+	private Product product;
+	@Reference
+	private Partner partner;
 
 	public Quota() {
 
 	}
 
-	public Quota(int id, String name, String type) {
-		this.id = id;
+	public Quota(String quotaId, String name, String type) {
+		this.id = new ObjectId();
+		this.quotaId = quotaId;
 		this.name = name;
 		this.type = type;
 	}
 
-	public int getId() {
-		return this.id;
+	public String getId() {
+		return this.quotaId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String id) {
+		this.quotaId = id;
+	}
+	
+	public void setPartner(Partner partner){
+		this.partner = partner;
+	}
+	
+	public void setProduct(Product product){
+		this.product = product;
 	}
 
 	public String getName() {
@@ -62,7 +87,7 @@ public class Quota {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Quota: " + id + "\n");
+		builder.append("Quota: " + this.quotaId + "\n");
 		builder.append("Name: " + name + "\n");
 		builder.append("Type: " + type + "\n");
 		builder.append("Tiers: ");
