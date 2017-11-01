@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
 @Entity("quota")
 public class Quota {
 	@Id
@@ -17,8 +18,12 @@ public class Quota {
 	private String type;
 	@Property
 	private String quotaId;
-	@Property
+	@Reference
 	private List<Tier> tiers = new ArrayList<Tier>();
+	@Reference
+	private Product product;
+	@Reference
+	private Partner partner;
 
 	public Quota() {
 
@@ -37,6 +42,14 @@ public class Quota {
 
 	public void setId(String id) {
 		this.quotaId = id;
+	}
+	
+	public void setPartner(Partner partner){
+		this.partner = partner;
+	}
+	
+	public void setProduct(Product product){
+		this.product = product;
 	}
 
 	public String getName() {

@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
 
 @Entity("tier")
 public class Tier {
@@ -14,26 +15,42 @@ public class Tier {
 	@Property
 	private String tierId;
 	@Property
-	private int max; // TODO: This might need to be changed to BigInt or
+	private int max; 
 	@Property
 	private int value;
 	@Property
-	private double price; // TODO: Not a good idea to save price in a double
-							// format
+	private double price;
+	@Reference
+	private Partner partner;
+	@Reference
+	private Product product;
+	@Reference
+	private Quota quota;
 
 	public Tier() {
 		
 	}
 	
-	public Tier(String id, String name, int max, int value, double price) {
+	public Tier(String id, String name, int max, double price) {
 		this.id = new ObjectId();
 		this.tierId = id;
 		this.name = name;
 		this.max = max;
-		this.value = value;
 		this.price = price;
 	}
 
+	public void setPartner(Partner partner){
+		this.partner = partner;
+	}
+	
+	public void setProduct(Product product){
+		this.product = product;
+	}
+	
+	public void setQuota(Quota quota){
+		this.quota = quota;
+	}
+	
 	public String getId() {
 		return this.tierId;
 	}

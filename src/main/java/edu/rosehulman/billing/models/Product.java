@@ -1,11 +1,13 @@
 package edu.rosehulman.billing.models;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
 @Entity("product")
 public class Product {
 	@Id
@@ -14,8 +16,8 @@ public class Product {
 	private String name;
 	@Property
 	private String productId;
-	@Property
-	private HashMap<String, Quota> quotas = new HashMap<String, Quota>();
+	@Reference
+	private List<Quota> quotas = new ArrayList<Quota>();
 	
 
 	public Product() {
@@ -44,11 +46,8 @@ public class Product {
 		return this.name;
 	}
 
-	public Quota getQuota(ObjectId quotaId) {
-		return this.quotas.get(quotaId);
-	}
 
-	public HashMap<String, Quota> getQuotas() {
+	public List<Quota> getQuotas() {
 		return quotas;
 	}
 
@@ -57,7 +56,7 @@ public class Product {
 	}
 
 	public void addQuota(Quota quota) {
-		this.quotas.put(quota.getId(), quota);
+		this.quotas.add(quota);
 	}
 
 	@Override
@@ -66,10 +65,19 @@ public class Product {
 		builder.append("Product: " + this.productId + "\n");
 		builder.append("Name: " + name + "\n");
 		builder.append("Quotas: ");
-		for (String id : this.quotas.keySet()) {
-			builder.append(this.quotas.get(id).toString());
+		for (Quota q : this.quotas) {
+			builder.append(q.toString());
 		}
 		return builder.toString();
+	}
+
+	public Quota getQuota(String quotaId) {
+		for(Quota q: this.quotas){
+			if(q.getId().equals(quotaId)){
+				return q;
+			}
+		}
+		return null;
 	}
 
 }
