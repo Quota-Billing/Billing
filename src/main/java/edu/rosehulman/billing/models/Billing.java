@@ -31,6 +31,10 @@ public class Billing {
 		return this.billingID;
 	}
 	
+	public String getPlan(){
+		return this.plan;
+	}
+	
 	public void setBillingID(int id) {
 		this.billingID = id;
 	}

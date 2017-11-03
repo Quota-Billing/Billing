@@ -67,6 +67,11 @@ public class BillingHistory {
 		int index = newBill.getBillingID();
 		this.billing.put(index, newBill);
 	}
+	
+	public void UpdateExistingBilling(Billing oldBill, Billing newBill) {
+		int index = oldBill.getBillingID();
+		this.billing.put(index, newBill);
+	}
 
 	public void deleteBilling(Billing oldBill) {
 		int index = oldBill.getBillingID();
