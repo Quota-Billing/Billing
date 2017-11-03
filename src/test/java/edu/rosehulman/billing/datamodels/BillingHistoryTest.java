@@ -77,7 +77,11 @@ public class BillingHistoryTest {
 		Billing billing = new Billing(1, 1, "planA");
 		bh.addBilling(billing);
 		assertEquals(billing, bh.getBillingList().get(0));
-		//Do it later
+		assertEquals("Billing History: 1\nBillingId: 1\nUserId: 1\nPlan: planA\n", bh.toString());
+		billing.setPlan("planB");
+		assertEquals("Billing History: 1\nBillingId: 1\nUserId: 1\nPlan: planB\n", bh.toString());
+		billing.setUserID(2);
+		assertEquals("Billing History: 1\nBillingId: 1\nUserId: 2\nPlan: planB\n", bh.toString());
 	}
 	
 	@Test
