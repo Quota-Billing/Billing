@@ -38,6 +38,7 @@ public class BillingHistory {
 		this.time_stamp = time_stamp;
 		this.fee = fee;
 	}
+	
 
 	public void setBillingHistoryId(int id) {
 		this.billinghistoryId = id;
@@ -68,9 +69,10 @@ public class BillingHistory {
 		this.billing.put(index, newBill);
 	}
 	
-	public void UpdateExistingBilling(Billing oldBill, Billing newBill) {
+	public void UpdateExistingBilling(Billing oldBill, int billingid) {
 		int index = oldBill.getBillingID();
-		this.billing.put(index, newBill);
+		oldBill.setBillingID(billingid);
+		this.billing.put(index, oldBill);
 	}
 
 	public void deleteBilling(Billing oldBill) {
@@ -92,6 +94,7 @@ public class BillingHistory {
 
 	public void addBilling(Billing bl) {
 		this.billing.put(bl.getBillingID(), bl);
+		bl.addToBillingHistory(this);
 	}
 
 	public ArrayList<Billing> getBillingList() {

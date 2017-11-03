@@ -80,6 +80,8 @@ public class BillingHistoryTest {
 		assertEquals("Billing History: 1\nBillingId: 1\nUserId: 1\nPlan: planA\n", bh.toString());
 		billing.setPlan("planB");
 		assertEquals("Billing History: 1\nBillingId: 1\nUserId: 1\nPlan: planB\n", bh.toString());
+		billing.setUserID(2);
+		assertEquals("Billing History: 1\nBillingId: 1\nUserId: 2\nPlan: planB\n", bh.toString());
 	}
 	
 	@Test
