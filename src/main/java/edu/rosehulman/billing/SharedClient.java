@@ -71,7 +71,11 @@ public class SharedClient {
 		return "ok";
 	}
 
-	public void UpdateUser() {
+	public static void main(String args[]) {
+		UpdateUser();
+	}
+
+	public static void UpdateUser() {
 		MongoClient sharedMongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		MongoClient mongoClient = new MongoClient(
@@ -84,10 +88,10 @@ public class SharedClient {
 			String userid = (String) cur.get("id");
 			Object product = cur.get("product");
 			Object partner = cur.get("partner");
-			System.out.println(product);
 			for (Document cur2 : collectionbilling.find()) {
 				if (!cur.equals(cur2)) {
-					//add user here
+					// add user here
+					Database.getInstance().addUser(userid, product.toString(), partner.toString());
 				}
 			}
 
@@ -105,12 +109,14 @@ public class SharedClient {
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
 			String partnerId = (String) cur.get("partnerId");
+			String name = (String) cur.get("name");
 			String apikey = (String) cur.get("apikey");
 			String password = (String) cur.get("password");
 			Object products = cur.get("products");
 			for (Document cur2 : collectionbilling.find()) {
 				if (!cur.equals(cur2)) {
-					//add partner here
+					// add partner here
+					Database.getInstance().addPartner(partnerId, name, apikey, password);
 				}
 			}
 		}
@@ -127,10 +133,12 @@ public class SharedClient {
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
 			String productId = (String) cur.get("productId");
+			String name = (String) cur.get("name");
 			Object quotas = cur.get("quotas");
 			for (Document cur2 : collectionbilling.find()) {
 				if (!cur.equals(cur2)) {
 					// add Product here
+					Database.getInstance().addProductToPartner(partnerId, name, productId);
 				}
 			}
 		}
@@ -150,11 +158,13 @@ public class SharedClient {
 			String name = (String) cur.get("name");
 			String type = (String) cur.get("type");
 			Object product = cur.get("product");
+			Object partner = cur.get("partner");
 			Object tiers = cur.get("tiers");
 			System.out.println(tiers);
 			for (Document cur2 : collectionbilling.find()) {
 				if (!cur.equals(cur2)) {
-					//add Quota here
+					// add Quota here
+					Database.getInstance().addQuota(partner.toString(), product.toString(), quotaId, name, type);
 				}
 			}
 		}
@@ -170,15 +180,19 @@ public class SharedClient {
 		MongoCollection<Document> collectionbilling = database.getCollection("tier");
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
+			String tierId = (String) cur.get("tierId");
 			Double price = (Double) cur.get("price");
 			String name = (String) cur.get("name");
 			Integer max = (Integer) cur.get("max");
 			Integer value = (Integer) cur.get("value");
+			Object quota = (Object) cur.get("quota");
 			Object product = (Object) cur.get("product");
 			Object partner = (Object) cur.get("partner");
 			for (Document cur2 : collectionbilling.find()) {
 				if (!cur.equals(cur2)) {
-					//add tier here
+					// add tier here
+					Database.getInstance().addTier(partner.toString(), product.toString(), quota.toString(), tierId,
+							name, max.toString(), price.toString());
 				}
 			}
 		}
