@@ -71,85 +71,92 @@ public class SharedClient {
 		return "ok";
 	}
 
-	public static void main(String args[]) {
-		UpdateUser();
+	public void UpdateUser() {
+		MongoClient sharedMongoClient = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
+		MongoCollection<Document> collection = database.getCollection("user");
+		// MongoCursor<Document> cursor = collection.find().iterator();
+		for (Document cur : collection.find()) {
+			String userid = (String) cur.get("id");
+			Object product = cur.get("product");
+			Object partner = cur.get("partner");
+			System.out.println(product);
+
+		}
 	}
 
-	public static void UpdateUser() {
+	public void UpdatePartner() {
 		MongoClient sharedMongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("user");
-//		MongoCursor<Document> cursor = collection.find().iterator();
+		MongoCollection<Document> collection = database.getCollection("partner");
+		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
-			int userid = (int) cur.get("id");
-			String product = (String) cur.get("product");
-			String partner = (String) cur.get("partner");
+			String partnerId = (String) cur.get("partnerId");
+			String apikey = (String) cur.get("apikey");
+			String password = (String) cur.get("password");
+			Object products = cur.get("products");
 		}
 	}
-	
-	public static void UpdatePartner() {
+
+	public void UpdateProduct() {
 		MongoClient sharedMongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("user");
-//		MongoCursor<Document> cursor = collection.find().iterator();
+		MongoCollection<Document> collection = database.getCollection("product");
+		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
-			int partnerid = (int) cur.get("id");
-			String product = (String) cur.get("product");
-			String partner = (String) cur.get("partner");
+			String productId = (String) cur.get("productId");
+			Object quotas = cur.get("quotas");
 		}
 	}
-	
-	public static void UpdateProduct() {
+
+	public void UpdateQuota() {
 		MongoClient sharedMongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("user");
-//		MongoCursor<Document> cursor = collection.find().iterator();
+		MongoCollection<Document> collection = database.getCollection("quota");
+		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
-			int userid = (int) cur.get("id");
-			String product = (String) cur.get("product");
-			String partner = (String) cur.get("partner");
-		}
-	}
-	
-	public static void UpdateQuota() {
-		MongoClient sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("user");
-//		MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			int userid = (int) cur.get("id");
-			String product = (String) cur.get("product");
-			String partner = (String) cur.get("partner");
-		}
-	}
-	
-	public static void UpdateTier() {
-		MongoClient sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("user");
-//		MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			int price = (int) cur.get("price");
+			String quotaId = (String) cur.get("quotaId");
 			String name = (String) cur.get("name");
-			int max = (int) cur.get("max");
-			int value = (int) cur.get("value");
-			String product = (String) cur.get("product");
-			String partner = (String) cur.get("partner");
+			String type = (String) cur.get("type");
+			Object product = cur.get("product");
+			Object tiers = cur.get("tiers");
+			System.out.println(tiers);
+		}
+	}
+
+	public void UpdateTier() {
+		MongoClient sharedMongoClient = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
+		MongoCollection<Document> collection = database.getCollection("tier");
+		MongoCollection<Document> collectionbilling = database.getCollection("tier");
+		// MongoCursor<Document> cursor = collection.find().iterator();
+		for (Document cur : collection.find()) {
+			Double price = (Double) cur.get("price");
+			String name = (String) cur.get("name");
+			Integer max = (Integer) cur.get("max");
+			Integer value = (Integer) cur.get("value");
+			Object product = (Object) cur.get("product");
+			Object partner = (Object) cur.get("partner");
+			for (Document cur2 : collectionbilling.find()) {
+				if (!cur.equals(cur2)) {
+					
+				}
+			}
 		}
 	}
 
