@@ -78,12 +78,18 @@ public class SharedClient {
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
 		MongoCollection<Document> collection = database.getCollection("user");
+		MongoCollection<Document> collectionbilling = database.getCollection("tier");
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
 			String userid = (String) cur.get("id");
 			Object product = cur.get("product");
 			Object partner = cur.get("partner");
 			System.out.println(product);
+			for (Document cur2 : collectionbilling.find()) {
+				if (!cur.equals(cur2)) {
+					//add user here
+				}
+			}
 
 		}
 	}
@@ -95,12 +101,18 @@ public class SharedClient {
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
 		MongoCollection<Document> collection = database.getCollection("partner");
+		MongoCollection<Document> collectionbilling = database.getCollection("tier");
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
 			String partnerId = (String) cur.get("partnerId");
 			String apikey = (String) cur.get("apikey");
 			String password = (String) cur.get("password");
 			Object products = cur.get("products");
+			for (Document cur2 : collectionbilling.find()) {
+				if (!cur.equals(cur2)) {
+					//add partner here
+				}
+			}
 		}
 	}
 
@@ -111,10 +123,16 @@ public class SharedClient {
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
 		MongoCollection<Document> collection = database.getCollection("product");
+		MongoCollection<Document> collectionbilling = database.getCollection("tier");
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
 			String productId = (String) cur.get("productId");
 			Object quotas = cur.get("quotas");
+			for (Document cur2 : collectionbilling.find()) {
+				if (!cur.equals(cur2)) {
+					// add Product here
+				}
+			}
 		}
 	}
 
@@ -125,6 +143,7 @@ public class SharedClient {
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
 		MongoCollection<Document> collection = database.getCollection("quota");
+		MongoCollection<Document> collectionbilling = database.getCollection("tier");
 		// MongoCursor<Document> cursor = collection.find().iterator();
 		for (Document cur : collection.find()) {
 			String quotaId = (String) cur.get("quotaId");
@@ -133,6 +152,11 @@ public class SharedClient {
 			Object product = cur.get("product");
 			Object tiers = cur.get("tiers");
 			System.out.println(tiers);
+			for (Document cur2 : collectionbilling.find()) {
+				if (!cur.equals(cur2)) {
+					//add Quota here
+				}
+			}
 		}
 	}
 
@@ -154,7 +178,7 @@ public class SharedClient {
 			Object partner = (Object) cur.get("partner");
 			for (Document cur2 : collectionbilling.find()) {
 				if (!cur.equals(cur2)) {
-					
+					//add tier here
 				}
 			}
 		}
