@@ -6,7 +6,7 @@ import static spark.Spark.post;
 
 import java.util.ArrayList;
 
-import edu.rosehulman.billing.router.QuotaReachedHandler;
+import edu.rosehulman.billing.router.QuotaReachedRouter;
 import edu.rosehulman.billing.router.Routes;
 
 public class BillingServer {
@@ -23,7 +23,8 @@ public class BillingServer {
 			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"), req.params(":userId"));
 			//return Database.getInstance().addTobillingdb(req.params(":partnerId"), req.params(":productId"), req.params(":quotaId"), req.params(":userId"));
 		});
-		post(Routes.QUOTA_REACHED, new QuotaReachedHandler());
+		post(Routes.QUOTA_REACHED, new QuotaReachedRouter());
+		
 
 		
 
