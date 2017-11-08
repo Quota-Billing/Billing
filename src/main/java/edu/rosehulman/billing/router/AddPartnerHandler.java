@@ -5,17 +5,20 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class AddBillingHistoryRouter implements Route {
+public class AddPartnerHandler implements Route {
 
 	public Object handle(Request request, Response response) throws Exception {
 		// TODO Auto-generated method stub
-		String billinghistoryId = request.params(":billinghistoryId");
-		String time_stamp = request.params(":time_stamp");
-		String fee = request.params(":fee");
+		String partnerId = request.params(":partnerId");
+		String partnerName = request.params(":partnerName");
+		String password = request.params(":password");
+		String apikey = request.params(":apiKey");
+
+		Database.getInstance().addPartner(partnerId, apikey, partnerName, password);
 
 		// Add the user to our database
 		// Database.getInstance().addUser(partnerId, productId, userId);
-		Database.getInstance().addBillingHistory(Integer.parseInt(billinghistoryId), time_stamp, Double.parseDouble(fee));
+//		Database.getInstance().addProductToPartner(Integer.parseInt(partnerId), Integer.parseInt(productId));
 		// Send the user to Billing
 		// BillingClient.getInstance().addUser(partnerId, productId, userId);
 

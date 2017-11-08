@@ -15,12 +15,12 @@ public class QuotaReachedHandler implements Route {
 		String userId = request.params(":userId");
 		String quotaId = request.params(":quotaId");
 
-		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
+		//String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
 		Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
 		double totalPrice = 0.0;
 		StringBuilder builder = new StringBuilder();
 
-		builder.append(billingInfo);
+		//builder.append(billingInfo);
 		builder.append("-------------Current Usage-------------\n");
 		for (Tier t: quota.getTiers()) {
 			int max = t.getMax();

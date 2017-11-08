@@ -1,65 +1,67 @@
 package edu.rosehulman.billing.models;
 
-import java.util.ArrayList;
-
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
-@Entity("Billing")
+@Entity("billing")
 public class Billing {
 	@Id
 	private ObjectId id;
-	@Property
-	private int billingID;
 	@Reference
-	private int userID;
+	private User user;
 	@Property
 	private String plan;
-	@Reference
-	private ArrayList<BillingHistory> billinghistory;
+	@Property
+	private Double fee;
 	
-	public Billing(int bid, int uid, String plan){
-		this.billingID = bid;
-		this.userID = uid;
+	public Billing(){
+		
+	}
+	
+	public Billing(User user, String plan, Double fee){
+		this.user = user;
 		this.plan = plan;
-		this.billinghistory = new ArrayList<BillingHistory>();
+		this.fee = fee;
 	}
 	
-	public int getUserId(){
-		return this.userID;
+	public String getUserId(){
+		return this.user.getId();
 	}
 	
-	public int getBillingID(){
-		return this.billingID;
+	public double getFee(){
+		return this.fee;
+	}
+	
+	public void setFee(double fee){
+		this.fee = fee;
 	}
 	
 	public String getPlan(){
 		return this.plan;
 	}
 	
-	public void setBillingID(int id) {
-		int index = this.billingID;
-		BillingHistory bh = this.billinghistory.get(index);
-		bh.UpdateExistingBilling(this, id);
-		this.billingID = id;
+	public ObjectId getId(){
+		return this.id;
 	}
 	
-	public void setUserID(int id) {
-		this.userID = id;
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	public void setPlan(String plan) {
 		this.plan = plan;
 	}
-	
-	public void addToBillingHistory(BillingHistory e) {
-		this.billinghistory.add(e);
-	}
-	
+
 	public String toString() {
-		return "BillingId: " + this.billingID + "\nUserId: " + this.userID + "\nPlan: "+ this.plan +"\n";
+		return "BillingId: " + this.id + "\nUserId: " + this.user.getId() + "\nPlan: "+ this.plan +"\n";
+	}
+
+	public void setBillingID(int billingid2) {
+		// TODO Auto-generated method stub
+		
 	}
 }

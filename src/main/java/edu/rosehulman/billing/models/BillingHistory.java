@@ -1,8 +1,7 @@
 package edu.rosehulman.billing.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
@@ -10,109 +9,76 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
-@Entity("BillingHistory")
+@Entity("billingHistory")
 public class BillingHistory {
 	@Id
 	private ObjectId id;
-	@Property
-	private int billinghistoryId;
 	@Reference
-	private HashMap<Integer, Billing> billing;
+	private List<Billing> billing;
 	@Property
 	private String time_stamp;
-	@Property
-	private Double fee;
-
-	public BillingHistory(int id) {
-		this.id = new ObjectId();
-		this.billinghistoryId = id;
-		billing = new HashMap<Integer, Billing>();
-		time_stamp = "";
-		fee = 0.0;
+	@Reference
+	private User user;
+	
+	public BillingHistory(){
+		billing = new ArrayList<Billing>();
 	}
 	
-	public BillingHistory(int id, String time_stamp, double fee) {
+	public BillingHistory(String time_stamp, User user) {
 		this.id = new ObjectId();
-		this.billinghistoryId = id;
-		billing = new HashMap<Integer, Billing>();
+		billing = new ArrayList<Billing>();
 		this.time_stamp = time_stamp;
-		this.fee = fee;
+		this.user = user;
 	}
 	
-
-	public void setBillingHistoryId(int id) {
-		this.billinghistoryId = id;
-	}
-
-	public void setFee(double fee) {
-		this.fee = fee;
-	}
 
 	public void setTimeStamp(String st) {
 		this.time_stamp = st;
 	}
 
-	public int getBillingHistoryId() {
-		return this.billinghistoryId;
-	}
-
-	public double getFee() {
-		return this.fee;
+	public ObjectId getBillingHistoryId() {
+		return this.id;
 	}
 
 	public String getTimeStamp() {
 		return this.time_stamp;
 	}
 
-	public void UpdateExistingBilling(Billing newBill) {
-		int index = newBill.getBillingID();
-		this.billing.put(index, newBill);
-	}
 	
-	public void UpdateExistingBilling(Billing oldBill, int billingid) {
-		int index = oldBill.getBillingID();
-		oldBill.setBillingID(billingid);
-		this.billing.put(index, oldBill);
-	}
 
 	public void deleteBilling(Billing oldBill) {
-		int index = oldBill.getBillingID();
-		this.billing.remove(index);
+		Billing delete = null;
+		for(Billing b: this.billing){
+			if(b.getId() == oldBill.getId())
+				delete = b;
+		}
+		if(delete !=null){
+			this.billing.remove(delete);
+		}
 	}
 
-	public void deleteBilling(int billingid) {
-		this.billing.remove(billingid);
-	}
 
-	public boolean findBilling(Billing bill) {
-		return this.billing.containsKey(bill.getBillingID());
-	}
-
-	public boolean findBilling(int billingid) {
-		return this.billing.keySet().contains(billingid);
+	public Billing findBilling(Billing bill) {
+		for(Billing b: this.billing){
+			if(b.getId() == bill.getId())
+				return b;
+		}
+		return null;
 	}
 
 	public void addBilling(Billing bl) {
-		this.billing.put(bl.getBillingID(), bl);
-		bl.addToBillingHistory(this);
+		this.billing.add(bl);
 	}
 
-	public ArrayList<Billing> getBillingList() {
-		ArrayList<Billing> bill = new ArrayList<Billing>();
-		for (int i : this.billing.keySet()) {
-			bill.add(this.billing.get(i));
-		}
-		return bill;
+	public List<Billing> getBillingList() {
+		return this.billing;
 	}
 
-	public Set<Integer> getBillingIdList() {
-		return this.billing.keySet();
-	}
-
+	
 	public String toString() {
-		String st = "Billing History: " + this.billinghistoryId + "\n";
-		for (int i : this.billing.keySet()) {
-			st += this.billing.get(i).toString();
+		String st = "Billing History: " + this.id + "\n";
+		for (Billing i : this.billing) {
+			st += i.toString();
 		}
 		return st;
 	}

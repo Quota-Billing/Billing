@@ -96,4 +96,8 @@ public class Quota {
 		}
 		return builder.toString();
 	}
+
+	public ObjectId getObjectId() {
+		return this.id;
+	}
 }

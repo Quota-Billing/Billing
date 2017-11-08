@@ -3,7 +3,7 @@ import edu.rosehulman.billing.Database;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-public class AddUserRouter implements Route {
+public class AddUserHandler implements Route {
 
 	public Object handle(Request request, Response response) throws Exception {
 		// TODO Auto-generated method stub
@@ -13,11 +13,7 @@ public class AddUserRouter implements Route {
 
 	    // Add the user to our database
 	   // Database.getInstance().addUser(partnerId, productId, userId);
-	    Database.getInstance().addUser(partnerId, productId, userId);
-	    // Send the user to Billing
-	    //BillingClient.getInstance().addUser(partnerId, productId, userId);
-
-	    // Return to Quota a success
+	    Database.getInstance().addUser(userId, productId, partnerId);
 	    return "";
 	}
 

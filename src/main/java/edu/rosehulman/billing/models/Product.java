@@ -37,6 +37,11 @@ public class Product {
 	public String getId() {
 		return this.productId;
 	}
+	
+	public ObjectId getObjectId(){
+		return this.id;
+	}
+	
 
 	public void setName(String name) {
 		this.name = name;

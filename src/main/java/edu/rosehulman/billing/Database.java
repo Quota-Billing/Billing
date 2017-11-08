@@ -1,64 +1,40 @@
 package edu.rosehulman.billing;
 
-import static com.mongodb.client.model.Filters.eq;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
 
+import edu.rosehulman.billing.models.Billing;
+import edu.rosehulman.billing.models.BillingHistory;
 import edu.rosehulman.billing.models.Partner;
+import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.models.User;
 
 public class Database {
 	private static Database instance;
-	private static Collection<String> result = new ArrayList<String>();
-	private static MongoClient mongoClient;
-	private static MongoClient sharedMongoClient;
-	private static MongoDatabase billingDB;
-	private static MongoDatabase sharedDB;
-
+	private MongoClient mongoClient;
+	private Datastore datastore;
+	
+	// create only one instance of mongoclient and not closing it until application exits
 	private Database() {
-		mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
-				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-		billingDB = mongoClient.getDatabase("billingpart").withCodecRegistry(pojoCodecRegistry);
-		sharedDB = sharedMongoClient.getDatabase("quotabillingshare").withCodecRegistry(pojoCodecRegistry);
+		this.mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		Morphia morphia = new Morphia();
+		morphia.mapPackage("edu.rosehulman.billingpart");
+		this.datastore = morphia.createDatastore(this.mongoClient, "billingpart");
 
 	}
 
-	// private Database() {
-
-	// MongoClientURI uri = new
-	// MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare");
-	// MongoClient client = new MongoClient(uri);
-	// MongoDatabase db = client.getDatabase(uri.getDatabase());
-	//
-	// //MongoCollection<Document> testdb = db.getCollection("");
-	//
-	// Set<String> colls = db.getCollectionNames();
-	//
-	// for (String s : colls) {
-	// System.out.println(s);
-	// }
-	// // testdb.insertOne(userDocument);
-
-	// }
 
 	public static synchronized Database getInstance() {
 		if (instance == null) {
@@ -71,92 +47,135 @@ public class Database {
 
 		try {
 
-			MongoIterable<String> collections = sharedDB.listCollectionNames();
-			for (String collectionName : collections) {
-				System.out.println(collectionName);
-				result.add(collectionName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+
+		return null;
+	}
+	
+	// add a partner
+		public String addPartner(String partnerId, String name, String apiKey, String password) {
+			try {
+				Partner partner = new Partner(partnerId, name, apiKey);
+				partner.setPassword(password);
+				this.datastore.save(partner);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
 			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
+			return "ok";
 		}
 
-		return (ArrayList<String>) result;
-	}
-
-	// add a user
-	public static String addUser(String partnerId, String productId, String userId) {
-		System.out.println(productId);
-
-		// User user = new User(userId, new ObjectId(productId), new
-		// ObjectId(partnerId));
-		User user = new User();
-
-		try {
-			MongoCollection<User> collection = billingDB.getCollection("user", User.class);
-
-			// Document doc = new Document("_id", userId);
-			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(user);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
+		public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
+			try {
+				List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+				if (partners.size() == 0) {
+					System.out.println("wrong partnerId"); // debugging
+					return "Wrong partnerId";
+				}
+				Partner partner = partners.get(0);
+				Product product = partner.getProduct(productId);
+				if (product == null) {
+					System.out.println("wrong productId"); // debugging
+					return "Wrong productId";
+				}
+				Quota quota = new Quota(quotaId, name, type);
+				quota.setPartner(partner);
+				quota.setProduct(product);
+				this.datastore.save(quota);
+				Query<Product> query = this.datastore.createQuery(Product.class).field("id").equal(product.getObjectId());
+				UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).push("quotas",
+						quota);
+				this.datastore.update(query, op);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+			}
+			return "ok";
 		}
 
-		return "ok";
-
-		// partnerCollection.updateOne(and(eq("_id", partnerId), eq("products",
-		// productId)), userDocument); // TODO This does not work, not using
-		// lists
-	}
-
-	// add a user connecting to a product
-	public String addUserToProduct(int i, int productId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
-		try {
-			MongoDatabase database = mongoClient.getDatabase("quotabillingshare");
-			MongoCollection<Document> collection = database.getCollection("Product");
-
-			/*
-			 * DBObject findQuery = new BasicDBObject("_id", 1); DBObject listItem = new
-			 * BasicDBObject("user", 5); DBObject updateQuery = new BasicDBObject("$push",
-			 * listItem);
-			 */
-			collection.updateOne(new Document("_id", productId), new Document("$push", new Document("user", i)));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
+		// add a simple user by referencing a product and a partner
+		public String addUser(String id, String productId, String partnerId) {
+			try {
+				List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+				if (partners.size() == 0) {
+					System.out.println("wrong partnerId"); // debugging
+					return "Wrong partnerId";
+				}
+				Partner partner = partners.get(0);
+				Product product = partner.getProduct(productId);
+				if (product == null) {
+					System.out.println("wrong productId"); // debugging
+					return "Wrong productId";
+				}
+				User user = new User(id);
+				user.setPartner(partner);
+				user.setProduct(product);
+				this.datastore.save(user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+			}
+			return "ok";
 		}
 
-		return "ok";
-	}
+	
 
-	// add a product connecting to a partner
-	public String addProductToPartner(int partnerId, int productId) {
-
-		try {
-			MongoCollection<Document> collection = billingDB.getCollection("Partner");
-
-			collection.updateOne(new Document("_id", partnerId),
-					new Document("$push", new Document("product", productId)));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
+		// adding product to a specific partner, in mongoDB the product will be
+		// saved by reference and its ID
+		public String addProductToPartner(String partnerId, String name, String productId) {
+			try {
+				Partner partner = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList().get(0);
+				Product product = new Product(productId, name);
+				partner.addProduct(product);
+				this.datastore.save(product);
+				Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId);
+				UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
+						product);
+				this.datastore.update(query, op);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+			}
+			return "ok";
 		}
 
-		return "ok";
-
-	}
+		public String addTier(String partnerId, String productId, String quotaId, String tierId, String name, String max,
+				String price) {
+			try {
+				List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+				if (partners.size() == 0) {
+					System.out.println("wrong partnerId"); // debugging
+					return "Wrong partnerId";
+				}
+				Partner partner = partners.get(0);
+				Product product = partner.getProduct(productId);
+				if (product == null) {
+					System.out.println("wrong productId"); // debugging
+					return "Wrong productId";
+				}
+				Quota quota = product.getQuota(quotaId);
+				if (quota == null) {
+					System.out.println("wrong quotaId");
+					return "Wrong quotaId";
+				}
+				Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price));
+				tier.setPartner(partner);
+				tier.setProduct(product);
+				tier.setQuota(quota);
+				this.datastore.save(tier);
+				Query<Quota> query = this.datastore.createQuery(Quota.class).field("id").equal(quota.getObjectId());
+				UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).push("tiers",
+						tier);
+				this.datastore.update(query, op);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+			}
+			return "ok";
+		}
 
 	public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
 		// BasicDBObject query = new BasicDBObject("_id",
@@ -175,131 +194,50 @@ public class Database {
 		return quota;
 	}
 
-	public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
-		// BasicDBObject partnerQuery = new BasicDBObject("_id", partnerId);
-		// String partnerName =
-		// db.getCollection("testFromVM").find(partnerQuery).first().getString("Name");
-
-		// BasicDBObject productQuery = partnerQuery.append("Products", new
-		// BasicDBObject("_id", productId));
-		// String productName =
-		// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+	
+	public String addBilling(String userID, String partnerId, String productId, String plan, double fee) {
 		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> partnerCollection = database.getCollection("partner");
-			Document partnerDoc = partnerCollection.find(eq("_id", partnerId)).first();
-
-			Partner partner = new Partner(partnerId, (String) partnerDoc.get("name"), partnerDoc.getString("apiKey"));
-			// String billingURL = partner.getBillingURL();
-
-			MongoCollection<Document> productCollection = database.getCollection("product");
-
-			MongoCollection<Document> userCollection = database.getCollection("user");
-			// Document userDoc = userDocument.find(eq(""))
-
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if (partners.size() == 0) {
+				System.out.println("wrong partnerId"); // debugging
+				return "Wrong partnerId";
+			}
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			if (product == null) {
+				System.out.println("wrong productId"); // debugging
+				return "Wrong productId";
+			}
+			List<User> users = this.datastore.createQuery(User.class).field("userId").equal(userID).field("product").equal(product).field("partner").equal(partner).asList();
+			if(users == null){
+				System.out.println("wrong userId");
+				return "Wrong userId";
+			}
+			User user = users.get(0);
+			Billing bill = new Billing(user, plan, fee);
+			this.datastore.save(bill);
+			String timestamp =  new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+			List<BillingHistory> histories = this.datastore.createQuery(BillingHistory.class).field("user").equal(user).asList();
+			if(histories.isEmpty()){
+				BillingHistory hist = new BillingHistory(timestamp,user);
+				hist.addBilling(bill);
+				this.datastore.save(hist);
+			} else{
+				BillingHistory history = histories.get(0);
+				history.addBilling(bill);
+				Query<BillingHistory> query = this.datastore.createQuery(BillingHistory.class).field("user").equal(user);
+				UpdateOperations<BillingHistory> op = this.datastore.createUpdateOperations(BillingHistory.class).push("billing",
+						bill);
+				this.datastore.update(query, op);
+				System.out.println("here");
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			mongoClient.close();
-		}
-
-		String partnerName = "Partner 1";
-		String productName = "Product 1";
-
-		StringBuilder builder = new StringBuilder("Partner: " + partnerId + " ");
-		builder.append(partnerName + "\n");
-		builder.append("Product: " + productId + " " + productName + "\n");
-		builder.append("User: " + userId + "\n");
-		return builder.toString();
-	}
-
-	public String addPartner(int partnerId, String password, String partnerName, int productId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
-		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> collection = database.getCollection("partner");
-			Document doc = new Document("_id", partnerId).append("password", password)
-					.append("partnerName", partnerName).append("productId", productId);
-
-			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(doc);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
-		}
-
-		return "ok";
-	}
-
-	public String addProduct(int productId, String productName, int userId) {
-		// TODO Auto-generated method stub
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
-		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> collection = database.getCollection("product");
-			Document doc = new Document("_id", productId).append("productName", productName).append("userId", userId);
-
-			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(doc);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
-		}
-
-		return "ok";
-	}
-
-	public String addBilling(int billingId, int userID, String plan) {
-		// TODO Auto-generated method stub
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
-		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> collection = database.getCollection("billing");
-			Document doc = new Document("_id", billingId).append("userId", userID).append("plan", plan);
-
-			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(doc);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
 		}
 
 		return "ok";
 	}
 	
-	public String addBillingHistory(int billinghistoryId, String time_stamp, double fee) {
-		// TODO Auto-generated method stub
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-
-		try {
-			MongoDatabase database = mongoClient.getDatabase("billingpart");
-			MongoCollection<Document> collection = database.getCollection("billing history");
-			Document doc = new Document("_id", billinghistoryId).append("Time stamp", time_stamp).append("fee", fee);
-
-			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-			collection.insertOne(doc);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			mongoClient.close();
-		}
-
-		return "ok";
-	}
 }

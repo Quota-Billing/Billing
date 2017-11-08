@@ -5,15 +5,15 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class AddProductRouter implements Route {
+public class AddProductHandler implements Route {
 
 	public Object handle(Request request, Response response) throws Exception {
 		// TODO Auto-generated method stub
 		String productId = request.params(":productId");
 		String productName = request.params(":productName");
-		String userId = request.params(":userId");
+		String partnerId = request.params(":partnerId");
 
-		Database.getInstance().addProduct(Integer.parseInt(productId), productName, Integer.parseInt(userId));
+		Database.getInstance().addProductToPartner(partnerId, productName, productId);
 
 		// Add the user to our database
 		// Database.getInstance().addUser(partnerId, productId, userId);
