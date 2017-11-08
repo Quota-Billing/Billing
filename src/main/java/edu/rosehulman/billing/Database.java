@@ -22,6 +22,7 @@ import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.models.User;
+
 public class Database {
 	private static Database instance;
 	private static Collection<String> result = new ArrayList<String>();
@@ -29,16 +30,17 @@ public class Database {
 	private static MongoClient sharedMongoClient;
 	private static MongoDatabase billingDB;
 	private static MongoDatabase sharedDB;
+
 	private Database() {
-        mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-        sharedMongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-        billingDB = mongoClient.getDatabase("billingpart").withCodecRegistry(pojoCodecRegistry);
-        sharedDB = sharedMongoClient.getDatabase("quotabillingshare").withCodecRegistry(pojoCodecRegistry);
+		mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		sharedMongoClient = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
+				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+		billingDB = mongoClient.getDatabase("billingpart").withCodecRegistry(pojoCodecRegistry);
+		sharedDB = sharedMongoClient.getDatabase("quotabillingshare").withCodecRegistry(pojoCodecRegistry);
 
 	}
-	
 
 	// private Database() {
 
@@ -66,7 +68,7 @@ public class Database {
 	}
 
 	public static ArrayList<String> getSharedDatabaseInfo() {
-		
+
 		try {
 
 			MongoIterable<String> collections = sharedDB.listCollectionNames();
@@ -84,20 +86,18 @@ public class Database {
 		return (ArrayList<String>) result;
 	}
 
-	
-
 	// add a user
 	public static String addUser(String partnerId, String productId, String userId) {
 		System.out.println(productId);
-		
-		
-		//User user = new User(userId, new ObjectId(productId), new ObjectId(partnerId));
+
+		// User user = new User(userId, new ObjectId(productId), new
+		// ObjectId(partnerId));
 		User user = new User();
 
 		try {
 			MongoCollection<User> collection = billingDB.getCollection("user", User.class);
 
-			//Document doc = new Document("_id", userId);
+			// Document doc = new Document("_id", userId);
 			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
 			collection.insertOne(user);
 
@@ -141,7 +141,7 @@ public class Database {
 
 	// add a product connecting to a partner
 	public String addProductToPartner(int partnerId, int productId) {
-		
+
 		try {
 			MongoCollection<Document> collection = billingDB.getCollection("Partner");
 
@@ -165,7 +165,7 @@ public class Database {
 		// new BasicDBObject("_id", quotaId))));
 
 		// Fake data first, will change later
-		//Quota quota = new Quota(0, "Data", "number");
+		// Quota quota = new Quota(0, "Data", "number");
 		Quota quota = new Quota();
 		List<Tier> tiers = new ArrayList<Tier>();
 		tiers.add(new Tier("1", "free", 200, 0));
@@ -184,21 +184,21 @@ public class Database {
 		// BasicDBObject("_id", productId));
 		// String productName =
 		// db.getCollection("testFromVM").find(productQuery).first().getString("Name");
-		MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		try {
 			MongoDatabase database = mongoClient.getDatabase("billingpart");
 			MongoCollection<Document> partnerCollection = database.getCollection("partner");
 			Document partnerDoc = partnerCollection.find(eq("_id", partnerId)).first();
-			
+
 			Partner partner = new Partner(partnerId, (String) partnerDoc.get("name"), partnerDoc.getString("apiKey"));
-//			String billingURL = partner.getBillingURL();
-			
+			// String billingURL = partner.getBillingURL();
+
 			MongoCollection<Document> productCollection = database.getCollection("product");
-			
+
 			MongoCollection<Document> userCollection = database.getCollection("user");
-//			Document userDoc = userDocument.find(eq(""))
-			
-					
+			// Document userDoc = userDocument.find(eq(""))
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -222,7 +222,8 @@ public class Database {
 		try {
 			MongoDatabase database = mongoClient.getDatabase("billingpart");
 			MongoCollection<Document> collection = database.getCollection("partner");
-			Document doc = new Document("_id", partnerId).append("password", password).append("partnerName", partnerName).append("productId", productId);
+			Document doc = new Document("_id", partnerId).append("password", password)
+					.append("partnerName", partnerName).append("productId", productId);
 
 			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
 			collection.insertOne(doc);
@@ -245,6 +246,50 @@ public class Database {
 			MongoDatabase database = mongoClient.getDatabase("billingpart");
 			MongoCollection<Document> collection = database.getCollection("product");
 			Document doc = new Document("_id", productId).append("productName", productName).append("userId", userId);
+
+			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+			collection.insertOne(doc);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
+	}
+
+	public String addBilling(int billingId, int userID, String plan) {
+		// TODO Auto-generated method stub
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> collection = database.getCollection("billing");
+			Document doc = new Document("_id", billingId).append("userId", userID).append("plan", plan);
+
+			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+			collection.insertOne(doc);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
+	}
+	
+	public String addBillingHistory(int billinghistoryId, String time_stamp, double fee) {
+		// TODO Auto-generated method stub
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+
+		try {
+			MongoDatabase database = mongoClient.getDatabase("billingpart");
+			MongoCollection<Document> collection = database.getCollection("billing history");
+			Document doc = new Document("_id", billinghistoryId).append("Time stamp", time_stamp).append("fee", fee);
 
 			// .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
 			collection.insertOne(doc);
