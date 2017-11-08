@@ -63,6 +63,8 @@ public class QuotaReachedHandler implements Route {
 		
 		// Should bill user in the later stage
 		// but for now it just print the bill
+		
+		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
 		return builder.toString();
 	}
 
