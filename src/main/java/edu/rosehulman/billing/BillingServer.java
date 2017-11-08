@@ -12,6 +12,8 @@ import edu.rosehulman.billing.router.AddQuotaHandler;
 import edu.rosehulman.billing.router.AddTierHandler;
 import edu.rosehulman.billing.router.AddUserHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
+
+
 import edu.rosehulman.billing.router.Routes;
 
 public class BillingServer {
@@ -27,6 +29,7 @@ public class BillingServer {
 			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"), req.params(":userId"));
 		});
 		post(Routes.QUOTA_REACHED, new QuotaReachedHandler());
+		
 
 		post(Routes.ADD_BILLING, new AddBillingHandler());		
 		post(Routes.ADD_USER, new AddUserHandler());

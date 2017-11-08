@@ -239,5 +239,38 @@ public class Database {
 
 		return "ok";
 	}
+
+
+	public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
+		
+		try {
+			List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if(partners.isEmpty()){
+				System.out.println("this partner doesn't exist");
+				return "wrong partner ID";
+			}
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			List<User> users = this.datastore.createQuery(User.class).field("userId").equal(userId).field("product").equal(product).field("partner").equal(partner).asList();
+			if(users == null){
+				System.out.println("wrong userId");
+				return "Wrong userId";
+			}
+			User user = users.get(0);
+			String partnerName = partner.getName();
+			String productName = product.getName();
+			StringBuilder builder = new StringBuilder("Partner: " + partnerId + " ");
+			builder.append(partnerName + "\n");
+			builder.append("Product: " + productId + " " + productName + "\n");
+			builder.append("User: " + user.getId() + "\n");
+			return builder.toString();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+
+		return null;
+	}
 	
 }
