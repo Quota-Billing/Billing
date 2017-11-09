@@ -87,11 +87,7 @@ public class SharedClient {
 		return "ok";
 	}
 
-	public static void main(String args[]) {
-		UpdateUser();
-	}
-
-	public static void UpdateUser() {
+	public void Update() {
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		Morphia morphia = new Morphia();
@@ -190,7 +186,8 @@ public class SharedClient {
 			for (Tier tierold : tiersold) {
 				if (!tier.equals(tierold)) {
 					Database.getInstance().addTier(tier.getPartner().getId(), tier.getProduct().getId(),
-							tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax()+"", tier.getPrice()+"");
+							tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax() + "",
+							tier.getPrice() + "");
 				}
 			}
 		}

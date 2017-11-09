@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
+
 @Entity("product")
 public class Product {
 	@Id
@@ -18,7 +19,6 @@ public class Product {
 	private String productId;
 	@Reference
 	private List<Quota> quotas = new ArrayList<Quota>();
-	
 
 	public Product() {
 
@@ -37,11 +37,10 @@ public class Product {
 	public String getId() {
 		return this.productId;
 	}
-	
-	public ObjectId getObjectId(){
+
+	public ObjectId getObjectId() {
 		return this.id;
 	}
-	
 
 	public void setName(String name) {
 		this.name = name;
@@ -50,7 +49,6 @@ public class Product {
 	public String getName() {
 		return this.name;
 	}
-
 
 	public List<Quota> getQuotas() {
 		return quotas;
@@ -77,8 +75,8 @@ public class Product {
 	}
 
 	public Quota getQuota(String quotaId) {
-		for(Quota q: this.quotas){
-			if(q.getId().equals(quotaId)){
+		for (Quota q : this.quotas) {
+			if (q.getId().equals(quotaId)) {
 				return q;
 			}
 		}

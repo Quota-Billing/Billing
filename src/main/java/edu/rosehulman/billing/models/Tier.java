@@ -15,7 +15,7 @@ public class Tier {
 	@Property
 	private String tierId;
 	@Property
-	private int max; 
+	private int max;
 	@Property
 	private int value;
 	@Property
@@ -28,9 +28,9 @@ public class Tier {
 	private Quota quota;
 
 	public Tier() {
-		
+
 	}
-	
+
 	public Tier(String id, String name, int max, double price) {
 		this.id = new ObjectId();
 		this.tierId = id;
@@ -38,7 +38,7 @@ public class Tier {
 		this.max = max;
 		this.price = price;
 	}
-	
+
 	public Partner getPartner() {
 		return this.partner;
 	}
@@ -46,23 +46,23 @@ public class Tier {
 	public Product getProduct() {
 		return this.product;
 	}
-	
+
 	public Quota getQuota() {
 		return this.quota;
 	}
 
-	public void setPartner(Partner partner){
+	public void setPartner(Partner partner) {
 		this.partner = partner;
 	}
-	
-	public void setProduct(Product product){
+
+	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
-	public void setQuota(Quota quota){
+
+	public void setQuota(Quota quota) {
 		this.quota = quota;
 	}
-	
+
 	public String getId() {
 		return this.tierId;
 	}
