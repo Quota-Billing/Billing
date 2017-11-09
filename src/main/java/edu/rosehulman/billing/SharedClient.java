@@ -1,17 +1,33 @@
 package edu.rosehulman.billing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.Document;
 import org.json.JSONObject;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.DefaultCreator;
+import org.mongodb.morphia.query.Query;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+
+import edu.rosehulman.billing.models.Partner;
+import edu.rosehulman.billing.models.Product;
+import edu.rosehulman.billing.models.Quota;
+import edu.rosehulman.billing.models.Tier;
+import edu.rosehulman.billing.models.User;
 
 // this is a client connecting to sharedservice so we can pull updates
 public class SharedClient {
@@ -76,126 +92,236 @@ public class SharedClient {
 	}
 
 	public static void UpdateUser() {
-		MongoClient sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("user");
-		MongoCollection<Document> collectionbilling = database.getCollection("tier");
-		// MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			String userid = (String) cur.get("id");
-			Object product = cur.get("product");
-			Object partner = cur.get("partner");
-			for (Document cur2 : collectionbilling.find()) {
-				if (!cur.equals(cur2)) {
-					// add user here
-					Database.getInstance().addUser(userid, product.toString(), partner.toString());
-				}
-			}
-
-		}
-	}
-
-	public void UpdatePartner() {
-		MongoClient sharedMongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("partner");
-		MongoCollection<Document> collectionbilling = database.getCollection("tier");
-		// MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			String partnerId = (String) cur.get("partnerId");
-			String name = (String) cur.get("name");
-			String apikey = (String) cur.get("apikey");
-			String password = (String) cur.get("password");
-			Object products = cur.get("products");
-			for (Document cur2 : collectionbilling.find()) {
-				if (!cur.equals(cur2)) {
-					// add partner here
-					Database.getInstance().addPartner(partnerId, name, apikey, password);
-				}
-			}
-		}
-	}
+		Morphia morphia = new Morphia();
+		// Do set up here
+		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
+		// @Override
+		// protected ClassLoader getClassLoaderForClass() {
+		// return MongoBundleActivator.getBundleClassLoader();
+		// }
+		// });
+		morphia.mapPackage("edu.rosehulman.quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
 
-	public void UpdateProduct() {
-		MongoClient sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		MongoClient mongoClient = new MongoClient(
+		Query<User> queryU = datastore.createQuery(User.class);
+		List<User> users = queryU.asList();
+
+		Query<Partner> queryP = datastore.createQuery(Partner.class);
+		List<Partner> partners = queryP.asList();
+
+		Query<Product> queryPr = datastore.createQuery(Product.class);
+		List<Product> products = queryPr.asList();
+
+		Query<Tier> queryT = datastore.createQuery(Tier.class);
+		List<Tier> tiers = queryT.asList();
+
+		Query<Quota> queryQ = datastore.createQuery(Quota.class);
+		List<Quota> quotas = queryQ.asList();
+
+		MongoClient mongoClient2 = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("product");
-		MongoCollection<Document> collectionbilling = database.getCollection("tier");
-		// MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			String productId = (String) cur.get("productId");
-			String name = (String) cur.get("name");
-			Object quotas = cur.get("quotas");
-			for (Document cur2 : collectionbilling.find()) {
-				if (!cur.equals(cur2)) {
-					// add Product here
-					Database.getInstance().addProductToPartner(partnerId, name, productId);
+		Morphia morphia2 = new Morphia();
+		// Do set up here.
+		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
+		// @Override
+		// protected ClassLoader getClassLoaderForClass() {
+		// return MongoBundleActivator.getBundleClassLoader();
+		// }
+		// });
+		morphia.mapPackage("edu.rosehulman.billingpart");
+		Datastore datastoreBilling = morphia2.createDatastore(mongoClient, "billingpart");
+
+		Query<User> queryU2 = datastore.createQuery(User.class);
+		List<User> usersold = queryU.asList();
+
+		Query<Partner> queryP2 = datastore.createQuery(Partner.class);
+		List<Partner> partnersold = queryP.asList();
+
+		Query<Product> queryPr2 = datastore.createQuery(Product.class);
+		List<Product> productsold = queryPr.asList();
+
+		Query<Tier> queryT2 = datastore.createQuery(Tier.class);
+		List<Tier> tiersold = queryT.asList();
+
+		Query<Quota> queryQ2 = datastore.createQuery(Quota.class);
+		List<Quota> quotasold = queryQ.asList();
+
+		for (User user : users) {
+			for (User userold : usersold) {
+				if (!user.equals(userold)) {
+					Database.getInstance().addUser(user.getId(), user.getProduct().getId(), user.getPartner().getId());
 				}
 			}
 		}
-	}
 
-	public void UpdateQuota() {
-		MongoClient sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("quota");
-		MongoCollection<Document> collectionbilling = database.getCollection("tier");
-		// MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			String quotaId = (String) cur.get("quotaId");
-			String name = (String) cur.get("name");
-			String type = (String) cur.get("type");
-			Object product = cur.get("product");
-			Object partner = cur.get("partner");
-			Object tiers = cur.get("tiers");
-			System.out.println(tiers);
-			for (Document cur2 : collectionbilling.find()) {
-				if (!cur.equals(cur2)) {
-					// add Quota here
-					Database.getInstance().addQuota(partner.toString(), product.toString(), quotaId, name, type);
+		List<Product> newproduct = new ArrayList<Product>();
+		for (Product product : products) {
+			for (Product productold : productsold) {
+				if (!product.equals(productold)) {
+					newproduct.add(product);
 				}
 			}
 		}
-	}
 
-	public void UpdateTier() {
-		MongoClient sharedMongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
-		MongoCollection<Document> collection = database.getCollection("tier");
-		MongoCollection<Document> collectionbilling = database.getCollection("tier");
-		// MongoCursor<Document> cursor = collection.find().iterator();
-		for (Document cur : collection.find()) {
-			String tierId = (String) cur.get("tierId");
-			Double price = (Double) cur.get("price");
-			String name = (String) cur.get("name");
-			Integer max = (Integer) cur.get("max");
-			Integer value = (Integer) cur.get("value");
-			Object quota = (Object) cur.get("quota");
-			Object product = (Object) cur.get("product");
-			Object partner = (Object) cur.get("partner");
-			for (Document cur2 : collectionbilling.find()) {
-				if (!cur.equals(cur2)) {
-					// add tier here
-					Database.getInstance().addTier(partner.toString(), product.toString(), quota.toString(), tierId,
-							name, max.toString(), price.toString());
+		for (Partner partner : partners) {
+			for (Partner partnerold : partnersold) {
+				if (!partner.equals(partnerold)) {
+					Database.getInstance().addPartner(partner.getId(), partner.getName(), partner.getApiKey(),
+							partner.getPassword());
+					List<Product> pro = partner.getAllProducts();
+					for (Product k : pro)
+						Database.getInstance().addProductToPartner(partner.getId(), k.getName(), k.getId());
 				}
 			}
 		}
+
+		for (Quota quota : quotas) {
+			for (Quota quotaold : quotasold) {
+				if (!quota.equals(quotaold)) {
+					Database.getInstance().addQuota(quota.getPartner().getId(), quota.getProduct().getId(),
+							quota.getId(), quota.getName(), quota.getType());
+				}
+			}
+		}
+
+		for (Tier tier : tiers) {
+			for (Tier tierold : tiersold) {
+				if (!tier.equals(tierold)) {
+					Database.getInstance().addTier(tier.getPartner().getId(), tier.getProduct().getId(),
+							tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax()+"", tier.getPrice()+"");
+				}
+			}
+		}
+
+		// System.out.println(queryP.asList().toString());
+		// MongoCollection<Document> collectionbilling = database.getCollection("tier");
+		// MongoCursor<Document> cursor = collection.find().iterator();
+		// for (Document cur : collection.find()) {
+		// String userid = (String) cur.get("id");
+		// Object product = cur.get("product");
+		// Object partner = cur.get("partner");
+
+		// for (Document cur2 : collectionbilling.find()) {
+		// if (!cur.equals(cur2)) {
+		// // add user here
+		// Database.getInstance().addUser(userid, product.toString(),
+		// partner.toString());
+		// }
+		// }
+
+		// }
 	}
+
+	// public void UpdatePartner() {
+	// MongoClient sharedMongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+	// MongoClient mongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+	// MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
+	// MongoCollection<Document> collection = database.getCollection("partner");
+	// MongoCollection<Document> collectionbilling = database.getCollection("tier");
+	// // MongoCursor<Document> cursor = collection.find().iterator();
+	// for (Document cur : collection.find()) {
+	// String partnerId = (String) cur.get("partnerId");
+	// String name = (String) cur.get("name");
+	// String apikey = (String) cur.get("apikey");
+	// String password = (String) cur.get("password");
+	// Object products = cur.get("products");
+	// for (Document cur2 : collectionbilling.find()) {
+	// if (!cur.equals(cur2)) {
+	// // add partner here
+	// Database.getInstance().addPartner(partnerId, name, apikey, password);
+	// }
+	// }
+	// }
+	// }
+	//
+	// public void UpdateProduct() {
+	// MongoClient sharedMongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+	// MongoClient mongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+	// MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
+	// MongoCollection<Document> collection = database.getCollection("product");
+	// MongoCollection<Document> collectionbilling = database.getCollection("tier");
+	// // MongoCursor<Document> cursor = collection.find().iterator();
+	// for (Document cur : collection.find()) {
+	// String productId = (String) cur.get("productId");
+	// String name = (String) cur.get("name");
+	// Object quotas = cur.get("quotas");
+	// for (Document cur2 : collectionbilling.find()) {
+	// if (!cur.equals(cur2)) {
+	// // add Product here
+	// Database.getInstance().addProductToPartner(partnerId, name, productId);
+	// }
+	// }
+	// }
+	// }
+	//
+	// public void UpdateQuota() {
+	// MongoClient sharedMongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+	// MongoClient mongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+	// MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
+	// MongoCollection<Document> collection = database.getCollection("quota");
+	// MongoCollection<Document> collectionbilling = database.getCollection("tier");
+	// // MongoCursor<Document> cursor = collection.find().iterator();
+	// for (Document cur : collection.find()) {
+	// String quotaId = (String) cur.get("quotaId");
+	// String name = (String) cur.get("name");
+	// String type = (String) cur.get("type");
+	// Object product = cur.get("product");
+	// Object partner = cur.get("partner");
+	// Object tiers = cur.get("tiers");
+	// System.out.println(tiers);
+	// for (Document cur2 : collectionbilling.find()) {
+	// if (!cur.equals(cur2)) {
+	// // add Quota here
+	// Database.getInstance().addQuota(partner.toString(), product.toString(),
+	// quotaId, name, type);
+	// }
+	// }
+	// }
+	// }
+	//
+	// public void UpdateTier() {
+	// MongoClient sharedMongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+	// MongoClient mongoClient = new MongoClient(
+	// new
+	// MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+	// MongoDatabase database = sharedMongoClient.getDatabase("quotabillingshare");
+	// MongoCollection<Document> collection = database.getCollection("tier");
+	// MongoCollection<Document> collectionbilling = database.getCollection("tier");
+	// // MongoCursor<Document> cursor = collection.find().iterator();
+	// for (Document cur : collection.find()) {
+	// String tierId = (String) cur.get("tierId");
+	// Double price = (Double) cur.get("price");
+	// String name = (String) cur.get("name");
+	// Integer max = (Integer) cur.get("max");
+	// Integer value = (Integer) cur.get("value");
+	// Object quota = (Object) cur.get("quota");
+	// Object product = (Object) cur.get("product");
+	// Object partner = (Object) cur.get("partner");
+	// for (Document cur2 : collectionbilling.find()) {
+	// if (!cur.equals(cur2)) {
+	// // add tier here
+	// Database.getInstance().addTier(partner.toString(), product.toString(),
+	// quota.toString(), tierId,
+	// name, max.toString(), price.toString());
+	// }
+	// }
+	// }
+	// }
 
 }

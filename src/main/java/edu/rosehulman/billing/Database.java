@@ -121,8 +121,6 @@ public class Database {
 			return "ok";
 		}
 
-	
-
 		// adding product to a specific partner, in mongoDB the product will be
 		// saved by reference and its ID
 		public String addProductToPartner(String partnerId, String name, String productId) {

@@ -63,6 +63,14 @@ public class Quota {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public Partner getPartner() {
+		return this.partner;
+	}
+
+	public Product getProduct() {
+		return this.product;
+	}
 
 	public String getType() {
 		return this.type;

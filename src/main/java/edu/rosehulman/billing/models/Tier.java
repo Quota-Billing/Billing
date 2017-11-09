@@ -38,6 +38,18 @@ public class Tier {
 		this.max = max;
 		this.price = price;
 	}
+	
+	public Partner getPartner() {
+		return this.partner;
+	}
+
+	public Product getProduct() {
+		return this.product;
+	}
+	
+	public Quota getQuota() {
+		return this.quota;
+	}
 
 	public void setPartner(Partner partner){
 		this.partner = partner;
