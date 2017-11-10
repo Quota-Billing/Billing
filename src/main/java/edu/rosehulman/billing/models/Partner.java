@@ -89,5 +89,10 @@ public class Partner {
 		}
 		return builder.toString();
 	}
+
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return this.password;
+	}
 }
 
