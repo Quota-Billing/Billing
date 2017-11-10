@@ -191,7 +191,6 @@ public class Database {
 
 		return quota;
 	}
-
 	
 	public String addBilling(String userID, String partnerId, String productId, String plan, double fee) {
 		try {

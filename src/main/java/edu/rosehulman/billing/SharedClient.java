@@ -87,7 +87,11 @@ public class SharedClient {
 		return "ok";
 	}
 
-	public void Update() {
+	public static void main(String args[]) {
+		Update();
+	}
+
+	public static void Update() {
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		Morphia morphia = new Morphia();
@@ -126,69 +130,86 @@ public class SharedClient {
 		// return MongoBundleActivator.getBundleClassLoader();
 		// }
 		// });
-		morphia.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia2.createDatastore(mongoClient, "billingpart");
+		morphia2.mapPackage("edu.rosehulman.billingpart");
+		Datastore datastoreBilling = morphia2.createDatastore(mongoClient2, "billingpart");
 
-		Query<User> queryU2 = datastore.createQuery(User.class);
-		List<User> usersold = queryU.asList();
+		Query<User> queryU2 = datastoreBilling.createQuery(User.class);
+		List<User> usersold = queryU2.asList();
 
-		Query<Partner> queryP2 = datastore.createQuery(Partner.class);
-		List<Partner> partnersold = queryP.asList();
+		Query<Partner> queryP2 = datastoreBilling.createQuery(Partner.class);
+		List<Partner> partnersold = queryP2.asList();
 
-		Query<Product> queryPr2 = datastore.createQuery(Product.class);
-		List<Product> productsold = queryPr.asList();
+		Query<Product> queryPr2 = datastoreBilling.createQuery(Product.class);
+		List<Product> productsold = queryPr2.asList();
 
-		Query<Tier> queryT2 = datastore.createQuery(Tier.class);
-		List<Tier> tiersold = queryT.asList();
+		Query<Tier> queryT2 = datastoreBilling.createQuery(Tier.class);
+		List<Tier> tiersold = queryT2.asList();
 
-		Query<Quota> queryQ2 = datastore.createQuery(Quota.class);
-		List<Quota> quotasold = queryQ.asList();
+		Query<Quota> queryQ2 = datastoreBilling.createQuery(Quota.class);
+		List<Quota> quotasold = queryQ2.asList();
+
+		// List<Product> newproduct = new ArrayList<Product>();
+		// for (Product product : products) {
+		// for (Product productold : productsold) {
+		// if (!product.equals(productold)) {
+		// newproduct.add(product);
+		// }
+		// }
+		// }
+		//
+		for (Partner partner : partners) {
+			boolean flag = true;
+			for (Partner partnerold : partnersold) {
+				if (partner.getId().equals(partnerold.getId())) {
+					flag = false;
+				}
+			}
+			if (flag) {
+				Database.getInstance().addPartner(partner.getId(), partner.getName(), partner.getApiKey(),
+						partner.getPassword());
+				List<Product> pro = partner.getAllProducts();
+				for (Product k : pro)
+					Database.getInstance().addProductToPartner(partner.getId(), k.getName(), k.getId());
+			}
+		}
 
 		for (User user : users) {
+			boolean flag = true;
 			for (User userold : usersold) {
-				if (!user.equals(userold)) {
-					Database.getInstance().addUser(user.getId(), user.getProduct().getId(), user.getPartner().getId());
+				if (user.getId().equals(userold.getId())
+						&& user.getPartner().getId().equals(userold.getPartner().getId())) {
+					flag = false;
 				}
 			}
-		}
-
-		List<Product> newproduct = new ArrayList<Product>();
-		for (Product product : products) {
-			for (Product productold : productsold) {
-				if (!product.equals(productold)) {
-					newproduct.add(product);
-				}
-			}
-		}
-
-		for (Partner partner : partners) {
-			for (Partner partnerold : partnersold) {
-				if (!partner.equals(partnerold)) {
-					Database.getInstance().addPartner(partner.getId(), partner.getName(), partner.getApiKey(),
-							partner.getPassword());
-					List<Product> pro = partner.getAllProducts();
-					for (Product k : pro)
-						Database.getInstance().addProductToPartner(partner.getId(), k.getName(), k.getId());
-				}
+			if (flag) {
+				Database.getInstance().addUser(user.getId(), user.getProduct().getId(), user.getPartner().getId());
 			}
 		}
 
 		for (Quota quota : quotas) {
+			boolean flag = true;
 			for (Quota quotaold : quotasold) {
-				if (!quota.equals(quotaold)) {
-					Database.getInstance().addQuota(quota.getPartner().getId(), quota.getProduct().getId(),
-							quota.getId(), quota.getName(), quota.getType());
+				if (quota.getId().equals(quotaold.getId()) && quota.getName().equals(quotaold.getName())) {
+					flag = false;
 				}
+			}
+			if (flag) {
+				Database.getInstance().addQuota(quota.getPartner().getId(), quota.getProduct().getId(), quota.getId(),
+						quota.getName(), quota.getType());
 			}
 		}
 
 		for (Tier tier : tiers) {
+			boolean flag = true;
 			for (Tier tierold : tiersold) {
-				if (!tier.equals(tierold)) {
-					Database.getInstance().addTier(tier.getPartner().getId(), tier.getProduct().getId(),
-							tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax() + "",
-							tier.getPrice() + "");
+				if (tier.getId().equals(tierold.getId()) && tier.getName().equals(tierold.getName())) {
+					flag = false;
 				}
+			}
+			if (flag) {
+				Database.getInstance().addTier(tier.getPartner().getId(), tier.getProduct().getId(),
+						tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax() + "",
+						tier.getPrice() + "");
 			}
 		}
 

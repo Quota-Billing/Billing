@@ -19,18 +19,17 @@ public class BillingHistory {
 	private String time_stamp;
 	@Reference
 	private User user;
-	
-	public BillingHistory(){
+
+	public BillingHistory() {
 		billing = new ArrayList<Billing>();
 	}
-	
+
 	public BillingHistory(String time_stamp, User user) {
 		this.id = new ObjectId();
 		billing = new ArrayList<Billing>();
 		this.time_stamp = time_stamp;
 		this.user = user;
 	}
-	
 
 	public void setTimeStamp(String st) {
 		this.time_stamp = st;
@@ -44,23 +43,20 @@ public class BillingHistory {
 		return this.time_stamp;
 	}
 
-	
-
 	public void deleteBilling(Billing oldBill) {
 		Billing delete = null;
-		for(Billing b: this.billing){
-			if(b.getId() == oldBill.getId())
+		for (Billing b : this.billing) {
+			if (b.getId() == oldBill.getId())
 				delete = b;
 		}
-		if(delete !=null){
+		if (delete != null) {
 			this.billing.remove(delete);
 		}
 	}
 
-
 	public Billing findBilling(Billing bill) {
-		for(Billing b: this.billing){
-			if(b.getId() == bill.getId())
+		for (Billing b : this.billing) {
+			if (b.getUserId().equals(bill.getUserId()))
 				return b;
 		}
 		return null;
@@ -74,7 +70,6 @@ public class BillingHistory {
 		return this.billing;
 	}
 
-	
 	public String toString() {
 		String st = "Billing History: " + this.id + "\n";
 		for (Billing i : this.billing) {
