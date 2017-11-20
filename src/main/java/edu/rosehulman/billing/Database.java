@@ -25,16 +25,17 @@ public class Database {
 	private static Database instance;
 	private MongoClient mongoClient;
 	private Datastore datastore;
-	
-	// create only one instance of mongoclient and not closing it until application exits
+
+	// create only one instance of mongoclient and not closing it until
+	// application exits
 	private Database() {
-		this.mongoClient = new MongoClient(new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		this.mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		Morphia morphia = new Morphia();
 		morphia.mapPackage("edu.rosehulman.billingpart");
 		this.datastore = morphia.createDatastore(this.mongoClient, "billingpart");
 
 	}
-
 
 	public static synchronized Database getInstance() {
 		if (instance == null) {
@@ -54,126 +55,124 @@ public class Database {
 
 		return null;
 	}
-	
+
 	// add a partner
-		public String addPartner(String partnerId, String name, String apiKey, String password) {
-			try {
-				Partner partner = new Partner(partnerId, name, apiKey);
-				partner.setPassword(password);
-				this.datastore.save(partner);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-			}
-			return "ok";
+	public String addPartner(String partnerId, String name, String apiKey, String password) {
+		try {
+			Partner partner = new Partner(partnerId, name, apiKey);
+			partner.setPassword(password);
+			this.datastore.save(partner);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 		}
+		return "ok";
+	}
 
-		public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
-			try {
-				List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-				if (partners.size() == 0) {
-					System.out.println("wrong partnerId"); // debugging
-					return "Wrong partnerId";
-				}
-				Partner partner = partners.get(0);
-				Product product = partner.getProduct(productId);
-				if (product == null) {
-					System.out.println("wrong productId"); // debugging
-					return "Wrong productId";
-				}
-				Quota quota = new Quota(quotaId, name, type);
-				quota.setPartner(partner);
-				quota.setProduct(product);
-				this.datastore.save(quota);
-				Query<Product> query = this.datastore.createQuery(Product.class).field("id").equal(product.getObjectId());
-				UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).push("quotas",
-						quota);
-				this.datastore.update(query, op);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
+	public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
+		try {
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if (partners.size() == 0) {
+				System.out.println("wrong partnerId"); // debugging
+				return "Wrong partnerId";
 			}
-			return "ok";
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			if (product == null) {
+				System.out.println("wrong productId"); // debugging
+				return "Wrong productId";
+			}
+			Quota quota = new Quota(quotaId, name, type);
+			quota.setPartner(partner);
+			quota.setProduct(product);
+			this.datastore.save(quota);
+			Query<Product> query = this.datastore.createQuery(Product.class).field("id").equal(product.getObjectId());
+			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).push("quotas", quota);
+			this.datastore.update(query, op);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 		}
+		return "ok";
+	}
 
-		// add a simple user by referencing a product and a partner
-		public String addUser(String id, String productId, String partnerId) {
-			try {
-				List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-				if (partners.size() == 0) {
-					System.out.println("wrong partnerId"); // debugging
-					return "Wrong partnerId";
-				}
-				Partner partner = partners.get(0);
-				Product product = partner.getProduct(productId);
-				if (product == null) {
-					System.out.println("wrong productId"); // debugging
-					return "Wrong productId";
-				}
-				User user = new User(id);
-				user.setPartner(partner);
-				user.setProduct(product);
-				this.datastore.save(user);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
+	// add a simple user by referencing a product and a partner
+	public String addUser(String id, String productId, String partnerId) {
+		try {
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if (partners.size() == 0) {
+				System.out.println("wrong partnerId"); // debugging
+				return "Wrong partnerId";
 			}
-			return "ok";
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			if (product == null) {
+				System.out.println("wrong productId"); // debugging
+				return "Wrong productId";
+			}
+			User user = new User(id);
+			user.setPartner(partner);
+			user.setProduct(product);
+			this.datastore.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 		}
+		return "ok";
+	}
 
-		// adding product to a specific partner, in mongoDB the product will be
-		// saved by reference and its ID
-		public String addProductToPartner(String partnerId, String name, String productId) {
-			try {
-				Partner partner = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList().get(0);
-				Product product = new Product(productId, name);
-				partner.addProduct(product);
-				this.datastore.save(product);
-				Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId);
-				UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
-						product);
-				this.datastore.update(query, op);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-			}
-			return "ok";
+	// adding product to a specific partner, in mongoDB the product will be
+	// saved by reference and its ID
+	public String addProductToPartner(String partnerId, String name, String productId) {
+		try {
+			Partner partner = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList().get(0);
+			Product product = new Product(productId, name);
+			partner.addProduct(product);
+			this.datastore.save(product);
+			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId);
+			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
+					product);
+			this.datastore.update(query, op);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 		}
+		return "ok";
+	}
 
-		public String addTier(String partnerId, String productId, String quotaId, String tierId, String name, String max,
-				String price) {
-			try {
-				List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-				if (partners.size() == 0) {
-					System.out.println("wrong partnerId"); // debugging
-					return "Wrong partnerId";
-				}
-				Partner partner = partners.get(0);
-				Product product = partner.getProduct(productId);
-				if (product == null) {
-					System.out.println("wrong productId"); // debugging
-					return "Wrong productId";
-				}
-				Quota quota = product.getQuota(quotaId);
-				if (quota == null) {
-					System.out.println("wrong quotaId");
-					return "Wrong quotaId";
-				}
-				Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price));
-				tier.setPartner(partner);
-				tier.setProduct(product);
-				tier.setQuota(quota);
-				this.datastore.save(tier);
-				Query<Quota> query = this.datastore.createQuery(Quota.class).field("id").equal(quota.getObjectId());
-				UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).push("tiers",
-						tier);
-				this.datastore.update(query, op);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
+	public String addTier(String partnerId, String productId, String quotaId, String tierId, String name, String max,
+			String price) {
+		try {
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if (partners.size() == 0) {
+				System.out.println("wrong partnerId"); // debugging
+				return "Wrong partnerId";
 			}
-			return "ok";
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			if (product == null) {
+				System.out.println("wrong productId"); // debugging
+				return "Wrong productId";
+			}
+			Quota quota = product.getQuota(quotaId);
+			if (quota == null) {
+				System.out.println("wrong quotaId");
+				return "Wrong quotaId";
+			}
+			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price));
+			tier.setPartner(partner);
+			tier.setProduct(product);
+			tier.setQuota(quota);
+			this.datastore.save(tier);
+			Query<Quota> query = this.datastore.createQuery(Quota.class).field("id").equal(quota.getObjectId());
+			UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).push("tiers", tier);
+			this.datastore.update(query, op);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 		}
+		return "ok";
+	}
 
 	public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
 		// BasicDBObject query = new BasicDBObject("_id",
@@ -191,7 +190,7 @@ public class Database {
 
 		return quota;
 	}
-	
+
 	public String addBilling(String userID, String partnerId, String productId, String plan, double fee) {
 		try {
 			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
@@ -205,30 +204,33 @@ public class Database {
 				System.out.println("wrong productId"); // debugging
 				return "Wrong productId";
 			}
-			List<User> users = this.datastore.createQuery(User.class).field("userId").equal(userID).field("product").equal(product).field("partner").equal(partner).asList();
-			if(users == null){
+			List<User> users = this.datastore.createQuery(User.class).field("userId").equal(userID).field("product")
+					.equal(product).field("partner").equal(partner).asList();
+			if (users == null) {
 				System.out.println("wrong userId");
 				return "Wrong userId";
 			}
 			User user = users.get(0);
 			Billing bill = new Billing(user, plan, fee);
 			this.datastore.save(bill);
-			String timestamp =  new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-			List<BillingHistory> histories = this.datastore.createQuery(BillingHistory.class).field("user").equal(user).asList();
-			if(histories.isEmpty()){
-				BillingHistory hist = new BillingHistory(timestamp,user);
+			String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+			List<BillingHistory> histories = this.datastore.createQuery(BillingHistory.class).field("user").equal(user)
+					.asList();
+			if (histories.isEmpty()) {
+				BillingHistory hist = new BillingHistory(timestamp, user);
 				hist.addBilling(bill);
 				this.datastore.save(hist);
-			} else{
+			} else {
 				BillingHistory history = histories.get(0);
 				history.addBilling(bill);
-				Query<BillingHistory> query = this.datastore.createQuery(BillingHistory.class).field("user").equal(user);
-				UpdateOperations<BillingHistory> op = this.datastore.createUpdateOperations(BillingHistory.class).push("billing",
-						bill);
+				Query<BillingHistory> query = this.datastore.createQuery(BillingHistory.class).field("user")
+						.equal(user);
+				UpdateOperations<BillingHistory> op = this.datastore.createUpdateOperations(BillingHistory.class)
+						.push("billing", bill);
 				this.datastore.update(query, op);
 				System.out.println("here");
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -237,19 +239,20 @@ public class Database {
 		return "ok";
 	}
 
-
 	public String getPartnerBillingInfo(String partnerId, String productId, String userId) {
-		
+
 		try {
-			List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-			if(partners.isEmpty()){
+			List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
+					.asList();
+			if (partners.isEmpty()) {
 				System.out.println("this partner doesn't exist");
 				return "wrong partner ID";
 			}
 			Partner partner = partners.get(0);
 			Product product = partner.getProduct(productId);
-			List<User> users = this.datastore.createQuery(User.class).field("userId").equal(userId).field("product").equal(product).field("partner").equal(partner).asList();
-			if(users == null){
+			List<User> users = this.datastore.createQuery(User.class).field("userId").equal(userId).field("product")
+					.equal(product).field("partner").equal(partner).asList();
+			if (users == null) {
 				System.out.println("wrong userId");
 				return "Wrong userId";
 			}
@@ -269,5 +272,19 @@ public class Database {
 
 		return null;
 	}
-	
+
+	public boolean deleteUser(String partnerId, String productId, String userId) {
+		final Query<User> deleteQuery = datastore.createQuery(User.class).field("userId").equal(userId);
+		List<User> results = deleteQuery.asList();
+
+		for (User u : results) {
+			// TODO can/should we ever delete multiple?
+			if (u.getPartner().getId().equals(partnerId) && u.getProduct().getId().equals(productId)) {
+				datastore.delete(u);
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

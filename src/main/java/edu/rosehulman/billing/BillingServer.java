@@ -2,7 +2,7 @@ package edu.rosehulman.billing;
 
 import static spark.Spark.port;
 import static spark.Spark.post;
-
+import static spark.Spark.delete;
 import java.util.ArrayList;
 
 import edu.rosehulman.billing.router.AddBillingHandler;
@@ -11,9 +11,8 @@ import edu.rosehulman.billing.router.AddProductHandler;
 import edu.rosehulman.billing.router.AddQuotaHandler;
 import edu.rosehulman.billing.router.AddTierHandler;
 import edu.rosehulman.billing.router.AddUserHandler;
+import edu.rosehulman.billing.router.DeleteUserHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
-
-
 import edu.rosehulman.billing.router.Routes;
 
 public class BillingServer {
@@ -33,6 +32,7 @@ public class BillingServer {
 
 		post(Routes.ADD_BILLING, new AddBillingHandler());		
 		post(Routes.ADD_USER, new AddUserHandler());
+		delete(Routes.DELETE_USER, new DeleteUserHandler());
 	    post(Routes.ADD_PARTNER, new AddPartnerHandler());
 	    post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
 	    post(Routes.ADD_QUOTA, new AddQuotaHandler());
