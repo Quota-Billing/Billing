@@ -18,7 +18,8 @@ public class QuotaReachedHandler implements Route {
 		String userId = request.params(":userId");
 		String quotaId = request.params(":quotaId");
 		
-		JSONObject tierObject = new JSONObject(request.body());
+		System.out.println("quotaId: "+ quotaId);
+		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
 		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
 		//Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
 		double totalPrice = 0.0;
@@ -26,13 +27,13 @@ public class QuotaReachedHandler implements Route {
 		builder.append(billingInfo);
 		builder.append("-------------Current Usage-------------\n");
 		
-		System.out.println("lol==============");
 		System.out.println(tierObject.toString());
-		Integer max = tierObject.getInt("max");
+		Integer max = tierObject.getMax();
 		//Integer current = tierObject.getInt("current");
-		String name = tierObject.getString("name");
-		Integer price = tierObject.getInt("price");
-		
+		String name = tierObject.getName();
+		double price = tierObject.getPrice();
+		// will add more tiers' prices later, right now just handle one tier
+		totalPrice += price;
 		builder.append(name + ": Limit: " + max + " Price: " + price +"\n");
 //		if(tierObject != null) {
 //		    int max = 0;

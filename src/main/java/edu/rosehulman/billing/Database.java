@@ -287,4 +287,23 @@ public class Database {
 		return false;
 	}
 
+	public Tier getTier(String partnerId, String productId, String quotaId) {
+		List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
+				.asList();
+		if (partners.isEmpty()) {
+			System.out.println("this partner doesn't exist");
+			return null;
+		}
+		Partner partner = partners.get(0);
+		Product product = partner.getProduct(productId);
+		Quota quota = product.getQuota(quotaId);
+		final Query<Tier> query = datastore.createQuery(Tier.class).field("product").equal(product).field("partner").equal(partner).filter("quota", quota);
+		List<Tier> results = query.asList();
+		if(results.size() == 0){
+			System.out.println("cant find such tier");
+			return null;
+		}
+		return results.get(0);
+	}
+
 }
