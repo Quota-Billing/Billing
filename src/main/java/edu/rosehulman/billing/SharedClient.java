@@ -61,10 +61,6 @@ public class SharedClient {
 	// }
 	// }
 
-	public void addPartner(String partnerId) {
-
-	}
-
 	public String addUserInfo(String partnerId, String productId, String userId) throws Exception {
 		// HttpResponse<JsonNode> response = Unirest.get("http://localhost:8085/getUser"
 		// + "partner/{partnerId}/product/{productId}quota/{quotaId}/user/{userId}")
@@ -87,11 +83,7 @@ public class SharedClient {
 		return "ok";
 	}
 
-	public static void main(String args[]) {
-		Update();
-	}
-	
-	public static void UpdatePartner() {
+	public void UpdatePartner(String partnerId) {
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		Morphia morphia = new Morphia();
@@ -107,7 +99,6 @@ public class SharedClient {
 
 		Query<Partner> queryP = datastore.createQuery(Partner.class);
 		List<Partner> partners = queryP.asList();
-
 
 		MongoClient mongoClient2 = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
@@ -125,72 +116,19 @@ public class SharedClient {
 		Query<Partner> queryP2 = datastoreBilling.createQuery(Partner.class);
 		List<Partner> partnersold = queryP2.asList();
 
-
 		for (Partner partner : partners) {
-			boolean flag = true;
-			for (Partner partnerold : partnersold) {
-				if (partner.getId().equals(partnerold.getId())) {
-					flag = false;
-				}
-			}
-			if (flag) {
+			if (partner.getId().equals(partnerId)) {
 				Database.getInstance().addPartner(partner.getId(), partner.getName(), partner.getApiKey(),
 						partner.getPassword());
 				List<Product> pro = partner.getAllProducts();
 				for (Product k : pro)
 					Database.getInstance().addProductToPartner(partner.getId(), k.getName(), k.getId());
+				break;
 			}
 		}
 	}
-	
-	public static void UpdateUserAndProduct() {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		Morphia morphia = new Morphia();
-		// Do set up here
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
 
-		Query<User> queryU = datastore.createQuery(User.class);
-		List<User> users = queryU.asList();
-
-		MongoClient mongoClient2 = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
-		Morphia morphia2 = new Morphia();
-		// Do set up here.
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia2.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia2.createDatastore(mongoClient2, "billingpart");
-
-		Query<User> queryU2 = datastoreBilling.createQuery(User.class);
-		List<User> usersold = queryU2.asList();
-
-		for (User user : users) {
-			boolean flag = true;
-			for (User userold : usersold) {
-				if (user.getId().equals(userold.getId())
-						&& user.getPartner().getId().equals(userold.getPartner().getId())) {
-					flag = false;
-				}
-			}
-			if (flag) {
-				Database.getInstance().addUser(user.getId(), user.getProduct().getId(), user.getPartner().getId());
-			}
-		}
-	}
-	
-	public static void UpdateQuota() {
+	public void UpdateQuota(String QuotaId) {
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		Morphia morphia = new Morphia();
@@ -224,20 +162,15 @@ public class SharedClient {
 		List<Quota> quotasold = queryQ2.asList();
 
 		for (Quota quota : quotas) {
-			boolean flag = true;
-			for (Quota quotaold : quotasold) {
-				if (quota.getId().equals(quotaold.getId()) && quota.getName().equals(quotaold.getName())) {
-					flag = false;
-				}
-			}
-			if (flag) {
+			if (quota.getId().equals(QuotaId)) {
 				Database.getInstance().addQuota(quota.getPartner().getId(), quota.getProduct().getId(), quota.getId(),
 						quota.getName(), quota.getType());
+				break;
 			}
 		}
 	}
-	
-	public static void UpdateTier() {
+
+	public void UpdateTier(String TierId) {
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		Morphia morphia = new Morphia();
@@ -271,21 +204,16 @@ public class SharedClient {
 		List<Tier> tiersold = queryT2.asList();
 
 		for (Tier tier : tiers) {
-			boolean flag = true;
-			for (Tier tierold : tiersold) {
-				if (tier.getId().equals(tierold.getId()) && tier.getName().equals(tierold.getName())) {
-					flag = false;
-				}
-			}
-			if (flag) {
+			if (tier.getId().equals(TierId)) {
 				Database.getInstance().addTier(tier.getPartner().getId(), tier.getProduct().getId(),
 						tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax() + "",
 						tier.getPrice() + "");
+				break;
 			}
 		}
 	}
-	
-	public static void Update() {
+
+	public void Update() {
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
 		Morphia morphia = new Morphia();
@@ -396,6 +324,39 @@ public class SharedClient {
 						tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax() + "",
 						tier.getPrice() + "");
 			}
+		}
+
+	}
+
+	public void UpdateProduct(String productId) {
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		Morphia morphia = new Morphia();
+		// Do set up here
+		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
+		// @Override
+		// protected ClassLoader getClassLoaderForClass() {
+		// return MongoBundleActivator.getBundleClassLoader();
+		// }
+		// });
+		morphia.mapPackage("edu.rosehulman.quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
+
+		Query<Partner> queryP = datastore.createQuery(Partner.class);
+		List<Partner> partners = queryP.asList();
+		for (Partner partner : partners) {
+			List<Product> pro = partner.getAllProducts();
+			boolean flag = false;
+			for (Product p : pro) {
+
+				if (p.getId().equals(productId)) {
+					Database.getInstance().addProductToPartner(partner.getId(), p.getName(), p.getId());
+					flag = true;
+					break;
+				}
+			}
+			if (flag)
+				break;
 		}
 
 	}
