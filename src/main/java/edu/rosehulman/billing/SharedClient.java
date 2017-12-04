@@ -348,7 +348,6 @@ public class SharedClient {
 			List<Product> pro = partner.getAllProducts();
 			boolean flag = false;
 			for (Product p : pro) {
-
 				if (p.getId().equals(productId)) {
 					Database.getInstance().addProductToPartner(partner.getId(), p.getName(), p.getId());
 					flag = true;
