@@ -32,8 +32,16 @@ import edu.rosehulman.billing.models.User;
 // this is a client connecting to sharedservice so we can pull updates
 public class SharedClient {
 	private static SharedClient instance;
+	private static MongoClient mongoClientshare;
+	private static MongoClient mongoClientbilling;
+	private static Morphia morphia;
 
 	private SharedClient() {
+		mongoClientshare = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+		mongoClientbilling = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		morphia = new Morphia();
 	}
 
 	public static synchronized SharedClient getInstance() {
@@ -84,9 +92,6 @@ public class SharedClient {
 	}
 
 	public void UpdatePartner(String partnerId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		Morphia morphia = new Morphia();
 		// Do set up here
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -95,13 +100,11 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
 
 		Query<Partner> queryP = datastore.createQuery(Partner.class);
 		List<Partner> partners = queryP.asList();
 
-		MongoClient mongoClient2 = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		// Do set up here.
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -110,7 +113,7 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia.createDatastore(mongoClient2, "billingpart");
+		Datastore datastoreBilling = morphia.createDatastore(mongoClientbilling, "billingpart");
 
 		Query<Partner> queryP2 = datastoreBilling.createQuery(Partner.class);
 		List<Partner> partnersold = queryP2.asList();
@@ -128,9 +131,6 @@ public class SharedClient {
 	}
 
 	public void UpdateQuota(String QuotaId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		Morphia morphia = new Morphia();
 		// Do set up here
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -139,13 +139,11 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
 
 		Query<Quota> queryQ = datastore.createQuery(Quota.class);
 		List<Quota> quotas = queryQ.asList();
 
-		MongoClient mongoClient2 = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		// Do set up here.
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -153,8 +151,6 @@ public class SharedClient {
 		// return MongoBundleActivator.getBundleClassLoader();
 		// }
 		// });
-		morphia.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia.createDatastore(mongoClient2, "billingpart");
 
 		Query<Quota> queryQ2 = datastoreBilling.createQuery(Quota.class);
 		List<Quota> quotasold = queryQ2.asList();
@@ -169,9 +165,6 @@ public class SharedClient {
 	}
 
 	public void UpdateTier(String TierId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		Morphia morphia = new Morphia();
 		// Do set up here
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -180,13 +173,11 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
 
 		Query<Tier> queryT = datastore.createQuery(Tier.class);
 		List<Tier> tiers = queryT.asList();
 
-		MongoClient mongoClient2 = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		// Do set up here.
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -194,11 +185,6 @@ public class SharedClient {
 		// return MongoBundleActivator.getBundleClassLoader();
 		// }
 		// });
-		morphia.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia.createDatastore(mongoClient2, "billingpart");
-
-		Query<Tier> queryT2 = datastoreBilling.createQuery(Tier.class);
-		List<Tier> tiersold = queryT2.asList();
 
 		for (Tier tier : tiers) {
 			if (tier.getId().equals(TierId)) {
@@ -211,9 +197,6 @@ public class SharedClient {
 	}
 
 	public void Update() {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		Morphia morphia = new Morphia();
 		// Do set up here
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -222,7 +205,7 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
 
 		Query<User> queryU = datastore.createQuery(User.class);
 		List<User> users = queryU.asList();
@@ -239,8 +222,6 @@ public class SharedClient {
 		Query<Quota> queryQ = datastore.createQuery(Quota.class);
 		List<Quota> quotas = queryQ.asList();
 
-		MongoClient mongoClient2 = new MongoClient(
-				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		// Do set up here.
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -249,7 +230,7 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia.createDatastore(mongoClient2, "billingpart");
+		Datastore datastoreBilling = morphia.createDatastore(mongoClientbilling, "billingpart");
 
 		Query<User> queryU2 = datastoreBilling.createQuery(User.class);
 		List<User> usersold = queryU2.asList();
@@ -325,9 +306,9 @@ public class SharedClient {
 	}
 
 	public void UpdateProduct(String productId) {
-		MongoClient mongoClient = new MongoClient(
-				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-		Morphia morphia = new Morphia();
+//		MongoClient mongoClient = new MongoClient(
+//				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
+//		Morphia morphia = new Morphia();
 		// Do set up here
 		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
 		// @Override
@@ -336,7 +317,7 @@ public class SharedClient {
 		// }
 		// });
 		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClient, "quotabillingshare");
+		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
 
 		Query<Partner> queryP = datastore.createQuery(Partner.class);
 		List<Partner> partners = queryP.asList();
