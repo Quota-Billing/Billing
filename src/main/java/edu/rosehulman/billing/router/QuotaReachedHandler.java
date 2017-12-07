@@ -17,9 +17,13 @@ public class QuotaReachedHandler implements Route {
 		String productId = request.params(":productId");
 		String userId = request.params(":userId");
 		String quotaId = request.params(":quotaId");
+		String tierId= request.params(":tierId"); // suppose to be included
 		
 		System.out.println("quotaId: "+ quotaId);
-		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
+		
+		//Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
+		Tier tierObject = Database.getInstance().getTier(tierId);
+		// need to find the right tier object
 		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
 		//Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
 		double totalPrice = 0.0;
