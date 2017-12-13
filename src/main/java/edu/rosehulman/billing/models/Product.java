@@ -9,15 +9,26 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import edu.rosehulman.billing.ObjectIdDeserializer;
+
 @Entity("product")
 public class Product {
 	@Id
+	@JsonDeserialize(using = ObjectIdDeserializer.class)
+	@JsonIgnore
 	private ObjectId id;
 	@Property
+	@JsonProperty("name")
 	private String name;
 	@Property
+	@JsonProperty("productId")
 	private String productId;
 	@Reference
+	@JsonProperty("quotas")
 	private List<Quota> quotas = new ArrayList<Quota>();
 
 	public Product() {
@@ -33,11 +44,13 @@ public class Product {
 	public void setId(String id) {
 		this.productId = id;
 	}
-
+	
+	@JsonIgnore
 	public String getId() {
 		return this.productId;
 	}
-
+	
+	@JsonIgnore
 	public ObjectId getObjectId() {
 		return this.id;
 	}
@@ -46,10 +59,12 @@ public class Product {
 		this.name = name;
 	}
 
+	@JsonIgnore
 	public String getName() {
 		return this.name;
 	}
 
+	@JsonIgnore
 	public List<Quota> getQuotas() {
 		return quotas;
 	}
@@ -74,6 +89,7 @@ public class Product {
 		return builder.toString();
 	}
 
+	@JsonIgnore
 	public Quota getQuota(String quotaId) {
 		for (Quota q : this.quotas) {
 			if (q.getId().equals(quotaId)) {

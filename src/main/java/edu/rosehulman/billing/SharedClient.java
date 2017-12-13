@@ -1,27 +1,16 @@
 package edu.rosehulman.billing;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.Document;
-import org.json.JSONObject;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.mapping.DefaultCreator;
 import org.mongodb.morphia.query.Query;
 
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
 
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Product;
@@ -35,6 +24,7 @@ public class SharedClient {
 	private static MongoClient mongoClientshare;
 	private static MongoClient mongoClientbilling;
 	private static Morphia morphia;
+	private Datastore datastore;
 
 	private SharedClient() {
 		mongoClientshare = new MongoClient(
@@ -42,6 +32,9 @@ public class SharedClient {
 		mongoClientbilling = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		morphia = new Morphia();
+		morphia.mapPackage("edu.rosehulman.billingpart");
+		this.datastore = morphia.createDatastore(this.mongoClientshare, "billingpart");
+
 	}
 
 	public static synchronized SharedClient getInstance() {
@@ -91,109 +84,73 @@ public class SharedClient {
 		return "ok";
 	}
 
-	public void UpdatePartner(String partnerId) {
-		// Do set up here
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
-
-		Query<Partner> queryP = datastore.createQuery(Partner.class);
-		List<Partner> partners = queryP.asList();
-
-		// Do set up here.
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia.mapPackage("edu.rosehulman.billingpart");
-		Datastore datastoreBilling = morphia.createDatastore(mongoClientbilling, "billingpart");
-
-		Query<Partner> queryP2 = datastoreBilling.createQuery(Partner.class);
-		List<Partner> partnersold = queryP2.asList();
-
-		for (Partner partner : partners) {
-			if (partner.getId().equals(partnerId)) {
-				Database.getInstance().addPartner(partner.getId(), partner.getName(), partner.getApiKey(),
-						partner.getPassword());
-				List<Product> pro = partner.getAllProducts();
-				for (Product k : pro)
-					Database.getInstance().addProductToPartner(partner.getId(), k.getName(), k.getId());
-				break;
-			}
+	public Partner UpdatePartner(String partnerId) {
+		HttpResponse<Partner> response;
+		try {
+			response = Unirest.get("http://localhost:8084/partner/{partnerId}")
+					.routeParam("partnerId", partnerId)
+					.asObject(Partner.class);
+			Partner partner = response.getBody();
+			return partner;
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
+		
 	}
 
-	public void UpdateQuota(String QuotaId) {
-		// Do set up here
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
-
-		Query<Quota> queryQ = datastore.createQuery(Quota.class);
-		List<Quota> quotas = queryQ.asList();
-
-		// Do set up here.
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-
-		Query<Quota> queryQ2 = datastoreBilling.createQuery(Quota.class);
-		List<Quota> quotasold = queryQ2.asList();
-
-		for (Quota quota : quotas) {
-			if (quota.getId().equals(QuotaId)) {
-				Database.getInstance().addQuota(quota.getPartner().getId(), quota.getProduct().getId(), quota.getId(),
-						quota.getName(), quota.getType());
-				break;
-			}
+	public Quota UpdateQuota(String productId, String partnerId, String quotaId) {
+		HttpResponse<Quota> response;
+		try {
+			response = Unirest.get("http://localhost:8084/partner/{partnerId}/product/{productId}/quota/{quotaId}")
+					.routeParam("partnerId", partnerId)
+					.routeParam("quotaId", quotaId)
+					.routeParam("productId", productId)
+					.asObject(Quota.class);
+			Quota quota = response.getBody();
+			return quota;
+		} catch (UnirestException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public void UpdateTier(String TierId) {
-		// Do set up here
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
-
-		Query<Tier> queryT = datastore.createQuery(Tier.class);
-		List<Tier> tiers = queryT.asList();
-
-		// Do set up here.
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-
-		for (Tier tier : tiers) {
-			if (tier.getId().equals(TierId)) {
-				Database.getInstance().addTier(tier.getPartner().getId(), tier.getProduct().getId(),
-						tier.getQuota().getId(), tier.getId(), tier.getName(), tier.getMax() + "",
-						tier.getPrice() + "");
-				break;
-			}
+	public Product UpdateProduct(String productId,String partnerId) {
+		
+		
+		HttpResponse<Product> response;
+		try {
+			response = Unirest.get("http://localhost:8084/partner/{partnerId}/product/{productId}")
+					.routeParam("partnerId", partnerId)
+					.routeParam("productId", productId)
+					.asObject(Product.class);
+			Product product = response.getBody();
+			return product;
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
+
+	}
+	public Tier UpdateTier(String partnerId, String productId, String quotaId, String tierId) {
+		HttpResponse<Tier> response;
+		try {
+			response = Unirest.get("http://localhost:8084/partner/{partnerId}/product/{productId}/quota/{quotaId}/tier/{tierId}")
+					.routeParam("partnerId", partnerId)
+					.routeParam("productId", productId)
+					.routeParam("quotaId", quotaId)
+					.routeParam("tierId", tierId)
+					.asObject(Tier.class);
+			Tier tier = response.getBody();
+			System.out.println(tier==null);
+			return tier;
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public void Update() {
@@ -305,36 +262,6 @@ public class SharedClient {
 
 	}
 
-	public void UpdateProduct(String productId) {
-//		MongoClient mongoClient = new MongoClient(
-//				new MongoClientURI("mongodb://team18:123456@ds113785.mlab.com:13785/quotabillingshare"));
-//		Morphia morphia = new Morphia();
-		// Do set up here
-		// morphia.getMapper().getOptions().setObjectFactory(new DefaultCreator() {
-		// @Override
-		// protected ClassLoader getClassLoaderForClass() {
-		// return MongoBundleActivator.getBundleClassLoader();
-		// }
-		// });
-		morphia.mapPackage("edu.rosehulman.quotabillingshare");
-		Datastore datastore = morphia.createDatastore(mongoClientshare, "quotabillingshare");
-
-		Query<Partner> queryP = datastore.createQuery(Partner.class);
-		List<Partner> partners = queryP.asList();
-		for (Partner partner : partners) {
-			List<Product> pro = partner.getAllProducts();
-			boolean flag = false;
-			for (Product p : pro) {
-				if (p.getId().equals(productId)) {
-					Database.getInstance().addProductToPartner(partner.getId(), p.getName(), p.getId());
-					flag = true;
-					break;
-				}
-			}
-			if (flag)
-				break;
-		}
-
-	}
+	
 
 }
