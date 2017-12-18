@@ -10,7 +10,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class AddTierHandler implements Route {
+public class DeleteTierHandler implements Route {
 
 	@Override
 	public Object handle(Request request, Response response) throws Exception {
@@ -28,7 +28,7 @@ public class AddTierHandler implements Route {
 		tier.setPartner(partner);
 		tier.setProduct(product);
 		tier.setQuota(quota);
-		Database.getInstance().addTierDirect(tier);
+		Database.getInstance().deleteTierDirect(tier);
 
 		return "";
 	}

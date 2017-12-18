@@ -8,19 +8,32 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import edu.rosehulman.billing.ObjectIdDeserializer;
 @Entity("partner")
 public class Partner {
 	@Id
+	@JsonDeserialize(using = ObjectIdDeserializer.class)
+	@JsonIgnore
 	private ObjectId id;
 	@Property
+	@JsonProperty("name")
 	private String name;
 	@Reference
+	@JsonProperty("products")
 	private List<Product> products;
 	@Property
+	@JsonProperty("partnerId")
 	private String partnerId;
 	@Property
+	@JsonProperty("apikey")
 	private String apikey;
 	@Property
+	@JsonProperty("password")
 	private String password;
 
 	public Partner() {
@@ -38,7 +51,8 @@ public class Partner {
 	public void addProduct(Product product) {
 		this.products.add(product);
 	}
-
+	
+	@JsonIgnore
 	public Product getProduct(String productId) {
 		for(Product p: this.products){
 			if(p.getId().equals(productId)){
@@ -48,6 +62,7 @@ public class Partner {
 		return null;
 	}
 
+	@JsonIgnore
 	public List<Product> getAllProducts(){
 		return this.products;
 	}
@@ -60,6 +75,7 @@ public class Partner {
 		this.partnerId = id;
 	}
 
+	@JsonIgnore
 	public String getId() {
 		return this.partnerId;
 	}
@@ -68,6 +84,7 @@ public class Partner {
 		this.name = name;
 	}
 
+	@JsonIgnore
 	public String getName() {
 		return this.name;
 	}
@@ -76,6 +93,7 @@ public class Partner {
 		this.password = password;
 	}
 	
+	@JsonIgnore
 	public String getApiKey() {
 		return this.apikey;
 	}
@@ -90,6 +108,7 @@ public class Partner {
 		return builder.toString();
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		// TODO Auto-generated method stub
 		return this.password;

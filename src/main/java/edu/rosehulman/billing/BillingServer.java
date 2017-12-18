@@ -1,9 +1,15 @@
 package edu.rosehulman.billing;
 
+import static spark.Spark.delete;
 import static spark.Spark.port;
 import static spark.Spark.post;
-import static spark.Spark.delete;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mashape.unirest.http.ObjectMapper;
+import com.mashape.unirest.http.Unirest;
 
 import edu.rosehulman.billing.router.AddBillingHandler;
 import edu.rosehulman.billing.router.AddPartnerHandler;
@@ -21,22 +27,44 @@ public class BillingServer {
 	public static void main(String[] args) {
 		port(8085); // Set the port to run on
 
-		//get("/getdb", (req, res) -> "database information get all table name: " + dbinfo);
+		
+		Unirest.setObjectMapper(new ObjectMapper() {
+			private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new ObjectIdMapper();
 
+			public <T> T readValue(String value, Class<T> valueType) {
+				try {
+					return jacksonObjectMapper.readValue(value, valueType);
+				} catch (IOException e) {
+					System.out.println("read error: "+ value);
+					System.out.println("value typte: "+ valueType.toString());
+					throw new RuntimeException(e);
+				}
+			}
+
+			public String writeValue(Object value) {
+				try {
+					return jacksonObjectMapper.writeValueAsString(value);
+				} catch (JsonProcessingException e) {
+					System.out.println("error: "+ value);
+
+					throw new RuntimeException(e);
+				}
+			}
+		});
 		post("/addUser/partner/:partnerId/product/:productId/user/:userId", (req, res) -> {
-			//after getting post call, call sharedclient to pull updates
-			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"), req.params(":userId"));
+			// after getting post call, call sharedclient to pull updates
+			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"),
+					req.params(":userId"));
 		});
 		post(Routes.QUOTA_REACHED, new QuotaReachedHandler());
-		
 
-		post(Routes.ADD_BILLING, new AddBillingHandler());		
+		post(Routes.ADD_BILLING, new AddBillingHandler());
 		post(Routes.ADD_USER, new AddUserHandler());
 		delete(Routes.DELETE_USER, new DeleteUserHandler());
-	    post(Routes.ADD_PARTNER, new AddPartnerHandler());
-	    post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
-	    post(Routes.ADD_QUOTA, new AddQuotaHandler());
-	    post(Routes.ADD_Tier, new AddTierHandler());
+		post(Routes.ADD_PARTNER, new AddPartnerHandler());
+		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
+		post(Routes.ADD_QUOTA, new AddQuotaHandler());
+		post(Routes.ADD_Tier, new AddTierHandler());
 
 		// BrainTree br =new BrainTree();
 
