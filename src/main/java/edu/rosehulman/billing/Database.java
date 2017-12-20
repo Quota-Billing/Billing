@@ -275,32 +275,6 @@ public class Database {
 		return false;
 	}
 
-<<<<<<< HEAD
-//	public Tier getTier(String partnerId, String productId, String quotaId) {
-//		List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
-//				.asList();
-//		if (partners.isEmpty()) {
-//			System.out.println("this partner doesn't exist");
-//			return null;
-//		}
-//		Partner partner = partners.get(0);
-//		Product product = partner.getProduct(productId);
-//		Quota quota = product.getQuota(quotaId);
-//		final Query<Tier> query = datastore.createQuery(Tier.class).field("product").equal(product).field("partner").equal(partner).filter("quota", quota);
-//		List<Tier> results = query.asList();
-//		if(results.size() == 0){
-//			System.out.println("cant find such tier");
-//			return null;
-//		}
-//		return results.get(0);
-//	}
-	
-	public Tier getTier(String tierId) {
-		final Query<Tier> tierQuery = datastore.createQuery(Tier.class).field("tierId").equal(tierId);
-		List<Tier> results = tierQuery.asList();
-		if(results.size() == 0){
-			System.out.println("can't find such tier");
-=======
 	public Partner getPartner(String partnerId) {
 		List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
 		if (partners.size() == 0) {
@@ -325,11 +299,9 @@ public class Database {
 		List<Tier> results = query.asList();
 		if (results.size() == 0) {
 			System.out.println("cant find such tier");
->>>>>>> 36b6ed8dcfba9a8a345f1340688a7380f3379d3a
 			return null;
 		}
 		return results.get(0);
-		
 	}
 
 	// All these methods below are in test stage.
