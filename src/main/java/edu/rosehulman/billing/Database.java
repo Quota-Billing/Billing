@@ -317,7 +317,9 @@ public class Database {
 
 	public String deletePartnerDirect(Partner partner) {
 		try {
-			this.datastore.delete(partner);
+			Query<Partner> query1 = this.datastore.createQuery(Partner.class);
+			query1.field("partnerId").equal(partner.getId());
+			this.datastore.findAndDelete(query1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -341,7 +343,10 @@ public class Database {
 
 	public String deleteProductDirect(Product product, Partner partner) {
 		try {
-			this.datastore.delete(product);
+			Query<Product> query1 = this.datastore.createQuery(Product.class);
+			query1.field("productId").equal(product.getId());
+			this.datastore.findAndDelete(query1);
+			
 			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
 			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
 					product);
@@ -369,7 +374,10 @@ public class Database {
 
 	public String deleteQuotaDirect(Quota quota) {
 		try {
-			this.datastore.delete(quota);
+			Query<Quota> query1 = this.datastore.createQuery(Quota.class);
+			query1.field("quotaId").equal(quota.getId());
+			this.datastore.findAndDelete(query1);
+			
 			Query<Product> query = this.datastore.createQuery(Product.class).field("id")
 					.equal(quota.getProduct().getObjectId());
 			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).push("quotas", quota);
@@ -417,7 +425,10 @@ public class Database {
 
 	public String deleteTierDirect(Tier tier) {
 		try {
-			this.datastore.delete(tier);
+			Query<Tier> query1 = this.datastore.createQuery(Tier.class);
+			query1.field("tierId").equal(tier.getId());
+			this.datastore.findAndDelete(query1);
+			
 			Query<Quota> query = this.datastore.createQuery(Quota.class).field("id")
 					.equal(tier.getQuota().getObjectId());
 			UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).push("tiers", tier);
@@ -450,7 +461,10 @@ public class Database {
 			}
 			User user = users.get(0);
 			Billing bill = new Billing(user, plan, fee);
-			this.datastore.delete(bill);
+			
+			Query<Billing> query1 = this.datastore.createQuery(Billing.class);
+			query1.field("userId").equal(user.getId());
+			this.datastore.findAndDelete(query1);
 
 		} catch (
 
