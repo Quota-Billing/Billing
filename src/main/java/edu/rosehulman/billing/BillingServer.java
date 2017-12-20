@@ -17,6 +17,11 @@ import edu.rosehulman.billing.router.AddProductHandler;
 import edu.rosehulman.billing.router.AddQuotaHandler;
 import edu.rosehulman.billing.router.AddTierHandler;
 import edu.rosehulman.billing.router.AddUserHandler;
+import edu.rosehulman.billing.router.DeleteBillingHandler;
+import edu.rosehulman.billing.router.DeletePartnerHandler;
+import edu.rosehulman.billing.router.DeleteProductHandler;
+import edu.rosehulman.billing.router.DeleteQuotaHandler;
+import edu.rosehulman.billing.router.DeleteTierHandler;
 import edu.rosehulman.billing.router.DeleteUserHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
@@ -27,7 +32,6 @@ public class BillingServer {
 	public static void main(String[] args) {
 		port(8085); // Set the port to run on
 
-		
 		Unirest.setObjectMapper(new ObjectMapper() {
 			private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new ObjectIdMapper();
 
@@ -65,6 +69,14 @@ public class BillingServer {
 		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
 		post(Routes.ADD_QUOTA, new AddQuotaHandler());
 		post(Routes.ADD_Tier, new AddTierHandler());
+		
+		
+		delete(Routes.DELETE_BILLING, new DeleteBillingHandler());
+		delete(Routes.DELETE_USER, new DeleteUserHandler());
+		delete(Routes.DELETE_PARTNER, new DeletePartnerHandler());
+		delete(Routes.DELETE_PRODUCT_TO_PARTNER, new DeleteProductHandler());
+		delete(Routes.DELETE_QUOTA, new DeleteQuotaHandler());
+		delete(Routes.DELETE_Tier, new DeleteTierHandler());
 
 		// BrainTree br =new BrainTree();
 

@@ -16,6 +16,7 @@ public class DeleteProductHandler implements Route {
 		String partnerId = request.params(":partnerId");
 		Partner partner = Database.getInstance().getPartner(partnerId);
 		Product product =  SharedClient.getInstance().UpdateProduct(productId, partnerId);
+		System.out.println(product);
 		Database.getInstance().deleteProductDirect(product, partner);
 
 		return "";
