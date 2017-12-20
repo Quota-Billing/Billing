@@ -348,7 +348,7 @@ public class Database {
 			this.datastore.findAndDelete(query1);
 			
 			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
-			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
+			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).removeAll("products",
 					product);
 			this.datastore.update(query, op);
 		} catch (Exception e) {
@@ -380,7 +380,7 @@ public class Database {
 			
 			Query<Product> query = this.datastore.createQuery(Product.class).field("id")
 					.equal(quota.getProduct().getObjectId());
-			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).push("quotas", quota);
+			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).removeAll("quotas", quota);
 			this.datastore.update(query, op);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -401,7 +401,9 @@ public class Database {
 
 	public String deleteUserDirect(User user) {
 		try {
-			this.datastore.delete(user);
+			Query<User> query1 = this.datastore.createQuery(User.class);
+			query1.field("userId").equal(user.getId());
+			this.datastore.findAndDelete(query1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -431,7 +433,7 @@ public class Database {
 			
 			Query<Quota> query = this.datastore.createQuery(Quota.class).field("id")
 					.equal(tier.getQuota().getObjectId());
-			UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).push("tiers", tier);
+			UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).removeAll("tiers", tier);
 			this.datastore.update(query, op);
 		} catch (Exception e) {
 			e.printStackTrace();
