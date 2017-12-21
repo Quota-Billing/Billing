@@ -1,10 +1,11 @@
 package edu.rosehulman.billing.router;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import edu.rosehulman.billing.Database;
-import edu.rosehulman.billing.models.Quota;
+import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Tier;
 import spark.Request;
 import spark.Response;
@@ -70,6 +71,19 @@ public class QuotaReachedHandler implements Route {
 		// but for now it just print the bill
 		
 		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
+		Partner partner = Database.getInstance().getPartner(partnerId);
+		String url = partner.getApiKey();
+		HttpResponse<String> billingresponse;
+		try {
+			billingresponse = Unirest.get(url+"user/{userId}")
+					.routeParam("userId", userId)				
+					.asString();
+			System.out.println(billingresponse);
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return builder.toString();
 	}
 
