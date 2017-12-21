@@ -22,8 +22,8 @@ public class QuotaReachedHandler implements Route {
 		
 		System.out.println("quotaId: "+ quotaId);
 		
-		//Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
-		Tier tierObject = Database.getInstance().getTier(tierId);
+		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
+//		Tier tierObject = Database.getInstance().getTier(tierId);
 		// need to find the right tier object
 		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
 		//Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
