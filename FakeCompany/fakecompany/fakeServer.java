@@ -24,7 +24,7 @@ public class fakeServer {
 		Database mydb = new Database();
 		dbinfo = mydb.getDatabaseInfo();
 		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
-		 post(Path.ADD_USER, new addUserController()); 
+		post(Path.ADD_USER, new addUserController()); 
 		post("/notificationToPartner", (req, res) -> {
 			System.out.println("get quota user");
 			String confirm = JOptionPane.showInputDialog(
