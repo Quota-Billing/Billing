@@ -18,7 +18,7 @@ public class QuotaUpdateHandler implements Route{
 		String partnerId = request.params(":partnerId");
 	    String productId = request.params(":productId");
 	    String userId = request.params(":userId");
-	    
+	    String tierId = request.params(":tierId");
 	    QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 
 	   
