@@ -21,9 +21,7 @@ public class fakeServer {
 	public static void main(String[] args) throws IOException {
 		port(8080); // Set the port to run on
 
-		Database mydb = new Database();
-		dbinfo = mydb.getDatabaseInfo();
-		get("/getdb", (req, res) -> "database information get all table name: "+dbinfo);
+		Database mydb = Database.getInstance();
 		post(Path.ADD_USER, new addUserController()); 
 		post("/notificationToPartner", (req, res) -> {
 			System.out.println("get quota user");
