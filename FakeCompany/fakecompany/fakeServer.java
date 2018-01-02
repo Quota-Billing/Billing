@@ -22,6 +22,8 @@ public class fakeServer {
 		port(8080); // Set the port to run on
 
 		Database mydb = Database.getInstance();
+
+
 		post(Path.ADD_USER, new addUserController()); 
 		post("/notificationToPartner", (req, res) -> {
 			System.out.println("get quota user");

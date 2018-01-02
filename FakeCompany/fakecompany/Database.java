@@ -21,7 +21,6 @@ public class Database {
 
 	}
 	  
-	  Document userDocument;
 	
 	 
 	 public String addUser(String userId, String password, String token) {
