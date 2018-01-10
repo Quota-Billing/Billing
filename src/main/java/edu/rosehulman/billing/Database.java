@@ -477,5 +477,29 @@ public class Database {
 
 		return "ok";
 	}
+	
+	
+	public BillingHistory getBillingHistory(String id) {
+		List<BillingHistory> histories = datastore.createQuery(BillingHistory.class).field("id").equal(id).asList();
+        if (histories.size() == 0) {
+            System.out.println("wrong billinghistory id"); // debugging
+            return null;
+        }
+        BillingHistory history = histories.get(0);
+		return history;
+	}
+	
+	public String deleteBillingHistory(String id) {
+		try {
+			Query<BillingHistory> query1 = this.datastore.createQuery(BillingHistory.class);
+			query1.field("id").equal(id);
+			this.datastore.findAndDelete(query1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
+	
 
 }
