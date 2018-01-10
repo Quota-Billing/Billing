@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Property;
 public class User {
 	@Id
 	private ObjectId id;
-	@Property("id")
+	@Property("userId")
 	private String userId;
 	@Property("password")
 	private String password;

@@ -1,6 +1,7 @@
 package fakecompany;
 
-import org.bson.Document;
+import java.util.List;
+
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -46,4 +47,16 @@ public class Database {
 		    }
 		    return instance;
 		  }
+
+
+
+	public User getUser(String userId) {
+		List<User> users = datastore.createQuery(User.class).field("userId").equal(userId).asList();
+		if (users.size() == 0) {
+			System.out.println("wrong userId"); // debugging
+			return null;
+		}
+		User user = users.get(0);
+		return user;
+	}
 }

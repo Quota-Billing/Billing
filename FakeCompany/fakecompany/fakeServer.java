@@ -31,6 +31,7 @@ public class fakeServer {
 					"This is this user's due, please confirm that:");
 			return "ok";
 		});
+		get(Path.CHARGE_USER, new ChargeUserController());
 		
 	}
 }
