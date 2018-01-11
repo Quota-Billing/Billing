@@ -8,7 +8,7 @@ public class RecurringBillHandler implements Route {
 
 	@Override
 	public Object handle(Request request, Response response) throws Exception {
-		System.out.println("received bill from" + request.body());
+		System.out.println("received bill from " + request.body());
 		response.status(200);
 		return "200";
 	}

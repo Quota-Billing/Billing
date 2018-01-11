@@ -28,24 +28,23 @@ public class RecurringBillJob implements Job {
 		JSONObject billJson = new JSONObject();
 		Map<String, String> billDetail = new HashMap<String,String>();
 		
-		for (Quota quota : user.getProduct().getQuotas()) {
-			if (quota.getType().equals("recurring")) {
-				String price = quota.getTiers().get(0).getPrice()+"";   // need to know what tier the user is
-				billDetail.put(quota.getName(), price);
-			}
-		}
+//		for (Quota quota : user.getProduct().getQuotas()) {
+//			if (quota.getType().equals("recurring")) {
+//				String price = quota.getTiers().get(0).getPrice()+"";   // need to know what tier the user is
+//				billDetail.put(quota.getName(), price);
+//			}
+//		}
 		billJson.put("detail", billDetail);
 		
 //		String webhook = p.getWebhook();
 		String webhook = "http://localhost:8080/recurringBill";
 		
-		HttpResponse<String> response;
 		try {
-			response = Unirest.post(webhook).body(user.getId()).asString();
-			if (response.equals("200")) {
-				System.out.println("Bill sent!");
+			int response = Unirest.post(webhook).body(user.getId()).asString().getStatus();
+			if (response == 200) {
+				System.out.println("Request sent!");
 			}else {
-				System.err.println("Error in Partner Server");
+				System.err.println("Error in Partner server");
 			}
 		} catch (UnirestException e) {
 			System.err.println("Failed to send request in RecurringBillJob");

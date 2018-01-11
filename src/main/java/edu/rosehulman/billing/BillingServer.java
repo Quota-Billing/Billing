@@ -79,6 +79,7 @@ public class BillingServer {
 		delete(Routes.DELETE_Tier, new DeleteTierHandler());
 
 		// BrainTree br =new BrainTree();
-
+		
+		JobScheduler scheduler = new JobScheduler();
 	}
 }
