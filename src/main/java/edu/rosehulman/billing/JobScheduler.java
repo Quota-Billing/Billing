@@ -32,8 +32,11 @@ public class JobScheduler {
 		JobDetail job = newJob(RecurringBillJob.class).withIdentity(user.getId(), user.getPartner().getId()).build();
 		job.getJobDataMap().put(RecurringBillJob.JOB_DATA_MAP_USER, user);
 
+//		Trigger trigger = newTrigger().withIdentity(user.getId(), user.getPartner().getId())
+//				.withSchedule(cronSchedule("0 0 10am 1 * ?")).build();
+		
 		Trigger trigger = newTrigger().withIdentity(user.getId(), user.getPartner().getId())
-				.withSchedule(cronSchedule("0 0 10am 1 * ?")).build();
+				.withSchedule(cronSchedule("0/30 * * * * ?")).build();
 
 		try {
 			this.scheduler.scheduleJob(job, trigger);
@@ -54,11 +57,11 @@ public class JobScheduler {
 
 
 // for testing scheduler locally
-//	public static void main(String[] args) {
-//		JobScheduler js = new JobScheduler();
-//		Partner p = new Partner("fakeId", null, null);
-//		User user = new User("fakeID");
-//		user.setPartner(p);
-//		js.addJob(user);
-//	}
+	public static void main(String[] args) {
+		JobScheduler js = new JobScheduler();
+		Partner p = new Partner("fakeId", null, null);
+		User user = new User("fakeID");
+		user.setPartner(p);
+		js.addJob(user);
+	}
 }

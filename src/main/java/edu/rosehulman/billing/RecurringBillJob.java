@@ -1,5 +1,9 @@
 package edu.rosehulman.billing;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -9,6 +13,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import edu.rosehulman.billing.models.Partner;
+import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.User;
 
 public class RecurringBillJob implements Job {
@@ -19,13 +24,26 @@ public class RecurringBillJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		User user = (User) context.getJobDetail().getJobDataMap().get(JOB_DATA_MAP_USER);
 		Partner p = user.getPartner();
+		
+		JSONObject billJson = new JSONObject();
+		Map<String, String> billDetail = new HashMap<String,String>();
+		
+		for (Quota quota : user.getProduct().getQuotas()) {
+			if (quota.getType().equals("recurring")) {
+				String price = quota.getTiers().get(0).getPrice()+"";   // need to know what tier the user is
+				billDetail.put(quota.getName(), price);
+			}
+		}
+		billJson.put("detail", billDetail);
+		
 //		String webhook = p.getWebhook();
-		String webhook = "need to be filled";
+		String webhook = "http://localhost:8080/recurringBill";
 		
 		HttpResponse<String> response;
 		try {
-			response = Unirest.post(webhook).asString();
+			response = Unirest.post(webhook).body(user.getId()).asString();
 			if (response.equals("200")) {
+				System.out.println("Bill sent!");
 			}else {
 				System.err.println("Error in Partner Server");
 			}
