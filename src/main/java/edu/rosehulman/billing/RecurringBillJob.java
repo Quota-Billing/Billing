@@ -42,7 +42,7 @@ public class RecurringBillJob implements Job {
 		try {
 			int response = Unirest.post(webhook).body(user.getId()).asString().getStatus();
 			if (response == 200) {
-				System.out.println("Request sent!");
+				System.out.println("Bill sent for " + user.getId() +" !");
 			}else {
 				System.err.println("Error in Partner server");
 			}
