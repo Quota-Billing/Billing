@@ -17,6 +17,8 @@ public class User {
 	private Product product;
 	@Reference
 	private Partner partner;
+	@Reference
+	private Tier tier;
 
 	public User() {
 
@@ -26,6 +28,14 @@ public class User {
 		this.id = new ObjectId();
 		this.userId = id;
 
+	}
+	
+	public void setTier(final Tier tier){
+		this.tier = tier;
+	}
+	
+	public Tier getTier(){
+		return this.tier;
 	}
 
 	public void setProduct(final Product product) {
@@ -51,5 +61,10 @@ public class User {
 	public String toString() {
 		return "User: " + this.userId + "\nProduct: " + this.product.toString() + "\nPartner: "
 				+ this.partner.toString();
+	}
+
+	public ObjectId getObjectId() {
+		// TODO Auto-generated method stub
+		return this.id;
 	}
 }

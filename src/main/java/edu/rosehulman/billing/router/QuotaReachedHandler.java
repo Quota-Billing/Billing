@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import edu.rosehulman.billing.Database;
+import edu.rosehulman.billing.QuotaClient;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import spark.Request;
@@ -71,6 +72,7 @@ public class QuotaReachedHandler implements Route {
 		// but for now it just print the bill
 		
 		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
+		QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 		return builder.toString();
 	}
 

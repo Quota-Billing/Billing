@@ -56,6 +56,35 @@ public class Database {
 		}
 		return "ok";
 	}
+	
+	public User getUser(String partnerId, String productId, String userId){
+		try {
+			List<User> users = datastore.createQuery(User.class)
+					.field("partnerId")
+					.equal(partnerId)
+					.field("productId")
+					.equal(productId)
+					.field("userId")
+					.equal(userId)
+					.asList();
+			if(users.size()<1){
+				return null;
+			} else{
+				return users.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return null;
+	}
+	
+	public String updateUser(User user){
+		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
+		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class);
+		this.datastore.update(query, op);
+		return "ok";
+	}
 
 	public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
 		try {
