@@ -17,6 +17,8 @@ public class User {
 	private Product product;
 	@Reference
 	private Partner partner;
+	@Reference
+	private Tier tier;
 
 	public User() {
 
@@ -48,8 +50,16 @@ public class User {
 		return this.partner;
 	}
 
+	public Tier getTier() {
+		return this.tier;
+	}
+	
+	public void setTier(Tier tier) {
+		this.tier = tier;
+	}
+	
 	public String toString() {
 		return "User: " + this.userId + "\nProduct: " + this.product.toString() + "\nPartner: "
-				+ this.partner.toString();
+				+ this.partner.toString() + "\nCurrent Tier: " + this.tier.toString();
 	}
 }

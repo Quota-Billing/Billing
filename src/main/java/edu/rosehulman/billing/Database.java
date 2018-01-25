@@ -284,6 +284,19 @@ public class Database {
 		Partner partner = partners.get(0);
 		return partner;
 	}
+	
+	public User getUser(String partnerId, String productId, String userId) {
+		final Query<User> userQuery = datastore.createQuery(User.class).field("userId").equal(userId);
+		List<User> results = userQuery.asList();
+
+		for (User user : results) {
+			if (user.getPartner().getId().equals(partnerId) && user.getProduct().getId().equals(productId)) {
+				return user;
+			}
+		}
+		
+		return null;
+	}
 
 	public Tier getTier(String partnerId, String productId, String quotaId) {
 		List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
@@ -502,4 +515,11 @@ public class Database {
 	}
 	
 
+	public String updateUser(User user) {
+		Query<User> userQuery = this.datastore.createQuery(User.class).field("userId").equal(user.getId());
+        
+		UpdateOperations<User> ops = datastore.createUpdateOperations(User.class).set("tier", user.getTier());
+		this.datastore.update(userQuery, ops);
+		return "ok";
+	}
 }

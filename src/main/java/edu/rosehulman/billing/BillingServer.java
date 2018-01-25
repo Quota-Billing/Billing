@@ -25,6 +25,7 @@ import edu.rosehulman.billing.router.DeleteTierHandler;
 import edu.rosehulman.billing.router.DeleteUserHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
+import edu.rosehulman.billing.router.UpdateUserTierHandler;
 
 public class BillingServer {
 	public static ArrayList<String> dbinfo;
@@ -78,6 +79,7 @@ public class BillingServer {
 		delete(Routes.DELETE_QUOTA, new DeleteQuotaHandler());
 		delete(Routes.DELETE_Tier, new DeleteTierHandler());
 
+		post(Routes.UPDATE_USER_TIER, new UpdateUserTierHandler());
 		// BrainTree br =new BrainTree();
 		
 		JobScheduler scheduler = new JobScheduler();
