@@ -32,11 +32,12 @@ public class JobScheduler {
 		JobDetail job = newJob(RecurringBillJob.class).withIdentity(user.getId(), user.getPartner().getId()).build();
 		job.getJobDataMap().put(RecurringBillJob.JOB_DATA_MAP_USER, user);
 
-//		Trigger trigger = newTrigger().withIdentity(user.getId(), user.getPartner().getId())
-//				.withSchedule(cronSchedule("0 0 10am 1 * ?")).build();
-		
+		//trigger job at 10am on 1st of every month
 		Trigger trigger = newTrigger().withIdentity(user.getId(), user.getPartner().getId())
-				.withSchedule(cronSchedule("0/30 * * * * ?")).build();
+				.withSchedule(cronSchedule("0 0 10am 1 * ?")).build();
+		
+//		Trigger trigger = newTrigger().withIdentity(user.getId(), user.getPartner().getId())
+//				.withSchedule(cronSchedule("0/10 * * * * ?")).build();   for demo,  job repeated very 10 sec
 
 		try {
 			this.scheduler.scheduleJob(job, trigger);

@@ -25,7 +25,6 @@ import edu.rosehulman.billing.router.DeleteTierHandler;
 import edu.rosehulman.billing.router.DeleteUserHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
-import edu.rosehulman.billing.router.UpdateUserTierHandler;
 
 public class BillingServer {
 	public static ArrayList<String> dbinfo;
@@ -40,8 +39,8 @@ public class BillingServer {
 				try {
 					return jacksonObjectMapper.readValue(value, valueType);
 				} catch (IOException e) {
-					System.out.println("read error: "+ value);
-					System.out.println("value typte: "+ valueType.toString());
+					System.out.println("read error: " + value);
+					System.out.println("value typte: " + valueType.toString());
 					throw new RuntimeException(e);
 				}
 			}
@@ -50,7 +49,7 @@ public class BillingServer {
 				try {
 					return jacksonObjectMapper.writeValueAsString(value);
 				} catch (JsonProcessingException e) {
-					System.out.println("error: "+ value);
+					System.out.println("error: " + value);
 
 					throw new RuntimeException(e);
 				}
@@ -70,8 +69,7 @@ public class BillingServer {
 		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
 		post(Routes.ADD_QUOTA, new AddQuotaHandler());
 		post(Routes.ADD_Tier, new AddTierHandler());
-		
-		
+
 		delete(Routes.DELETE_BILLING, new DeleteBillingHandler());
 		delete(Routes.DELETE_USER, new DeleteUserHandler());
 		delete(Routes.DELETE_PARTNER, new DeletePartnerHandler());
@@ -79,9 +77,8 @@ public class BillingServer {
 		delete(Routes.DELETE_QUOTA, new DeleteQuotaHandler());
 		delete(Routes.DELETE_Tier, new DeleteTierHandler());
 
-		post(Routes.UPDATE_USER_TIER, new UpdateUserTierHandler());
 		// BrainTree br =new BrainTree();
-		
+
 		JobScheduler scheduler = new JobScheduler();
 	}
 }
