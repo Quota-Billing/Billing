@@ -16,6 +16,7 @@ import edu.rosehulman.billing.router.AddPartnerHandler;
 import edu.rosehulman.billing.router.AddProductHandler;
 import edu.rosehulman.billing.router.AddQuotaHandler;
 import edu.rosehulman.billing.router.AddTierHandler;
+import edu.rosehulman.billing.router.AddTierToUserHandler;
 import edu.rosehulman.billing.router.AddUserHandler;
 import edu.rosehulman.billing.router.DeleteBillingHandler;
 import edu.rosehulman.billing.router.DeletePartnerHandler;
@@ -69,7 +70,7 @@ public class BillingServer {
 		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
 		post(Routes.ADD_QUOTA, new AddQuotaHandler());
 		post(Routes.ADD_Tier, new AddTierHandler());
-		
+		post(Routes.ADD_Tier_TO_USER, new AddTierToUserHandler());
 		
 		delete(Routes.DELETE_BILLING, new DeleteBillingHandler());
 		delete(Routes.DELETE_USER, new DeleteUserHandler());

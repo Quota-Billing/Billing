@@ -14,6 +14,8 @@ public class Routes {
 	public static final String ADD_PARTNER = "partner/:partnerId";
 
 	public static final String ADD_Tier = "partner/:partnerId/product/:productId/quota/:quotaId/tier/:tierId";
+	
+	public static final String ADD_Tier_TO_USER = "partner/:partnerId/product/:productId/quota/:quotaId/tier/:tierId/user/:userId";
 
 	public static final String DELETE_USER = "partner/:partnerId/product/:productId/deleteUser/:userId";
 	
@@ -29,7 +31,7 @@ public class Routes {
 
 	public static final String DELETE_Tier = "partner/:partnerId/product/:productId/quota/:quotaId/tier/:tierId";
 	
-	public static final String QUOTA_REACHED = "/partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId";
+	public static final String QUOTA_REACHED = "/partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/tier/:tierId";
 	
 	public static final String QUOTA_ADDR = "http://quota.csse.rose-hulman.edu:8084/";
 	// public static String QUOTA_ADDR_notify = "http://localhost:8082/";

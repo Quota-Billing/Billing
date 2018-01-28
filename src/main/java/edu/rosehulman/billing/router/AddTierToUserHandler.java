@@ -21,7 +21,7 @@ public class AddTierToUserHandler implements Route{
 		Tier tier = Database.getInstance().getTier(partnerId, productId, quotaId);
 		user.setTier(tier);
 		
-		return null;
+		return "";
 	}
 
 }
