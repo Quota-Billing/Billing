@@ -138,10 +138,10 @@ public class InvoiceGenerator extends SampleBase<Invoice> {
 	 * @return Invoices instance that contains found invoices
 	 * @throws PayPalRESTException
 	 */
-	public Invoices search(APIContext context) throws PayPalRESTException {
+	public Invoices search(APIContext context, String startTime, String endTime) throws PayPalRESTException {
 		Search search = new Search();
-		search.setStartInvoiceDate("2010-05-10 PST");
-		search.setEndInvoiceDate("2014-04-10 PST");
+		search.setStartInvoiceDate(startTime);
+		search.setEndInvoiceDate(endTime);
 		search.setPage(1);
 		search.setPageSize(20);
 		search.setTotalCountRequired(true);
@@ -248,6 +248,16 @@ public class InvoiceGenerator extends SampleBase<Invoice> {
 	public String deleteInvoice() throws PayPalRESTException, IOException {
 		invoiceSample.delete(context);
 		return "delete response:\n" + Invoice.getLastResponse();
+	}
+	
+	public String searchInovice(String startTime, String endTime) throws PayPalRESTException, IOException {
+		invoiceSample.search(context, "2010-05-10 PST", "2014-04-10 PST");
+		return "search response:\n" + Invoice.getLastResponse();
+	}
+	
+	public String remindInovice() throws PayPalRESTException, IOException {
+		invoiceSample.sendReminder(context);
+		return "remind response:\n" + Invoice.getLastResponse();
 	}
 	
 //	public static void main(String[] args) {
