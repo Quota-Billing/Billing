@@ -1,4 +1,4 @@
-package edu.rosehulman.billing;
+package Paypal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,11 +22,13 @@ import com.paypal.base.rest.PayPalRESTException;
  * https://developer.paypal.com/webapps/developer/docs/api/#invoicing
  *
  */
-public class InvoiceSample extends SampleBase<Invoice> {
+public class InvoiceGenerator extends SampleBase<Invoice> {
 
 	public static final String clientID = "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM";
 	public static final String clientSecret = "ECXxIJXBQkbkJn3yv9A8lIqsRGUjtzOY4i1UklqFbesdZiKDYJxoN_HgU1rJ-Ot5-zqguqQ4AHIw_UIT";
-
+	InvoiceGenerator invoiceSample = null;
+	APIContext context = null;
+	
 	/**
 	 * Initialize and instantiate an Invoice object
 	 * 
@@ -35,8 +37,22 @@ public class InvoiceSample extends SampleBase<Invoice> {
 	 * @throws JsonIOException
 	 * @throws FileNotFoundException
 	 */
-	public InvoiceSample() throws PayPalRESTException, JsonSyntaxException, JsonIOException, FileNotFoundException {
+	public InvoiceGenerator() throws PayPalRESTException, JsonSyntaxException, JsonIOException, FileNotFoundException {
 		super(new Invoice());
+		try {
+			invoiceSample = new InvoiceGenerator();
+			context = new APIContext(clientID, clientSecret, "sandbox");
+		}  catch (JsonSyntaxException e) {
+			e.printStackTrace();
+		} catch (JsonIOException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (PayPalRESTException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -205,20 +221,48 @@ public class InvoiceSample extends SampleBase<Invoice> {
 	 * Main method that calls all methods above in a flow.
 	 * 
 	 * @param args
+	 * @throws IOException 
+	 * @throws PayPalRESTException 
 	 */
-	public static void main(String[] args) {
-		try {
-			InvoiceSample invoiceSample = new InvoiceSample();
-
-			APIContext context = new APIContext(clientID, clientSecret, "sandbox");
-
-			invoiceSample.create(context);
-			System.out.println("create response:\n" + Invoice.getLastResponse());
-			invoiceSample.update(context);
-			System.out.println("update response:\n" + Invoice.getLastResponse());
-			invoiceSample.send(context);
-			System.out.println("send response:\n" + Invoice.getLastResponse());
-			invoiceSample.getQRCode(context);
+	
+	public String createInvoiceOnly() throws PayPalRESTException, IOException {
+		invoiceSample.create(context);
+		return "create response:\n" + Invoice.getLastResponse();
+	}
+	
+	public String updateInvoice() throws PayPalRESTException, IOException {
+		invoiceSample.update(context);
+		return "update response:\n" + Invoice.getLastResponse();
+	}
+	
+	public String sendInvoice() throws PayPalRESTException, IOException {
+		invoiceSample.send(context);
+		return "send response:\n" + Invoice.getLastResponse();
+	}
+	
+	public String cancelInvoice() throws PayPalRESTException, IOException {
+		invoiceSample.cancel(context);
+		return "cancel response:\n" + Invoice.getLastResponse();
+	}
+	
+	public String deleteInvoice() throws PayPalRESTException, IOException {
+		invoiceSample.delete(context);
+		return "delete response:\n" + Invoice.getLastResponse();
+	}
+	
+//	public static void main(String[] args) {
+//		try {
+//			InvoiceGenerator invoiceSample = new InvoiceGenerator();
+//
+//			APIContext context = new APIContext(clientID, clientSecret, "sandbox");
+//
+//			invoiceSample.create(context);
+//			System.out.println("create response:\n" + Invoice.getLastResponse());
+//			invoiceSample.update(context);
+//			System.out.println("update response:\n" + Invoice.getLastResponse());
+//			invoiceSample.send(context);
+//			System.out.println("send response:\n" + Invoice.getLastResponse());
+//			invoiceSample.getQRCode(context);
 //			invoiceSample.retrieve(context);
 //			System.out.println("retrieve response:\n" + Invoice.getLastResponse());
 //			invoiceSample.getMerchantInvoices(context);
@@ -231,16 +275,5 @@ public class InvoiceSample extends SampleBase<Invoice> {
 //			System.out.println("cancel response:\n" + Invoice.getLastResponse());
 //			invoiceSample.delete(context);
 //			System.out.println("delete response:\n" + Invoice.getLastResponse());
-		} catch (JsonSyntaxException e) {
-			e.printStackTrace();
-		} catch (JsonIOException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (PayPalRESTException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	}
 }
