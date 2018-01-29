@@ -32,5 +32,7 @@ public class fakeServer {
 			return "ok";
 		});
 		
+		post("/recurringBill", new RecurringBillHandler());
+		
 	}
 }

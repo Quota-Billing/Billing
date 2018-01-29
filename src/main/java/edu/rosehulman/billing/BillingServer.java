@@ -39,8 +39,8 @@ public class BillingServer {
 				try {
 					return jacksonObjectMapper.readValue(value, valueType);
 				} catch (IOException e) {
-					System.out.println("read error: "+ value);
-					System.out.println("value typte: "+ valueType.toString());
+					System.out.println("read error: " + value);
+					System.out.println("value typte: " + valueType.toString());
 					throw new RuntimeException(e);
 				}
 			}
@@ -49,7 +49,7 @@ public class BillingServer {
 				try {
 					return jacksonObjectMapper.writeValueAsString(value);
 				} catch (JsonProcessingException e) {
-					System.out.println("error: "+ value);
+					System.out.println("error: " + value);
 
 					throw new RuntimeException(e);
 				}
@@ -69,8 +69,7 @@ public class BillingServer {
 		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
 		post(Routes.ADD_QUOTA, new AddQuotaHandler());
 		post(Routes.ADD_Tier, new AddTierHandler());
-		
-		
+
 		delete(Routes.DELETE_BILLING, new DeleteBillingHandler());
 		delete(Routes.DELETE_USER, new DeleteUserHandler());
 		delete(Routes.DELETE_PARTNER, new DeletePartnerHandler());
@@ -80,5 +79,6 @@ public class BillingServer {
 
 		// BrainTree br =new BrainTree();
 
+		JobScheduler scheduler = new JobScheduler();
 	}
 }

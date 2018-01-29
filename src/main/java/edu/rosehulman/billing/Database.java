@@ -500,6 +500,5 @@ public class Database {
 		}
 		return "ok";
 	}
-	
 
 }
