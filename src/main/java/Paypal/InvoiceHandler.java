@@ -1,5 +1,6 @@
 package Paypal;
 
+import java.awt.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,9 +20,26 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 
 public class InvoiceHandler extends SampleBase<Invoice> {
+	HashMap<String, APIContext> clientinfo = new HashMap<String, APIContext>();
+	InteriorInvoiceHandler invoiceSample = null;
 
-	public InvoiceHandler() throws PayPalRESTException, JsonSyntaxException, JsonIOException, FileNotFoundException {
+	public InvoiceHandler() throws JsonSyntaxException, JsonIOException, FileNotFoundException, PayPalRESTException {
 		super(new Invoice());
+		invoiceSample = new InteriorInvoiceHandler();
+	}
+
+	public void createNewContext(String clientid, String clientsecret) throws PayPalRESTException, IOException {
+		APIContext context = new APIContext(clientid, clientsecret, "sandbox");
+		if (!clientinfo.keySet().contains(clientid)) {
+			clientinfo.put(clientid, context);
+		}
+	}
+
+	public void createNewInvoiceAndSend(String filename, String clientid) throws PayPalRESTException, IOException {
+		APIContext context = clientinfo.get(clientid);
+		super.instance = load(filename, Invoice.class);
+		super.instance = super.instance.create(context);
+		super.instance.send(context);
 	}
 
 	public Invoices getMerchantInvoices(APIContext context) throws PayPalRESTException {
@@ -34,71 +52,39 @@ public class InvoiceHandler extends SampleBase<Invoice> {
 		return Invoice.getAll(context, options);
 	}
 
-	public Invoices search(APIContext context, String startTime, String endTime) throws PayPalRESTException {
-		Search search = new Search();
-		search.setStartInvoiceDate(startTime);
-		search.setEndInvoiceDate(endTime);
-		search.setPage(1);
-		search.setPageSize(20);
-		search.setTotalCountRequired(true);
-		return super.instance.search(context, search);
+	public Invoices search(String clientid, String startTime, String endTime) throws PayPalRESTException {
+		APIContext context = clientinfo.get(clientid);
+		return invoiceSample.search(context, startTime, endTime);
 	}
 
-	public void cancelInvoice(APIContext context, int index, String title, String content)
+	public void cancelInvoice(String clientid, int index, String title, String content)
 			throws PayPalRESTException, IOException {
-		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
-		CancelNotification cancelNotification = new CancelNotification();
-		cancelNotification.setSubject(title);
-		cancelNotification.setNote(content);
-		cancelNotification.setSendToMerchant(true);
-		cancelNotification.setSendToPayer(true);
-		i.get(index).cancel(context, cancelNotification);
+		APIContext context = clientinfo.get(clientid);
+		invoiceSample.cancelInvoice(context, index, title, content);
 	}
 
-	public void cancelAllInvoice(APIContext context, String title, String content)
+	public void cancelAllInvoice(String clientid, String title, String content)
 			throws PayPalRESTException, IOException {
-		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
-		CancelNotification cancelNotification = new CancelNotification();
-		cancelNotification.setSubject(title);
-		cancelNotification.setNote(content);
-		cancelNotification.setSendToMerchant(true);
-		cancelNotification.setSendToPayer(true);
-		for (Invoice x : i) {
-			System.out.println(x.getStatus());
-			if (x.getStatus().equals("SENT")) {
-				x.cancel(context, cancelNotification);
-			}
-		}
+		APIContext context = clientinfo.get(clientid);
+		invoiceSample.cancelAllInvoice(context, title, content);
 	}
 
-	public void generateQRCode(APIContext context, int index, String filename) throws PayPalRESTException, IOException {
-		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
-		Map<String, String> options = new HashMap<String, String>() {
-			{
-				put("width", "400");
-				put("height", "350");
-			}
-		};
-		Image image = Invoice.qrCode(context, i.get(index).getId(), options);
-		image.saveToFile(filename);
+	public void generateQRCode(String clientid, int index, String filename) throws PayPalRESTException, IOException {
+		APIContext context = clientinfo.get(clientid);
+		invoiceSample.generateQRCode(context, index, filename);
 	}
 
-	public void sendReminder(APIContext context, int index, String title, String content) throws PayPalRESTException {
-		Notification notification = new Notification();
-		notification.setSubject(title);
-		notification.setNote(content);
-		notification.setSendToMerchant(true);
-		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
-		i.get(index).remind(context, notification);
+	public void sendReminder(String clientid, int index, String title, String content) throws PayPalRESTException {
+		APIContext context = clientinfo.get(clientid);
+		invoiceSample.sendReminder(context, index, title, content);
 	}
 
-	public void deleteAllDraft(APIContext context) throws PayPalRESTException {
-		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
-		for (Invoice x : i) {
-			System.out.println(x.getStatus());
-			if (x.getStatus().equals("DRAFT")) {
-				x.delete(context);
-			}
-		}
+	public void sendReminderToAll(APIContext context, String title, String content) throws PayPalRESTException {
+
+	}
+
+	public void deleteAllDraft(String clientid) throws PayPalRESTException {
+		APIContext context = clientinfo.get(clientid);
+		invoiceSample.deleteAllDraft(context);
 	}
 }

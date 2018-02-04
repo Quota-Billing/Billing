@@ -2,6 +2,7 @@ package Paypal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -13,7 +14,7 @@ public class main {
 	}
 
 	public static void main(String[] args)
-			throws JsonSyntaxException, JsonIOException, PayPalRESTException, IOException {
+			throws JsonSyntaxException, JsonIOException, PayPalRESTException, IOException, InterruptedException {
 		// x.deleteAllDraft("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		ArrayList<String> merchant = new ArrayList<String>();
 		merchant.add("yukariyukari-facilitator@126.com");
@@ -61,7 +62,8 @@ public class main {
 		notes[0] = "Thank you for your business.";
 		notes[1] = "No refunds after 30 days.";
 		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes, "1.json");
-
+		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes, "2.json");
+		TimeUnit.SECONDS.sleep(5);
 		// items[0][0] = "Zoom System wireless headphones";
 		// items[0][1] = "2";
 		// items[0][2] = "USD";
@@ -69,20 +71,21 @@ public class main {
 		// items[0][4] = "8";
 		// JsonPharser.pharse(merchant, billing, items2, discount, notes, "2.json");
 		//
-		 InvoiceServer x = new InvoiceServer();
-		 x.createNewContext("",
-		 "");
+		InvoiceHandler x = new InvoiceHandler();
+		 x.createNewContext("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
+		 "ECXxIJXBQkbkJn3yv9A8lIqsRGUjtzOY4i1UklqFbesdZiKDYJxoN_HgU1rJ-Ot5-zqguqQ4AHIw_UIT");
 		// x.createNewInvoiceAndSend("invoice_create.json",
 		// "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		// x.createNewInvoiceAndSend("2.json",
 		// "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		//
+//		 System.getProperty("user.dir");
 		 x.createNewInvoiceAndSend("1.json",
-		 "");
+		 "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		// x.createNewInvoiceAndSend("2.json",
 		// "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
-		// x.cancelAllInvoice("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
-		// "p",
-		// "p");
+		 x.cancelAllInvoice("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
+		 "p",
+		 "p");
 	}
 }

@@ -34,7 +34,7 @@ public class JsonPharser {
 
 		FileWriter writer;
 
-		writer = new FileWriter(System.getProperty("user.dir") + "\\" + filename);
+		writer = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\java\\" + filename);
 
 		HashMap<String, Object> object = new HashMap<String, Object>() {
 			{
