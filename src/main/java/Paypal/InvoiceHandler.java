@@ -91,4 +91,14 @@ public class InvoiceHandler extends SampleBase<Invoice> {
 		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
 		i.get(index).remind(context, notification);
 	}
+
+	public void deleteAllDraft(APIContext context) throws PayPalRESTException {
+		ArrayList<Invoice> i = (ArrayList<Invoice>) Invoice.getAll(context).getInvoices();
+		for (Invoice x : i) {
+			System.out.println(x.getStatus());
+			if (x.getStatus().equals("DRAFT")) {
+				x.delete(context);
+			}
+		}
+	}
 }

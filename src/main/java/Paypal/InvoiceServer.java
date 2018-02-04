@@ -82,4 +82,9 @@ public class InvoiceServer extends SampleBase<Invoice> {
 	public void sendReminderToAll(APIContext context, String title, String content) throws PayPalRESTException {
 
 	}
+
+	public void deleteAllDraft(String clientid) throws PayPalRESTException {
+		APIContext context = clientinfo.get(clientid);
+		invoiceSample.deleteAllDraft(context);
+	}
 }
