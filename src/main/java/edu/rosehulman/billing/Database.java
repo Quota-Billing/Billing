@@ -85,6 +85,15 @@ public class Database {
 		this.datastore.update(query, op);
 		return "ok";
 	}
+	
+	public String updatePartner(Partner partner){
+		Query<Partner> query = this.datastore.createQuery(Partner.class).field("id").equal(partner.getObjectId());
+		List<Partner> list = query.asList();
+		System.out.println(list.size());
+		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
+		this.datastore.update(query, op);
+		return "ok";
+	}
 
 	public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
 		try {

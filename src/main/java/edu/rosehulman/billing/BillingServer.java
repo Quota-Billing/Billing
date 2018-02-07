@@ -3,7 +3,7 @@ package edu.rosehulman.billing;
 import static spark.Spark.delete;
 import static spark.Spark.port;
 import static spark.Spark.post;
-
+import static spark.Spark.put;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -26,6 +26,7 @@ import edu.rosehulman.billing.router.DeleteTierHandler;
 import edu.rosehulman.billing.router.DeleteUserHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
+import edu.rosehulman.billing.router.UpdatePartnerHandler;
 
 public class BillingServer {
 	public static ArrayList<String> dbinfo;
@@ -78,6 +79,8 @@ public class BillingServer {
 		delete(Routes.DELETE_PRODUCT_TO_PARTNER, new DeleteProductHandler());
 		delete(Routes.DELETE_QUOTA, new DeleteQuotaHandler());
 		delete(Routes.DELETE_Tier, new DeleteTierHandler());
+		
+		put(Routes.UPDATE_PARTNER, new UpdatePartnerHandler());
 
 		// BrainTree br =new BrainTree();
 

@@ -31,10 +31,12 @@ public class Routes {
 
 	public static final String DELETE_Tier = "partner/:partnerId/product/:productId/quota/:quotaId/tier/:tierId";
 		
-	public static final String QUOTA_REACHED = "/partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/tier/:tierId";
+	public static final String QUOTA_REACHED = "partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/tier/:tierId";
+	
+	public static final String UPDATE_PARTNER = "updatePartner/:partnerId";
 	
 	public static final String QUOTA_ADDR = "http://137.112.231.140:8080";
-
+	
 	public static final String SHARED_ADDR = "http://137.112.231.140:8084";
 	public static final String BILLING_PAID = "";
 	// public static String QUOTA_ADDR_notify = "http://localhost:8082/";
