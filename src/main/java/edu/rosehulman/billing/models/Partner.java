@@ -37,6 +37,9 @@ public class Partner {
 	@Property
 	@JsonProperty("password")
 	private String password;
+	@Property
+	@JsonProperty("webhook")
+	private String webhook;
 	public Partner() {
 		this.products = new ArrayList<Product>();
 	}
@@ -48,7 +51,15 @@ public class Partner {
 		this.apikey = apikey;
 		this.products = new ArrayList<Product>();
 	}
+	
+	public void setWebhook(String webhook){
+		this.webhook = webhook;
+	}
 
+	public String getWebhook(){
+		return this.webhook;
+	}
+	
 	public void addProduct(Product product) {
 		this.products.add(product);
 	}
