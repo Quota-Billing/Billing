@@ -17,10 +17,12 @@ public class AddTierToUserHandler implements Route{
 		String tierId = request.params(":tierId");
 		String quotaId = request.params(":quotaId");
 		String userId = request.params(":userId");
+
 		User user = Database.getInstance().getUser(partnerId, productId, userId);
 		Tier tier = Database.getInstance().getTier(partnerId, productId, quotaId);
+
 		user.setTier(tier);
-		
+		Database.getInstance().updateUser(user);
 		return "";
 	}
 

@@ -6,12 +6,14 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity("user")
 
 public class User {
 	@Id
 	private ObjectId id;
-	@Property("id")
+	@Property("userId")
 	private String userId;
 	@Reference
 	private Product product;
@@ -30,7 +32,7 @@ public class User {
 
 	}
 	
-	public void setTier(final Tier tier){
+	public void setTier(Tier tier){
 		this.tier = tier;
 	}
 	

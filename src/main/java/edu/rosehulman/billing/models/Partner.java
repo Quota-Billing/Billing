@@ -10,11 +10,13 @@ import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import edu.rosehulman.billing.ObjectIdDeserializer;
 @Entity("partner")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Partner {
 	@Id
 	@JsonDeserialize(using = ObjectIdDeserializer.class)
@@ -35,7 +37,6 @@ public class Partner {
 	@Property
 	@JsonProperty("password")
 	private String password;
-
 	public Partner() {
 		this.products = new ArrayList<Product>();
 	}
@@ -78,6 +79,11 @@ public class Partner {
 	@JsonIgnore
 	public String getId() {
 		return this.partnerId;
+	}
+	
+	@JsonIgnore
+	public ObjectId getObjectId(){
+		return this.id;
 	}
 
 	public void setName(String name) {

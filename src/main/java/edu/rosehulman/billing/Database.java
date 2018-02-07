@@ -59,18 +59,16 @@ public class Database {
 	
 	public User getUser(String partnerId, String productId, String userId){
 		try {
-			List<User> users = datastore.createQuery(User.class)
-					.field("partnerId")
-					.equal(partnerId)
-					.field("productId")
-					.equal(productId)
-					.field("userId")
-					.equal(userId)
-					.asList();
-			if(users.size()<1){
-				return null;
-			} else{
-				return users.get(0);
+			List<User> users = datastore.createQuery(User.class).asList();
+			if(users.size() == 0){
+				System.out.println("no users");
+			}
+			for(User u: users){
+				if(u.getPartner().getId().equals(partnerId)
+						&& u.getProduct().getId().equals(productId)
+						&& u.getId().equals(userId)){
+					return u;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +79,9 @@ public class Database {
 	
 	public String updateUser(User user){
 		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
-		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class);
+		List<User> list = query.asList();
+		System.out.println(list.size());
+		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class).set("tier", user.getTier());
 		this.datastore.update(query, op);
 		return "ok";
 	}
@@ -158,7 +158,7 @@ public class Database {
 	}
 
 	public String addTier(String partnerId, String productId, String quotaId, String tierId, String name, String max,
-			String price) {
+			String price, String graceExtra) {
 		try {
 			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
 			if (partners.size() == 0) {
@@ -176,7 +176,7 @@ public class Database {
 				System.out.println("wrong quotaId");
 				return "Wrong quotaId";
 			}
-			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price));
+			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price), Integer.valueOf(graceExtra));
 			tier.setPartner(partner);
 			tier.setProduct(product);
 			tier.setQuota(quota);
@@ -191,22 +191,6 @@ public class Database {
 		return "ok";
 	}
 
-	public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
-		// BasicDBObject query = new BasicDBObject("_id",
-		// partnerId).append("Products", new BasicDBObject("_id", productId)
-		// .append("Users", new BasicDBObject("_id", userId).append("Quotas",
-		// new BasicDBObject("_id", quotaId))));
-
-		// Fake data first, will change later
-		// Quota quota = new Quota(0, "Data", "number");
-		Quota quota = new Quota();
-		List<Tier> tiers = new ArrayList<Tier>();
-		tiers.add(new Tier("1", "free", 200, 0));
-		tiers.add(new Tier("2", "premium", 1000, 20));
-		quota.setTiers(tiers);
-
-		return quota;
-	}
 
 	public String addBilling(String userID, String partnerId, String productId, String plan, double fee) {
 		try {
@@ -245,7 +229,6 @@ public class Database {
 				UpdateOperations<BillingHistory> op = this.datastore.createUpdateOperations(BillingHistory.class)
 						.push("billing", bill);
 				this.datastore.update(query, op);
-				System.out.println("here");
 			}
 
 		} catch (Exception e) {

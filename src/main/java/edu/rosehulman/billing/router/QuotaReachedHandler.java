@@ -14,13 +14,14 @@ import spark.Route;
 public class QuotaReachedHandler implements Route {
 	//path /partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/
 	public Object handle(Request request, Response response) throws Exception {
+		System.out.println(request.body());
+		System.out.println(request.toString());
 		String partnerId = request.params(":partnerId");
 		String productId = request.params(":productId");
 		String userId = request.params(":userId");
 		String quotaId = request.params(":quotaId");
 		String tierId= request.params(":tierId"); // suppose to be included
 		
-		System.out.println("quotaId: "+ quotaId);
 		
 		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
 		//Tier tierObject = Database.getInstance().getTier(tierId);
@@ -72,7 +73,7 @@ public class QuotaReachedHandler implements Route {
 		// but for now it just print the bill
 		
 		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
-		QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
+		//QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 		return builder.toString();
 	}
 
