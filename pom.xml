@@ -5,42 +5,42 @@
 	<artifactId>billing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-	    <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <mainClass>edu.rosehulman.billing.BillingServer</mainClass>
-                </configuration>
-            </plugin>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<mainClass>edu.rosehulman.billing.BillingServer</mainClass>
+				</configuration>
+			</plugin>
 
-    	</plugins>
-    </build>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
-              <groupId>org.mongodb.morphia</groupId>
-              <artifactId>morphia</artifactId>
-              <version>1.3.2</version>
-        </dependency>
+			<groupId>org.mongodb.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>1.3.2</version>
+		</dependency>
 		<dependency>
 			<groupId>com.sparkjava</groupId>
 			<artifactId>spark-core</artifactId>
 			<version>2.6.0</version>
 		</dependency>
 		<dependency>
-    		<groupId>com.fasterxml.jackson.core</groupId>
-    		<artifactId>jackson-databind</artifactId>
-    		<version>2.9.2</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
@@ -68,42 +68,48 @@
 			<version>2.73.0</version>
 		</dependency>
 		<dependency>
-		  <groupId>junit</groupId>
-		  <artifactId>junit</artifactId>
-		  <version>4.11</version>
-		  <scope>test</scope>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  <groupId>commons-io</groupId>
-		  <artifactId>commons-io</artifactId>
-		  <version>2.4</version>
-		  <scope>test</scope>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.httpcomponents</groupId>
-		  <artifactId>httpclient</artifactId>
-		  <version>4.3.6</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.6</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.httpcomponents</groupId>
-		  <artifactId>httpasyncclient</artifactId>
-		  <version>4.0.2</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpasyncclient</artifactId>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.httpcomponents</groupId>
-		  <artifactId>httpmime</artifactId>
-		  <version>4.3.6</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.3.6</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.json</groupId>
-		  <artifactId>json</artifactId>
-		  <version>20140107</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20140107</version>
 		</dependency>
-		 <dependency>
-		  <groupId>org.easymock</groupId>
-		  <artifactId>easymock</artifactId>
-		  <version>3.5</version>
-		  <scope>test</scope>
+		<!-- https://mvnrepository.com/artifact/net.sf.flexjson/flexjson -->
+		<dependency>
+			<groupId>net.sf.flexjson</groupId>
+			<artifactId>flexjson</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.5</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
