@@ -80,16 +80,16 @@ public class Database {
 	public String updateUser(User user){
 		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
 		List<User> list = query.asList();
-		System.out.println(list.size());
 		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class).set("tier", user.getTier());
 		this.datastore.update(query, op);
 		return "ok";
 	}
 	
 	public String updatePartner(Partner partner){
-		Query<Partner> query = this.datastore.createQuery(Partner.class).field("id").equal(partner.getObjectId());
+		Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
 		List<Partner> list = query.asList();
-		System.out.println(list.size());
+		System.out.println("#partner: "+list.size());
+		System.out.println(partner.getWebhook());
 		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
 		this.datastore.update(query, op);
 		return "ok";
