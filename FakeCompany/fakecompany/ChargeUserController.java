@@ -54,7 +54,6 @@ public class ChargeUserController implements Route {
 		value[0] = tier.getValue();
 		amounts[0] = 1;
 		tax[0] = 8;
-		tax[1] = 8;
 
 		ArrayList<String> discount = new ArrayList<String>();
 		int dispercent = 1;
