@@ -303,6 +303,20 @@ public class Database {
 		}
 		return results.get(0);
 	}
+	
+	public BillingHistory getBillinghistory(String timestamp) {
+		List<BillingHistory> histories = datastore.createQuery(BillingHistory.class).field("time_stamp").equal(timestamp).asList();
+		if (histories.size() == 0) {
+			System.out.println("wrong time stamp"+histories.size()); // debugging
+			return null;
+		}
+		
+		BillingHistory history = histories.get(0);
+		
+		System.out.println("flag here"+ history);
+		return history;
+	}
+
 
 	// All these methods below are in test stage.
 	public String addPartnerDirect(Partner partner) {
