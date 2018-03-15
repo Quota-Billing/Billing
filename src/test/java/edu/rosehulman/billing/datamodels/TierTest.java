@@ -45,7 +45,7 @@ public class TierTest {
 
 	@Test
 	public void testConstructor() {
-		Tier t = new Tier("1", "a", 1000, 3);
+		Tier t = new Tier("1", "a", 1000, 3, 0);
 		assertEquals("1", t.getId());
 		assertEquals("a", t.getName());
 		assertEquals(1000, t.getMax());
@@ -54,7 +54,7 @@ public class TierTest {
 
 	@Test
 	public void testToString() {
-		Tier t = new Tier("1", "name", 1000,3);
+		Tier t = new Tier("1", "name", 1000,3, 0);
 		assertEquals("Tier: 1\n", t.toString());
 	}
 }

@@ -14,6 +14,8 @@ import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.router.Routes;
+import edu.rosehulman.billing.models.User;
+import static spark.Spark.port;
 // this is a client connecting to sharedservice so we can pull updates
 public class SharedClient {
 	private static SharedClient instance;

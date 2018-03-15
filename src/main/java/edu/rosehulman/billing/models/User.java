@@ -59,7 +59,7 @@ public class User {
 	public Partner getPartner() {
 		return this.partner;
 	}
-
+	
 	public String toString() {
 		return "User: " + this.userId + "\nProduct: " + this.product.toString() + "\nPartner: "
 				+ this.partner.toString();

@@ -2,6 +2,7 @@ package edu.rosehulman.billing.router;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.models.Partner;
@@ -23,6 +24,7 @@ public class QuotaReachedHandler implements Route {
 		
 		
 		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
+    
 		//Tier tierObject = Database.getInstance().getTier(tierId);
 
 		// need to find the right tier object
@@ -72,6 +74,7 @@ public class QuotaReachedHandler implements Route {
 		// but for now it just print the bill
 		
 		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
+    //Fakecompany
 		//QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 		Partner partner = Database.getInstance().getPartner(partnerId);
 		String webhook = partner.getWebhook();
@@ -82,6 +85,19 @@ public class QuotaReachedHandler implements Route {
 			System.out.println(partnerResponse.getStatus());
 			throw new Exception();
 		}
+//master
+// 		Partner partner = Database.getInstance().getPartner(partnerId);
+// 		String url = partner.getApiKey();
+// 		HttpResponse<String> billingresponse;
+// 		try {
+// 			billingresponse = Unirest.get(url+"user/{userId}")
+// 					.routeParam("userId", userId)				
+// 					.asString();
+// 			System.out.println(billingresponse);
+// 		} catch (UnirestException e) {
+// 			// TODO Auto-generated catch block
+// 			e.printStackTrace();
+// 		}
 		return builder.toString();
 	}
 

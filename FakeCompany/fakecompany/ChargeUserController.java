@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import Paypal.InvoiceHandler;
 import Paypal.JsonPharser;
+import edu.rosehulman.billing.models.Tier;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -14,12 +15,15 @@ public class ChargeUserController implements Route {
 	@Override
 	public Object handle(Request request, Response response) throws Exception {
 		String userId = request.params("userId");
+		String tierId = request.params("tierId");
 		// String token = Database.getInstance().getUser(userId).getPaymentToken();
 		// connecting braintree or other payment tools api here
 		Database db = Database.getInstance();
 		User user = db.getUser(userId);
 		System.out.println("charge user: " + user.getId());
 
+		Tier tier = db.getTier(tierId);
+		
 		ArrayList<String> merchant = new ArrayList<String>();
 		merchant.add("yukariyukari-facilitator@126.com");
 		merchant.add("Mercury");
@@ -48,14 +52,10 @@ public class ChargeUserController implements Route {
 		int[] value = new int[2];
 		int[] tax = new int[2];
 		String[] names = new String[2];
-		names[0] = "Zoom System wireless headphones";
-		names[1] = "Bluetooth speaker";
-		value[0] = 120;
-		value[1] = 145;
-		amounts[0] = 2;
-		amounts[1] = 1;
+		names[0] = tier.getName();
+		value[0] = tier.getValue();
+		amounts[0] = 1;
 		tax[0] = 8;
-		tax[1] = 8;
 
 		ArrayList<String> discount = new ArrayList<String>();
 		int dispercent = 1;

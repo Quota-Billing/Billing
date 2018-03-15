@@ -1,6 +1,7 @@
 package edu.rosehulman.billing;
 
 import static spark.Spark.delete;
+import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.put;
@@ -24,6 +25,7 @@ import edu.rosehulman.billing.router.DeleteProductHandler;
 import edu.rosehulman.billing.router.DeleteQuotaHandler;
 import edu.rosehulman.billing.router.DeleteTierHandler;
 import edu.rosehulman.billing.router.DeleteUserHandler;
+import edu.rosehulman.billing.router.GetBillingHistoryHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
 import edu.rosehulman.billing.router.UpdatePartnerHandler;
@@ -41,8 +43,8 @@ public class BillingServer {
 				try {
 					return jacksonObjectMapper.readValue(value, valueType);
 				} catch (IOException e) {
-					System.out.println("read error: "+ value);
-					System.out.println("value typte: "+ valueType.toString());
+					System.out.println("read error: " + value);
+					System.out.println("value typte: " + valueType.toString());
 					throw new RuntimeException(e);
 				}
 			}
@@ -51,7 +53,7 @@ public class BillingServer {
 				try {
 					return jacksonObjectMapper.writeValueAsString(value);
 				} catch (JsonProcessingException e) {
-					System.out.println("error: "+ value);
+					System.out.println("error: " + value);
 
 					throw new RuntimeException(e);
 				}
@@ -70,8 +72,12 @@ public class BillingServer {
 		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
 		post(Routes.ADD_QUOTA, new AddQuotaHandler());
 		post(Routes.ADD_Tier, new AddTierHandler());
+    //Fakecompany
 		post(Routes.ADD_Tier_TO_USER, new AddTierToUserHandler());
 		post(Routes.BILLING_PAID, new BillingPaidHandler());
+		//master
+		get(Routes.BILLINGHISTORY, new GetBillingHistoryHandler());
+
 		
 		delete(Routes.DELETE_BILLING, new DeleteBillingHandler());
 		delete(Routes.DELETE_USER, new DeleteUserHandler());
@@ -79,10 +85,11 @@ public class BillingServer {
 		delete(Routes.DELETE_PRODUCT_TO_PARTNER, new DeleteProductHandler());
 		delete(Routes.DELETE_QUOTA, new DeleteQuotaHandler());
 		delete(Routes.DELETE_Tier, new DeleteTierHandler());
-		
-		put(Routes.UPDATE_PARTNER, new UpdatePartnerHandler());
+    //Fakecompany
+    put(Routes.UPDATE_PARTNER, new UpdatePartnerHandler());
 
 		// BrainTree br =new BrainTree();
 
+		JobScheduler scheduler = new JobScheduler();
 	}
 }
