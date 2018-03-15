@@ -14,16 +14,19 @@ import spark.Route;
 public class QuotaReachedHandler implements Route {
 	//path /partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/
 	public Object handle(Request request, Response response) throws Exception {
+		System.out.println(request.body());
+		System.out.println(request.toString());
 		String partnerId = request.params(":partnerId");
 		String productId = request.params(":productId");
 		String userId = request.params(":userId");
 		String quotaId = request.params(":quotaId");
 		String tierId= request.params(":tierId"); // suppose to be included
 		
-		System.out.println("quotaId: "+ quotaId);
 		
 		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
-//		Tier tierObject = Database.getInstance().getTier(tierId);
+    
+		//Tier tierObject = Database.getInstance().getTier(tierId);
+
 		// need to find the right tier object
 		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
 		//Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
@@ -71,19 +74,30 @@ public class QuotaReachedHandler implements Route {
 		// but for now it just print the bill
 		
 		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
+    //Fakecompany
+		//QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 		Partner partner = Database.getInstance().getPartner(partnerId);
-		String url = partner.getApiKey();
-		HttpResponse<String> billingresponse;
-		try {
-			billingresponse = Unirest.get(url+"user/{userId}")
-					.routeParam("userId", userId)				
-					.asString();
-			System.out.println(billingresponse);
-		} catch (UnirestException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String webhook = partner.getWebhook();
+		HttpResponse<String> partnerResponse = Unirest.post(webhook + "user/{userId}")
+				.routeParam("userId", userId).asString();
+
+		if (partnerResponse.getStatus() != 200) {
+			System.out.println(partnerResponse.getStatus());
+			throw new Exception();
 		}
-		
+//master
+// 		Partner partner = Database.getInstance().getPartner(partnerId);
+// 		String url = partner.getApiKey();
+// 		HttpResponse<String> billingresponse;
+// 		try {
+// 			billingresponse = Unirest.get(url+"user/{userId}")
+// 					.routeParam("userId", userId)				
+// 					.asString();
+// 			System.out.println(billingresponse);
+// 		} catch (UnirestException e) {
+// 			// TODO Auto-generated catch block
+// 			e.printStackTrace();
+// 		}
 		return builder.toString();
 	}
 

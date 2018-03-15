@@ -1,84 +1,86 @@
 package fakecompany;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-import org.bson.Document;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
 
-import edu.rosehulman.billing.models.Partner;
-import edu.rosehulman.billing.models.Product;
-import edu.rosehulman.billing.models.User;
+import edu.rosehulman.billing.models.Tier;
+
 public class Database {
 
-	static Collection result = new ArrayList();
 	private static Database instance;
-	  
-	  Document userDocument;
-	
-	 public static ArrayList getDatabaseInfo() {
-		  MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds161016.mlab.com:61016/fakecompany"));
-		  
-	        try {
-	            MongoDatabase database = mongoClient.getDatabase("fakecompany");
-	 
-	            MongoIterable <String> collections = database.listCollectionNames();
-	            for (String collectionName: collections) {
-	                System.out.println(collectionName);
-	                result.add(collectionName);
-	            }
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        } finally {
-	            mongoClient.close();
-	        }
-	        
-	       
-			return (ArrayList) result;
-	  }
-	 
-	 public String addUser(int userId, String name, String password, String token) {
-		 
-		    
-		    MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://team18:123456@ds161016.mlab.com:61016/fakecompany"));
-		    
-		    try {
-		            MongoDatabase database = mongoClient.getDatabase("fakecompany");
-		            MongoCollection<Document> collection = database.getCollection("user");
-		            Document doc = new Document("_id", userId)
-		                    .append("name", name)
-		                    .append("password", password)
-		                    .append("token", token);          
-		           // .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-		            collection.insertOne(doc);
-		            
-		        } catch (Exception e) {
-		            e.printStackTrace();
-		        } finally {
-		            mongoClient.close();
-		        }
-		    
-		    return "ok";
-		    
-		  }
+	private MongoClient mongoClient;
+	private Datastore datastore;
 
-	 public static synchronized Database getInstance() {
-		    if (instance == null) {
-		      instance = new Database();
-		    }
-		    return instance;
-		  }
+	private Database() {
+		this.mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://team18:123456@ds161016.mlab.com:61016/fakecompany"));
+		Morphia morphia = new Morphia();
+		morphia.mapPackage("fakecompany");
+		this.datastore = morphia.createDatastore(this.mongoClient, "billingpart");
+
+	}
+
+	public String addUser(String userId, String password, String token) {
+
+		try {
+			User user = new User(userId);
+			user.setPassword(password);
+			user.setPaymentToken(token);
+			datastore.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
+
+	}
+
+	public String addTier(String tierId, String name, int max, double price, int graceExtra) {
+
+		try {
+			Tier tier = new Tier(tierId, name, max, price, graceExtra);
+			datastore.save(tier);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mongoClient.close();
+		}
+
+		return "ok";
+
+	}
+
+	public static synchronized Database getInstance() {
+		if (instance == null) {
+			instance = new Database();
+		}
+		return instance;
+	}
+
+	public User getUser(String userId) {
+		List<User> users = datastore.createQuery(User.class).field("userId").equal(userId).asList();
+		if (users.size() == 0) {
+			System.out.println("wrong userId"); // debugging
+			return null;
+		}
+		User user = users.get(0);
+		return user;
+	}
+
+	public Tier getTier(String tierId) {
+		List<Tier> tiers = datastore.createQuery(Tier.class).field("tierId").equal(tierId).asList();
+		if (tiers.size() == 0) {
+			System.out.println("wrong userId"); // debugging
+			return null;
+		}
+		Tier tier = tiers.get(0);
+		return tier;
+	}
 }

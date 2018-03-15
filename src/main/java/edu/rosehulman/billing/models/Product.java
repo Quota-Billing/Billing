@@ -77,6 +77,7 @@ public class Product {
 		this.quotas.add(quota);
 	}
 
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

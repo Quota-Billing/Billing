@@ -1,20 +1,18 @@
 package fakecompany;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
-import org.mongodb.morphia.annotations.Reference;
 
-import edu.rosehulman.billing.models.Partner;
-import edu.rosehulman.billing.models.Product;
 
 public class User {
-	
+	@Id
 	private ObjectId id;
-	
+	@Property("userId")
 	private String userId;
-	
+	@Property("password")
 	private String password;
-	
+	@Property("paymentToken")
 	private String paymentToken;
 
 	public User() {

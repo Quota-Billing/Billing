@@ -42,17 +42,21 @@ public class Tier {
 	@Reference
 	@JsonIgnore
 	private Quota quota;
+	@Property
+	@JsonProperty("graceExtra")
+	private int graceExtra;
 
 	public Tier() {
 
 	}
 
-	public Tier(String id, String name, int max, double price) {
+	public Tier(String id, String name, int max, double price, int graceExtra) {
 		this.id = new ObjectId();
 		this.tierId = id;
 		this.name = name;
 		this.max = max;
 		this.price = price;
+		this.graceExtra = graceExtra;
 	}
 	
 	@JsonIgnore

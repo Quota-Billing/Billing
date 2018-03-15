@@ -56,6 +56,44 @@ public class Database {
 		}
 		return "ok";
 	}
+	
+	public User getUser(String partnerId, String productId, String userId){
+		try {
+			List<User> users = datastore.createQuery(User.class).asList();
+			if(users.size() == 0){
+				System.out.println("no users");
+			}
+			for(User u: users){
+				if(u.getPartner().getId().equals(partnerId)
+						&& u.getProduct().getId().equals(productId)
+						&& u.getId().equals(userId)){
+					return u;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return null;
+	}
+	
+	public String updateUser(User user){
+		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
+		List<User> list = query.asList();
+		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class).set("tier", user.getTier());
+		this.datastore.update(query, op);
+		return "ok";
+	}
+	
+	public String updatePartner(Partner partner){
+		Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
+		List<Partner> list = query.asList();
+		System.out.println("#partner: "+list.size());
+		System.out.println(partner.getWebhook());
+		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
+		this.datastore.update(query, op);
+		return "ok";
+	}
 
 	public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
 		try {
@@ -129,7 +167,7 @@ public class Database {
 	}
 
 	public String addTier(String partnerId, String productId, String quotaId, String tierId, String name, String max,
-			String price) {
+			String price, String graceExtra) {
 		try {
 			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
 			if (partners.size() == 0) {
@@ -147,7 +185,7 @@ public class Database {
 				System.out.println("wrong quotaId");
 				return "Wrong quotaId";
 			}
-			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price));
+			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price), Integer.valueOf(graceExtra));
 			tier.setPartner(partner);
 			tier.setProduct(product);
 			tier.setQuota(quota);
@@ -162,22 +200,6 @@ public class Database {
 		return "ok";
 	}
 
-	public Quota getQuotaInfo(String partnerId, String productId, String userId, String quotaId) {
-		// BasicDBObject query = new BasicDBObject("_id",
-		// partnerId).append("Products", new BasicDBObject("_id", productId)
-		// .append("Users", new BasicDBObject("_id", userId).append("Quotas",
-		// new BasicDBObject("_id", quotaId))));
-
-		// Fake data first, will change later
-		// Quota quota = new Quota(0, "Data", "number");
-		Quota quota = new Quota();
-		List<Tier> tiers = new ArrayList<Tier>();
-		tiers.add(new Tier("1", "free", 200, 0));
-		tiers.add(new Tier("2", "premium", 1000, 20));
-		quota.setTiers(tiers);
-
-		return quota;
-	}
 
 	public String addBilling(String userID, String partnerId, String productId, String plan, double fee) {
 		try {
@@ -216,7 +238,6 @@ public class Database {
 				UpdateOperations<BillingHistory> op = this.datastore.createUpdateOperations(BillingHistory.class)
 						.push("billing", bill);
 				this.datastore.update(query, op);
-				System.out.println("here");
 			}
 
 		} catch (Exception e) {
@@ -303,7 +324,27 @@ public class Database {
 		}
 		return results.get(0);
 	}
+   //Fakecompany
+//	public Tier getTier(String partnerId, String productId, String quotaId) {
+//		List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
+//				.asList();
+//		if (partners.isEmpty()) {
+//			System.out.println("this partner doesn't exist");
+//			return null;
+//		}
+//		Partner partner = partners.get(0);
+//		Product product = partner.getProduct(productId);
+//		Quota quota = product.getQuota(quotaId);
+//		final Query<Tier> query = datastore.createQuery(Tier.class).field("product").equal(product).field("partner").equal(partner).filter("quota", quota);
+//		List<Tier> results = query.asList();
+//		if(results.size() == 0){
+//			System.out.println("cant find such tier");
+//			return null;
+//		}
+//		return results.get(0);
+//	}
 	
+	//master
 	public BillingHistory getBillinghistory(String timestamp) {
 		List<BillingHistory> histories = datastore.createQuery(BillingHistory.class).field("time_stamp").equal(timestamp).asList();
 		if (histories.size() == 0) {
@@ -316,6 +357,7 @@ public class Database {
 		System.out.println("flag here"+ history);
 		return history;
 	}
+
 
 
 	// All these methods below are in test stage.

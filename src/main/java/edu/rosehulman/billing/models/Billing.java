@@ -16,6 +16,8 @@ public class Billing {
 	private String plan;
 	@Property
 	private Double fee;
+	@Property
+	private boolean paid;
 	
 	public Billing(){
 		
@@ -25,6 +27,7 @@ public class Billing {
 		this.user = user;
 		this.plan = plan;
 		this.fee = fee;
+		this.paid = false;
 	}
 	
 	public String getUserId(){
@@ -47,6 +50,9 @@ public class Billing {
 		return this.id;
 	}
 	
+	public void setPaid(){
+		this.paid = true;
+	}
 	
 	public void setUser(User user) {
 		this.user = user;
@@ -60,8 +66,4 @@ public class Billing {
 		return "BillingId: " + this.id + "\nUserId: " + this.user.getId() + "\nPlan: "+ this.plan +"\n";
 	}
 
-	public void setBillingID(int billingid2) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -22,9 +22,7 @@ public class AddTierHandler implements Route {
 		Product product = partner.getProduct(productId);
 		Quota quota = product.getQuota(quotaId);
 //		Database.getInstance().addTier(partnerId, productId, quotaId, tierId, name, max, price);
-		System.out.println("fasdfgwe");
 		Tier tier = SharedClient.getInstance().UpdateTier(partnerId, productId, quotaId, tierId);
-		System.out.println(tier==null);
 		tier.setPartner(partner);
 		tier.setProduct(product);
 		tier.setQuota(quota);

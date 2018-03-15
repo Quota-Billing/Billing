@@ -1,0 +1,74 @@
+{
+  "merchant_info": {
+  "email": "yukariyukari-facilitator@126.com",
+  "first_name": "Mercury",
+  "last_name": "Ding",
+  "business_name": "Mitchell & Murray",
+  "phone": {
+    "country_code": "001",
+    "national_number": "4085551234"
+  },
+  "address": {
+    "line1": "1234 First Street",
+    "city": "Anytown",
+    "state": "CA",
+    "postal_code": "98765",
+    "country_code": "US"
+  }
+  },
+  "billing_info": [
+  {
+    "email": "yukariyukari-buyer@126.com",
+    "first_name": "Mercury",
+    "last_name": "Ding"
+  }
+  ],
+  "shipping_info": {
+  "first_name": "Stephanie",
+  "last_name": "Meyers",
+  "address": {
+    "line1": "1234 Main Street",
+    "city": "Anytown",
+    "state": "CA",
+    "postal_code": "98765",
+    "country_code": "US"
+  }
+  },
+  "items": [
+  {
+    "name": "Zoom System wireless headphones",
+    "quantity": 2,
+    "unit_price": {
+    "currency": "USD",
+    "value": "120"
+    },
+    "tax": {
+    "name": "Tax",
+    "percent": 8
+    }
+  },
+  {
+    "name": "Bluetooth speaker",
+    "quantity": 1,
+    "unit_price": {
+    "currency": "USD",
+    "value": "145"
+    },
+    "tax": {
+    "name": "Tax",
+    "percent": 8
+    }
+  }
+  ],
+  "discount": {
+  "percent": 1
+  },
+  "shipping_cost": {
+  "amount": {
+    "currency": "USD",
+    "value": "10"
+  }
+  },
+  "note": "Thank you for your business.",
+  "terms": "No refunds after 30 days."
+}
