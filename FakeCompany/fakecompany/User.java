@@ -1,8 +1,10 @@
 package fakecompany;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
+@Entity("user")
 
 
 public class User {

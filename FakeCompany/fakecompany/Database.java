@@ -18,7 +18,7 @@ public class Database {
 				new MongoClientURI("mongodb://team18:123456@ds161016.mlab.com:61016/fakecompany"));
 		Morphia morphia = new Morphia();
 		morphia.mapPackage("fakecompany");
-		this.datastore = morphia.createDatastore(this.mongoClient, "billingpart");
+		this.datastore = morphia.createDatastore(this.mongoClient, "fakecompany");
 
 	}
 	  

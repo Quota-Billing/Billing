@@ -88,8 +88,6 @@ public class Database {
 	public String updatePartner(Partner partner){
 		Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
 		List<Partner> list = query.asList();
-		System.out.println("#partner: "+list.size());
-		System.out.println(partner.getWebhook());
 		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
 		this.datastore.update(query, op);
 		return "ok";

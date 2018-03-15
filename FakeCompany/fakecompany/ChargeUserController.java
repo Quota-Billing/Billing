@@ -18,7 +18,8 @@ public class ChargeUserController implements Route {
 		// connecting braintree or other payment tools api here
 		Database db = Database.getInstance();
 		User user = db.getUser(userId);
-		
+		System.out.println("charge user: " + user.getId());
+
 		ArrayList<String> merchant = new ArrayList<String>();
 		merchant.add("yukariyukari-facilitator@126.com");
 		merchant.add("Mercury");
@@ -73,8 +74,10 @@ public class ChargeUserController implements Route {
 
 		x.createNewInvoiceAndSend("1.json",
 				"ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
-
-		System.out.println("charge user" + userId);
+		
+//		x.cancelAllInvoice("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
+//				 "p",
+//				 "p");
 		return "ok";
 	}
 
