@@ -41,4 +41,6 @@ public class Routes {
 	public static final String BILLING_PAID = "";
 	// public static String QUOTA_ADDR_notify = "http://localhost:8082/";
 	public static String BILLING_BASE = "/"; // TODO put this in a config file
+	
+	public static final String BILLINGHISTORY = "/getbillinghistory/:timestamp";
 }

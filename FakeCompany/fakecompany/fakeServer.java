@@ -33,5 +33,7 @@ public class fakeServer {
 		});
 		post(Path.CHARGE_USER, new ChargeUserController());
 		
+		post("/recurringBill", new RecurringBillHandler());
+		
 	}
 }
