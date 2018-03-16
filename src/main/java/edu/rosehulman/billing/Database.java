@@ -24,7 +24,7 @@ import edu.rosehulman.billing.models.User;
 public class Database {
 	private static Database instance;
 	private MongoClient mongoClient;
-	private Datastore datastore;
+	private static Datastore datastore;
 
 	// create only one instance of mongoclient and not closing it until
 	// application exits
@@ -43,57 +43,61 @@ public class Database {
 		}
 		return instance;
 	}
+	
+	public static Datastore getDatastore() {
+		return datastore;
+	}
 
-	// add a partner
-	public String addPartner(String partnerId, String name, String apiKey, String password) {
-		try {
-			Partner partner = new Partner(partnerId, name, apiKey);
-			partner.setPassword(password);
-			this.datastore.save(partner);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
-	
-	public User getUser(String partnerId, String productId, String userId){
-		try {
-			List<User> users = datastore.createQuery(User.class).asList();
-			if(users.size() == 0){
-				System.out.println("no users");
-			}
-			for(User u: users){
-				if(u.getPartner().getId().equals(partnerId)
-						&& u.getProduct().getId().equals(productId)
-						&& u.getId().equals(userId)){
-					return u;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return null;
-	}
-	
-	public String updateUser(User user){
-		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
-		List<User> list = query.asList();
-		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class).set("tier", user.getTier());
-		this.datastore.update(query, op);
-		return "ok";
-	}
-	
-	public String updatePartner(Partner partner){
-		Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
-		List<Partner> list = query.asList();
-		System.out.println("#partner: "+list.size());
-		System.out.println(partner.getWebhook());
-		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
-		this.datastore.update(query, op);
-		return "ok";
-	}
+//	// add a partner
+//	public String addPartner(String partnerId, String name, String apiKey, String password) {
+//		try {
+//			Partner partner = new Partner(partnerId, name, apiKey);
+//			partner.setPassword(password);
+//			this.datastore.save(partner);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
+//	
+//	public User getUser(String partnerId, String productId, String userId){
+//		try {
+//			List<User> users = datastore.createQuery(User.class).asList();
+//			if(users.size() == 0){
+//				System.out.println("no users");
+//			}
+//			for(User u: users){
+//				if(u.getPartner().getId().equals(partnerId)
+//						&& u.getProduct().getId().equals(productId)
+//						&& u.getId().equals(userId)){
+//					return u;
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return null;
+//	}
+//	
+//	public String updateUser(User user){
+//		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
+//		List<User> list = query.asList();
+//		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class).set("tier", user.getTier());
+//		this.datastore.update(query, op);
+//		return "ok";
+//	}
+//	
+//	public String updatePartner(Partner partner){
+//		Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
+//		List<Partner> list = query.asList();
+//		System.out.println("#partner: "+list.size());
+//		System.out.println(partner.getWebhook());
+//		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
+//		this.datastore.update(query, op);
+//		return "ok";
+//	}
 
 	public String addQuota(String partnerId, String productId, String quotaId, String name, String type) {
 		try {
@@ -122,30 +126,30 @@ public class Database {
 		return "ok";
 	}
 
-	// add a simple user by referencing a product and a partner
-	public String addUser(String id, String productId, String partnerId) {
-		try {
-			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-			if (partners.size() == 0) {
-				System.out.println("wrong partnerId"); // debugging
-				return "Wrong partnerId";
-			}
-			Partner partner = partners.get(0);
-			Product product = partner.getProduct(productId);
-			if (product == null) {
-				System.out.println("wrong productId"); // debugging
-				return "Wrong productId";
-			}
-			User user = new User(id);
-			user.setPartner(partner);
-			user.setProduct(product);
-			this.datastore.save(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
+//	// add a simple user by referencing a product and a partner
+//	public String addUser(String id, String productId, String partnerId) {
+//		try {
+//			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+//			if (partners.size() == 0) {
+//				System.out.println("wrong partnerId"); // debugging
+//				return "Wrong partnerId";
+//			}
+//			Partner partner = partners.get(0);
+//			Product product = partner.getProduct(productId);
+//			if (product == null) {
+//				System.out.println("wrong productId"); // debugging
+//				return "Wrong productId";
+//			}
+//			User user = new User(id);
+//			user.setPartner(partner);
+//			user.setProduct(product);
+//			this.datastore.save(user);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
 
 	// adding product to a specific partner, in mongoDB the product will be
 	// saved by reference and its ID
@@ -282,29 +286,29 @@ public class Database {
 		return null;
 	}
 
-	public boolean deleteUser(String partnerId, String productId, String userId) {
-		final Query<User> deleteQuery = datastore.createQuery(User.class).field("userId").equal(userId);
-		List<User> results = deleteQuery.asList();
+//	public boolean deleteUser(String partnerId, String productId, String userId) {
+//		final Query<User> deleteQuery = datastore.createQuery(User.class).field("userId").equal(userId);
+//		List<User> results = deleteQuery.asList();
+//
+//		for (User u : results) {
+//			// TODO can/should we ever delete multiple?
+//			if (u.getPartner().getId().equals(partnerId) && u.getProduct().getId().equals(productId)) {
+//				datastore.delete(u);
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
-		for (User u : results) {
-			// TODO can/should we ever delete multiple?
-			if (u.getPartner().getId().equals(partnerId) && u.getProduct().getId().equals(productId)) {
-				datastore.delete(u);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public Partner getPartner(String partnerId) {
-		List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-		if (partners.size() == 0) {
-			System.out.println("wrong partnerId"); // debugging
-			return null;
-		}
-		Partner partner = partners.get(0);
-		return partner;
-	}
+//	public Partner getPartner(String partnerId) {
+//		List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+//		if (partners.size() == 0) {
+//			System.out.println("wrong partnerId"); // debugging
+//			return null;
+//		}
+//		Partner partner = partners.get(0);
+//		return partner;
+//	}
 
 	public Tier getTier(String partnerId, String productId, String quotaId) {
 		List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
@@ -360,59 +364,59 @@ public class Database {
 
 
 
-	// All these methods below are in test stage.
-	public String addPartnerDirect(Partner partner) {
-		try {
-			this.datastore.save(partner);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
-
-	public String deletePartnerDirect(Partner partner) {
-		try {
-			Query<Partner> query1 = this.datastore.createQuery(Partner.class);
-			query1.field("partnerId").equal(partner.getId());
-			this.datastore.findAndDelete(query1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
-
-	public String addProductDirect(Product product, Partner partner) {
-		try {
-			this.datastore.save(product);
-			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
-			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
-					product);
-			this.datastore.update(query, op);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
-
-	public String deleteProductDirect(Product product, Partner partner) {
-		try {
-			Query<Product> query1 = this.datastore.createQuery(Product.class);
-			query1.field("productId").equal(product.getId());
-			this.datastore.findAndDelete(query1);
-			
-			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
-			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).removeAll("products",
-					product);
-			this.datastore.update(query, op);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
+//	// All these methods below are in test stage.
+//	public String addPartnerDirect(Partner partner) {
+//		try {
+//			this.datastore.save(partner);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
+//
+//	public String deletePartnerDirect(Partner partner) {
+//		try {
+//			Query<Partner> query1 = this.datastore.createQuery(Partner.class);
+//			query1.field("partnerId").equal(partner.getId());
+//			this.datastore.findAndDelete(query1);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
+//
+//	public String addProductDirect(Product product, Partner partner) {
+//		try {
+//			this.datastore.save(product);
+//			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
+//			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).push("products",
+//					product);
+//			this.datastore.update(query, op);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
+//
+//	public String deleteProductDirect(Product product, Partner partner) {
+//		try {
+//			Query<Product> query1 = this.datastore.createQuery(Product.class);
+//			query1.field("productId").equal(product.getId());
+//			this.datastore.findAndDelete(query1);
+//			
+//			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
+//			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).removeAll("products",
+//					product);
+//			this.datastore.update(query, op);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
 
 	public String addQuotaDirect(Quota quota) {
 		try {
@@ -445,27 +449,27 @@ public class Database {
 		return "ok";
 	}
 
-	public String addUserDirect(User user) {
-		try {
-			this.datastore.save(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
-
-	public String deleteUserDirect(User user) {
-		try {
-			Query<User> query1 = this.datastore.createQuery(User.class);
-			query1.field("userId").equal(user.getId());
-			this.datastore.findAndDelete(query1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return "ok";
-	}
+//	public String addUserDirect(User user) {
+//		try {
+//			this.datastore.save(user);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
+//
+//	public String deleteUserDirect(User user) {
+//		try {
+//			Query<User> query1 = this.datastore.createQuery(User.class);
+//			query1.field("userId").equal(user.getId());
+//			this.datastore.findAndDelete(query1);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return "ok";
+//	}
 
 	public String addTierDirect(Tier tier) {
 		try {
