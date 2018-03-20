@@ -69,6 +69,10 @@ public class BillingHistory {
 	public List<Billing> getBillingList() {
 		return this.billing;
 	}
+	
+	public User getUser(){
+		return this.user;
+	}
 
 	public String toString() {
 		String st = "Billing History: " + this.id + "\n";
