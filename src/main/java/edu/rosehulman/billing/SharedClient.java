@@ -79,7 +79,7 @@ public class SharedClient {
 		// Database.getInstance().addUser(ids.getString("partnerId"),
 		// ids.getString("productId"), ids.getString("userId"));
 		System.out.println(productId);
-		DataStore.getInstance().getUserDatastore().addUser(partnerId, productId, userId);
+		Database.getInstance().addUser(partnerId, productId, userId);
 		return "ok";
 	}
 

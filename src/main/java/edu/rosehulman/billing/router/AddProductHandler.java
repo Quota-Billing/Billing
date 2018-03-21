@@ -1,6 +1,5 @@
 package edu.rosehulman.billing.router;
 
-import edu.rosehulman.billing.DataStore;
 import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
 import edu.rosehulman.billing.models.Partner;
@@ -12,14 +11,21 @@ import spark.Response;
 import spark.Route;
 
 public class AddProductHandler implements Route {
+	PartnerDatastore Partnerstore;
+	ProductDatastore Productstore;
+
+	public AddProductHandler(PartnerDatastore Partnerstore, ProductDatastore Productstore) {
+		this.Partnerstore = Partnerstore;
+		this.Productstore = Productstore;
+	}
 
 	public Object handle(Request request, Response response) throws Exception {
 		// TODO Auto-generated method stub
 		String productId = request.params(":productId");
 		String partnerId = request.params(":partnerId");
-		Partner partner = DataStore.getInstance().getPartnerDatastore().getPartner(partnerId);
-		Product product =  SharedClient.getInstance().UpdateProduct(productId, partnerId);
-		DataStore.getInstance().getProductDatastore().addProductDirect(product, partner);
+		Partner partner = Partnerstore.getPartner(partnerId);
+		Product product = SharedClient.getInstance().UpdateProduct(productId, partnerId);
+		Productstore.addProductDirect(product, partner);
 
 		return "";
 	}
