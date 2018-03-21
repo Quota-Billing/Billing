@@ -11,6 +11,10 @@ import spark.Route;
 public class AddPartnerHandler implements Route {
 	PartnerDatastore Partnerstore;
 	
+	public AddPartnerHandler(){
+
+	}
+
 	public AddPartnerHandler(PartnerDatastore Partnerstore){
 		this.Partnerstore = Partnerstore;
 	}

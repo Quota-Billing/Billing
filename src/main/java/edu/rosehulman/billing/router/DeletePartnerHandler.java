@@ -11,6 +11,10 @@ import spark.Route;
 public class DeletePartnerHandler implements Route {
 	PartnerDatastore Partnerstore;
 	
+	public DeletePartnerHandler(){
+
+	}
+	
 	public DeletePartnerHandler(PartnerDatastore Partnerstore){
 		this.Partnerstore = Partnerstore;
 	}
