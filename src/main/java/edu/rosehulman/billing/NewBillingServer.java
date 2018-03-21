@@ -8,9 +8,14 @@ import static spark.Spark.put;
 
 import java.io.IOException;
 
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 import edu.rosehulman.billing.router.AddBillingHandler;
 import edu.rosehulman.billing.router.AddPartnerHandler;
@@ -57,6 +62,14 @@ public class NewBillingServer {
 				}
 			}
 		});
+		
+		MongoClient mongoClient = new MongoClient(
+				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
+		Morphia morphia = new Morphia();
+		morphia.mapPackage("edu.rosehulman.billingpart");
+		Datastore datastore = morphia.createDatastore(mongoClient, "billingpart");
+		
+		
 		post("/addUser/partner/:partnerId/product/:productId/user/:userId", (req, res) -> {
 			// after getting post call, call sharedclient to pull updates
 			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"),
