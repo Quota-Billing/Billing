@@ -24,7 +24,7 @@ import edu.rosehulman.billing.models.User;
 public class Database {
 	private static Database instance;
 	private MongoClient mongoClient;
-	private static Datastore datastore;
+	private Datastore datastore;
 
 	// create only one instance of mongoclient and not closing it until
 	// application exits
@@ -42,10 +42,6 @@ public class Database {
 			instance = new Database();
 		}
 		return instance;
-	}
-	
-	public static Datastore getDatastore() {
-		return datastore;
 	}
 
 	// add a partner
@@ -126,30 +122,30 @@ public class Database {
 		return "ok";
 	}
 
-//	// add a simple user by referencing a product and a partner
-//	public String addUser(String id, String productId, String partnerId) {
-//		try {
-//			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-//			if (partners.size() == 0) {
-//				System.out.println("wrong partnerId"); // debugging
-//				return "Wrong partnerId";
-//			}
-//			Partner partner = partners.get(0);
-//			Product product = partner.getProduct(productId);
-//			if (product == null) {
-//				System.out.println("wrong productId"); // debugging
-//				return "Wrong productId";
-//			}
-//			User user = new User(id);
-//			user.setPartner(partner);
-//			user.setProduct(product);
-//			this.datastore.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//		return "ok";
-//	}
+	// add a simple user by referencing a product and a partner
+	public String addUser(String id, String productId, String partnerId) {
+		try {
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if (partners.size() == 0) {
+				System.out.println("wrong partnerId"); // debugging
+				return "Wrong partnerId";
+			}
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			if (product == null) {
+				System.out.println("wrong productId"); // debugging
+				return "Wrong productId";
+			}
+			User user = new User(id);
+			user.setPartner(partner);
+			user.setProduct(product);
+			this.datastore.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
 
 	// adding product to a specific partner, in mongoDB the product will be
 	// saved by reference and its ID
@@ -449,27 +445,27 @@ public class Database {
 		return "ok";
 	}
 
-//	public String addUserDirect(User user) {
-//		try {
-//			this.datastore.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//		return "ok";
-//	}
-//
-//	public String deleteUserDirect(User user) {
-//		try {
-//			Query<User> query1 = this.datastore.createQuery(User.class);
-//			query1.field("userId").equal(user.getId());
-//			this.datastore.findAndDelete(query1);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//		return "ok";
-//	}
+	public String addUserDirect(User user) {
+		try {
+			this.datastore.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
+
+	public String deleteUserDirect(User user) {
+		try {
+			Query<User> query1 = this.datastore.createQuery(User.class);
+			query1.field("userId").equal(user.getId());
+			this.datastore.findAndDelete(query1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
 
 	public String addTierDirect(Tier tier) {
 		try {

@@ -27,7 +27,7 @@ import edu.rosehulman.datastore.UserDatastore;
 public class DataStore {
 	private static DataStore instance;
 	private MongoClient mongoClient;
-	private static Datastore datastore;
+	private Datastore datastore;
 	private UserDatastore userstore;
 	private ProductDatastore productstore;
 	private PartnerDatastore partnerstore;
@@ -51,10 +51,6 @@ public class DataStore {
 		}
 		return instance;
 	}
-	
-	public static Datastore getDatastore() {
-		return datastore;
-	}
 
 	// add a partner
 	public String addPartner(String partnerId, String name, String apiKey, String password) {
@@ -68,17 +64,16 @@ public class DataStore {
 		}
 		return "ok";
 	}
-	
-	public User getUser(String partnerId, String productId, String userId){
+
+	public User getUser(String partnerId, String productId, String userId) {
 		try {
 			List<User> users = datastore.createQuery(User.class).asList();
-			if(users.size() == 0){
+			if (users.size() == 0) {
 				System.out.println("no users");
 			}
-			for(User u: users){
-				if(u.getPartner().getId().equals(partnerId)
-						&& u.getProduct().getId().equals(productId)
-						&& u.getId().equals(userId)){
+			for (User u : users) {
+				if (u.getPartner().getId().equals(partnerId) && u.getProduct().getId().equals(productId)
+						&& u.getId().equals(userId)) {
 					return u;
 				}
 			}
@@ -88,21 +83,22 @@ public class DataStore {
 		}
 		return null;
 	}
-	
-	public String updateUser(User user){
+
+	public String updateUser(User user) {
 		Query<User> query = this.datastore.createQuery(User.class).field("id").equal(user.getObjectId());
 		List<User> list = query.asList();
 		UpdateOperations<User> op = this.datastore.createUpdateOperations(User.class).set("tier", user.getTier());
 		this.datastore.update(query, op);
 		return "ok";
 	}
-	
-	public String updatePartner(Partner partner){
+
+	public String updatePartner(Partner partner) {
 		Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
 		List<Partner> list = query.asList();
-		System.out.println("#partner: "+list.size());
+		System.out.println("#partner: " + list.size());
 		System.out.println(partner.getWebhook());
-		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",partner.getWebhook());
+		UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).set("webhook",
+				partner.getWebhook());
 		this.datastore.update(query, op);
 		return "ok";
 	}
@@ -134,30 +130,30 @@ public class DataStore {
 		return "ok";
 	}
 
-//	// add a simple user by referencing a product and a partner
-//	public String addUser(String id, String productId, String partnerId) {
-//		try {
-//			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
-//			if (partners.size() == 0) {
-//				System.out.println("wrong partnerId"); // debugging
-//				return "Wrong partnerId";
-//			}
-//			Partner partner = partners.get(0);
-//			Product product = partner.getProduct(productId);
-//			if (product == null) {
-//				System.out.println("wrong productId"); // debugging
-//				return "Wrong productId";
-//			}
-//			User user = new User(id);
-//			user.setPartner(partner);
-//			user.setProduct(product);
-//			this.datastore.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//		return "ok";
-//	}
+	// add a simple user by referencing a product and a partner
+	public String addUser(String id, String productId, String partnerId) {
+		try {
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId).asList();
+			if (partners.size() == 0) {
+				System.out.println("wrong partnerId"); // debugging
+				return "Wrong partnerId";
+			}
+			Partner partner = partners.get(0);
+			Product product = partner.getProduct(productId);
+			if (product == null) {
+				System.out.println("wrong productId"); // debugging
+				return "Wrong productId";
+			}
+			User user = new User(id);
+			user.setPartner(partner);
+			user.setProduct(product);
+			this.datastore.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
 
 	// adding product to a specific partner, in mongoDB the product will be
 	// saved by reference and its ID
@@ -197,7 +193,8 @@ public class DataStore {
 				System.out.println("wrong quotaId");
 				return "Wrong quotaId";
 			}
-			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price), Integer.valueOf(graceExtra));
+			Tier tier = new Tier(quotaId, name, Integer.valueOf(max), Double.valueOf(price),
+					Integer.valueOf(graceExtra));
 			tier.setPartner(partner);
 			tier.setProduct(product);
 			tier.setQuota(quota);
@@ -211,7 +208,6 @@ public class DataStore {
 		}
 		return "ok";
 	}
-
 
 	public String addBilling(String userID, String partnerId, String productId, String plan, double fee) {
 		try {
@@ -336,41 +332,43 @@ public class DataStore {
 		}
 		return results.get(0);
 	}
-   //Fakecompany
-//	public Tier getTier(String partnerId, String productId, String quotaId) {
-//		List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
-//				.asList();
-//		if (partners.isEmpty()) {
-//			System.out.println("this partner doesn't exist");
-//			return null;
-//		}
-//		Partner partner = partners.get(0);
-//		Product product = partner.getProduct(productId);
-//		Quota quota = product.getQuota(quotaId);
-//		final Query<Tier> query = datastore.createQuery(Tier.class).field("product").equal(product).field("partner").equal(partner).filter("quota", quota);
-//		List<Tier> results = query.asList();
-//		if(results.size() == 0){
-//			System.out.println("cant find such tier");
-//			return null;
-//		}
-//		return results.get(0);
-//	}
-	
-	//master
+	// Fakecompany
+	// public Tier getTier(String partnerId, String productId, String quotaId) {
+	// List<Partner> partners =
+	// this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
+	// .asList();
+	// if (partners.isEmpty()) {
+	// System.out.println("this partner doesn't exist");
+	// return null;
+	// }
+	// Partner partner = partners.get(0);
+	// Product product = partner.getProduct(productId);
+	// Quota quota = product.getQuota(quotaId);
+	// final Query<Tier> query =
+	// datastore.createQuery(Tier.class).field("product").equal(product).field("partner").equal(partner).filter("quota",
+	// quota);
+	// List<Tier> results = query.asList();
+	// if(results.size() == 0){
+	// System.out.println("cant find such tier");
+	// return null;
+	// }
+	// return results.get(0);
+	// }
+
+	// master
 	public BillingHistory getBillinghistory(String timestamp) {
-		List<BillingHistory> histories = datastore.createQuery(BillingHistory.class).field("time_stamp").equal(timestamp).asList();
+		List<BillingHistory> histories = datastore.createQuery(BillingHistory.class).field("time_stamp")
+				.equal(timestamp).asList();
 		if (histories.size() == 0) {
-			System.out.println("wrong time stamp"+histories.size()); // debugging
+			System.out.println("wrong time stamp" + histories.size()); // debugging
 			return null;
 		}
-		
+
 		BillingHistory history = histories.get(0);
-		
-		System.out.println("flag here"+ history);
+
+		System.out.println("flag here" + history);
 		return history;
 	}
-
-
 
 	// All these methods below are in test stage.
 	public String addPartnerDirect(Partner partner) {
@@ -414,7 +412,7 @@ public class DataStore {
 			Query<Product> query1 = this.datastore.createQuery(Product.class);
 			query1.field("productId").equal(product.getId());
 			this.datastore.findAndDelete(query1);
-			
+
 			Query<Partner> query = this.datastore.createQuery(Partner.class).field("partnerId").equal(partner.getId());
 			UpdateOperations<Partner> op = this.datastore.createUpdateOperations(Partner.class).removeAll("products",
 					product);
@@ -445,10 +443,11 @@ public class DataStore {
 			Query<Quota> query1 = this.datastore.createQuery(Quota.class);
 			query1.field("quotaId").equal(quota.getId());
 			this.datastore.findAndDelete(query1);
-			
+
 			Query<Product> query = this.datastore.createQuery(Product.class).field("id")
 					.equal(quota.getProduct().getObjectId());
-			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).removeAll("quotas", quota);
+			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).removeAll("quotas",
+					quota);
 			this.datastore.update(query, op);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -457,27 +456,27 @@ public class DataStore {
 		return "ok";
 	}
 
-//	public String addUserDirect(User user) {
-//		try {
-//			this.datastore.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//		return "ok";
-//	}
-//
-//	public String deleteUserDirect(User user) {
-//		try {
-//			Query<User> query1 = this.datastore.createQuery(User.class);
-//			query1.field("userId").equal(user.getId());
-//			this.datastore.findAndDelete(query1);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//		return "ok";
-//	}
+	public String addUserDirect(User user) {
+		try {
+			this.datastore.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
+
+	public String deleteUserDirect(User user) {
+		try {
+			Query<User> query1 = this.datastore.createQuery(User.class);
+			query1.field("userId").equal(user.getId());
+			this.datastore.findAndDelete(query1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
 
 	public String addTierDirect(Tier tier) {
 		try {
@@ -498,7 +497,7 @@ public class DataStore {
 			Query<Tier> query1 = this.datastore.createQuery(Tier.class);
 			query1.field("tierId").equal(tier.getId());
 			this.datastore.findAndDelete(query1);
-			
+
 			Query<Quota> query = this.datastore.createQuery(Quota.class).field("id")
 					.equal(tier.getQuota().getObjectId());
 			UpdateOperations<Quota> op = this.datastore.createUpdateOperations(Quota.class).removeAll("tiers", tier);
@@ -531,7 +530,7 @@ public class DataStore {
 			}
 			User user = users.get(0);
 			Billing bill = new Billing(user, plan, fee);
-			
+
 			Query<Billing> query1 = this.datastore.createQuery(Billing.class);
 			query1.field("userId").equal(user.getId());
 			this.datastore.findAndDelete(query1);
@@ -545,18 +544,17 @@ public class DataStore {
 
 		return "ok";
 	}
-	
-	
+
 	public BillingHistory getBillingHistory(String id) {
 		List<BillingHistory> histories = datastore.createQuery(BillingHistory.class).field("id").equal(id).asList();
-        if (histories.size() == 0) {
-            System.out.println("wrong billinghistory id"); // debugging
-            return null;
-        }
-        BillingHistory history = histories.get(0);
+		if (histories.size() == 0) {
+			System.out.println("wrong billinghistory id"); // debugging
+			return null;
+		}
+		BillingHistory history = histories.get(0);
 		return history;
 	}
-	
+
 	public String deleteBillingHistory(String id) {
 		try {
 			Query<BillingHistory> query1 = this.datastore.createQuery(BillingHistory.class);
