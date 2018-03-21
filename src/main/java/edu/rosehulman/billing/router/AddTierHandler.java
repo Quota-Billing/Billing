@@ -2,6 +2,8 @@ package edu.rosehulman.billing.router;
 
 import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
+import edu.rosehulman.billing.datastore.QuotaDatastore;
+import edu.rosehulman.billing.datastore.TierDatastore;
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
@@ -11,6 +13,16 @@ import spark.Response;
 import spark.Route;
 
 public class AddTierHandler implements Route {
+	
+	private TierDatastore tierdatastore;
+	
+	public AddTierHandler(){
+		
+	}
+	
+	public AddTierHandler( TierDatastore d2){
+		this.tierdatastore = d2;
+	}
 
 	@Override
 	public Object handle(Request request, Response response) throws Exception {
@@ -26,7 +38,7 @@ public class AddTierHandler implements Route {
 		tier.setPartner(partner);
 		tier.setProduct(product);
 		tier.setQuota(quota);
-		Database.getInstance().addTierDirect(tier);
+		this.tierdatastore.addTier(tier);
 
 		return "";
 	}

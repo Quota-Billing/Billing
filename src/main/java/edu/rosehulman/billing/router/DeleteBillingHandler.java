@@ -1,12 +1,22 @@
 package edu.rosehulman.billing.router;
 
 import edu.rosehulman.billing.Database;
+import edu.rosehulman.billing.datastore.BillingDatastore;
+import edu.rosehulman.billing.datastore.BillingHistoryDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 public class DeleteBillingHandler implements Route {
 
+	private BillingDatastore billingdatastore;
+	public DeleteBillingHandler(){
+		
+	}
+	
+	public DeleteBillingHandler(BillingDatastore store){
+		this.billingdatastore = store;
+	}
 	public Object handle(Request request, Response response) throws Exception {
 		// TODO Auto-generated method stub
 		String billingId = request.params(":billingId");
@@ -17,7 +27,7 @@ public class DeleteBillingHandler implements Route {
 		double fee = Double.valueOf(request.params(":fee"));
 		// Add the user to our database
 		// Database.getInstance().addUser(partnerId, productId, userId);
-		Database.getInstance().deleteBilling(userID, partnerId, productId, plan, fee);
+		this.billingdatastore.deleteBilling(userID, partnerId, productId);
 		return "";
 	}
 
