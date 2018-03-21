@@ -37,7 +37,7 @@ public class TierDatastore {
 		}
 	}
 
-	public void deleteQuota(Tier tier) {
+	public void deleteTier(Tier tier) {
 		try {
 			this.datastore.delete(tier);
 		} catch (Exception e) {

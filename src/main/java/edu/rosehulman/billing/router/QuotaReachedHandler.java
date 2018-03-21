@@ -2,9 +2,12 @@ package edu.rosehulman.billing.router;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 import edu.rosehulman.billing.Database;
+import edu.rosehulman.billing.datastore.BillingDatastore;
+import edu.rosehulman.billing.datastore.BillingHistoryDatastore;
+import edu.rosehulman.billing.datastore.TierDatastore;
+import edu.rosehulman.billing.models.Billing;
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Tier;
 import spark.Request;
@@ -13,6 +16,20 @@ import spark.Route;
 
 public class QuotaReachedHandler implements Route {
 	//path /partner/:partnerId/product/:productId/user/:userId/quotaReached/:quotaId/
+	
+	private BillingDatastore billingdatastore;
+	private BillingHistoryDatastore historydatastore;
+	private TierDatastore tierdatastore;
+	public QuotaReachedHandler(){
+		
+	}
+	
+	public QuotaReachedHandler(BillingDatastore store, BillingHistoryDatastore store2, TierDatastore store3){
+		this.billingdatastore = store;
+		this.historydatastore = store2;
+		this.tierdatastore = store3;
+	}
+	
 	public Object handle(Request request, Response response) throws Exception {
 		System.out.println(request.body());
 		System.out.println(request.toString());
@@ -23,26 +40,25 @@ public class QuotaReachedHandler implements Route {
 		String tierId= request.params(":tierId"); // suppose to be included
 		
 		
-		Tier tierObject = Database.getInstance().getTier(partnerId, productId, quotaId);
+		Tier tierObject = tierdatastore.getTier(partnerId, productId, userId, quotaId, tierId);
     
 		//Tier tierObject = Database.getInstance().getTier(tierId);
 
 		// need to find the right tier object
-		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
-		//Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
+//		String billingInfo = Database.getInstance().getPartnerBillingInfo(partnerId, productId, userId);
+//		//Quota quota = Database.getInstance().getQuotaInfo(partnerId, productId, userId, quotaId);
 		double totalPrice = 0.0;
-		StringBuilder builder = new StringBuilder();
-		builder.append(billingInfo);
-		builder.append("-------------Current Usage-------------\n");
-		
-		System.out.println(tierObject.toString());
+//		StringBuilder builder = new StringBuilder();
+//		builder.append(billingInfo);
+//		builder.append("-------------Current Usage-------------\n");
+//		
+//		System.out.println(tierObject.toString());
 		Integer max = tierObject.getMax();
 		//Integer current = tierObject.getInt("current");
 		String name = tierObject.getName();
 		double price = tierObject.getPrice();
-		// will add more tiers' prices later, right now just handle one tier
 		totalPrice += price;
-		builder.append(name + ": Limit: " + max + " Price: " + price +"\n");
+//   	builder.append(name + ": Limit: " + max + " Price: " + price +"\n");
 //		if(tierObject != null) {
 //		    int max = 0;
 //		    int current = 0;
@@ -68,12 +84,14 @@ public class QuotaReachedHandler implements Route {
 //			
 //		}
 		
-		builder.append("Total Price: " + totalPrice);
+//		builder.append("Total Price: " + totalPrice);
 		
 		// Should bill user in the later stage
 		// but for now it just print the bill
 		
-		Database.getInstance().addBilling(userId, partnerId, productId, "credit card", totalPrice);
+		this.billingdatastore.addBilling(userId, partnerId, productId, "credit card", totalPrice);
+		Billing bill = this.billingdatastore.getBilling(userId, partnerId, productId);
+		this.historydatastore.addBillingHistory(userId, partnerId, productId, bill);
     //Fakecompany
 		//QuotaClient.getInstance().notifyQuota(partnerId, productId, userId);
 		Partner partner = Database.getInstance().getPartner(partnerId);
@@ -98,7 +116,7 @@ public class QuotaReachedHandler implements Route {
 // 			// TODO Auto-generated catch block
 // 			e.printStackTrace();
 // 		}
-		return builder.toString();
+		return "";
 	}
 
 }
