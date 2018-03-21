@@ -12,8 +12,30 @@ import edu.rosehulman.billing.models.Partner;
 public class PartnerDatastore {
 	Datastore datastore;
 
-	public PartnerDatastore() {
-		this.datastore = Database.getDatastore();
+	public PartnerDatastore(Datastore ds) {
+		this.datastore = ds;
+	}
+
+	public String addPartnerDirect(Partner partner) {
+		try {
+			datastore.save(partner);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
+	}
+	
+	public String deletePartnerDirect(Partner partner) {
+		try {
+			Query<Partner> query1 = datastore.createQuery(Partner.class);
+			query1.field("partnerId").equal(partner.getId());
+			datastore.findAndDelete(query1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return "ok";
 	}
 
 	public String addPartner(String partnerId, String name, String apiKey, String password) {

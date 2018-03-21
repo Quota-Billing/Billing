@@ -1,5 +1,7 @@
 package edu.rosehulman.billing.router;
+import edu.rosehulman.billing.DataStore;
 import edu.rosehulman.billing.Database;
+import edu.rosehulman.datastore.UserDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -13,7 +15,7 @@ public class AddUserHandler implements Route {
 
 	    // Add the user to our database
 	   // Database.getInstance().addUser(partnerId, productId, userId);
-	    Database.getInstance().addUser(userId, productId, partnerId);
+	    DataStore.getInstance().getUserDatastore().addUser(userId, productId, partnerId);
 	    return "";
 	}
 

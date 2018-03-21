@@ -20,26 +20,34 @@ import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.models.User;
+import edu.rosehulman.datastore.PartnerDatastore;
+import edu.rosehulman.datastore.ProductDatastore;
+import edu.rosehulman.datastore.UserDatastore;
 
-public class Database {
-	private static Database instance;
+public class DataStore {
+	private static DataStore instance;
 	private MongoClient mongoClient;
 	private static Datastore datastore;
+	private UserDatastore userstore;
+	private ProductDatastore productstore;
+	private PartnerDatastore partnerstore;
 
 	// create only one instance of mongoclient and not closing it until
 	// application exits
-	private Database() {
+	private DataStore() {
 		this.mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		Morphia morphia = new Morphia();
 		morphia.mapPackage("edu.rosehulman.billingpart");
 		this.datastore = morphia.createDatastore(this.mongoClient, "billingpart");
-
+		partnerstore = new PartnerDatastore(datastore);
+		userstore = new UserDatastore(datastore);
+		productstore = new ProductDatastore(datastore);
 	}
 
-	public static synchronized Database getInstance() {
+	public static synchronized DataStore getInstance() {
 		if (instance == null) {
-			instance = new Database();
+			instance = new DataStore();
 		}
 		return instance;
 	}
@@ -559,6 +567,21 @@ public class Database {
 		} finally {
 		}
 		return "ok";
+	}
+
+	public PartnerDatastore getPartnerDatastore() {
+		// TODO Auto-generated method stub
+		return partnerstore;
+	}
+
+	public ProductDatastore getProductDatastore() {
+		// TODO Auto-generated method stub
+		return productstore;
+	}
+
+	public UserDatastore getUserDatastore() {
+		// TODO Auto-generated method stub
+		return userstore;
 	}
 
 }

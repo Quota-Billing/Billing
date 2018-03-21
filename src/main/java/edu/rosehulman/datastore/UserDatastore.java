@@ -14,13 +14,13 @@ import edu.rosehulman.billing.Database;
 public class UserDatastore {
 	Datastore datastore;
 
-	public UserDatastore() {
-		this.datastore = Database.getDatastore();
+	public UserDatastore(Datastore ds) {
+		this.datastore = ds;
 	}
 
 	public String addUser(String id, String productId, String partnerId) {
 		try {
-			List<Partner> partners = this.datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
+			List<Partner> partners = datastore.createQuery(Partner.class).field("partnerId").equal(partnerId)
 					.asList();
 			if (partners.size() == 0) {
 				System.out.println("wrong partnerId"); // debugging
@@ -35,7 +35,7 @@ public class UserDatastore {
 			User user = new User(id);
 			user.setPartner(partner);
 			user.setProduct(product);
-			this.datastore.save(user);
+			datastore.save(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -90,6 +90,20 @@ public class UserDatastore {
 		} finally {
 		}
 		return "ok";
+	}
+	
+	public boolean deleteUser(String partnerId, String productId, String userId) {
+		final Query<User> deleteQuery = datastore.createQuery(User.class).field("userId").equal(userId);
+		List<User> results = deleteQuery.asList();
+
+		for (User u : results) {
+			// TODO can/should we ever delete multiple?
+			if (u.getPartner().getId().equals(partnerId) && u.getProduct().getId().equals(productId)) {
+				datastore.delete(u);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

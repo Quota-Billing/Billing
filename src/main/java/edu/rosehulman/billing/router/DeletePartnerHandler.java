@@ -1,8 +1,10 @@
 package edu.rosehulman.billing.router;
 
+import edu.rosehulman.billing.DataStore;
 import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
 import edu.rosehulman.billing.models.Partner;
+import edu.rosehulman.datastore.PartnerDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -14,7 +16,7 @@ public class DeletePartnerHandler implements Route {
 		String partnerId = request.params(":partnerId");
 
 		Partner partner = SharedClient.getInstance().UpdatePartner(partnerId);
-		Database.getInstance().deletePartnerDirect(partner);
+		DataStore.getInstance().getPartnerDatastore().deletePartnerDirect(partner);
 
 		return "";
 	}

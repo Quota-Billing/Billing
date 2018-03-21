@@ -14,6 +14,7 @@ import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.router.Routes;
+import edu.rosehulman.datastore.UserDatastore;
 import edu.rosehulman.billing.models.User;
 import static spark.Spark.port;
 // this is a client connecting to sharedservice so we can pull updates
@@ -78,7 +79,7 @@ public class SharedClient {
 		// Database.getInstance().addUser(ids.getString("partnerId"),
 		// ids.getString("productId"), ids.getString("userId"));
 		System.out.println(productId);
-		Database.getInstance().addUser(partnerId, productId, userId);
+		DataStore.getInstance().getUserDatastore().addUser(partnerId, productId, userId);
 		return "ok";
 	}
 
