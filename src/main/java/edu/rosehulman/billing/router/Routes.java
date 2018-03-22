@@ -35,9 +35,9 @@ public class Routes {
 	
 	public static final String UPDATE_PARTNER = "updatePartner/:partnerId";
 	
-	public static final String QUOTA_ADDR = "http://137.112.231.169:8080";
+	public static final String QUOTA_ADDR = "http://137.112.231.143:8080";
 	
-	public static final String SHARED_ADDR = "http://137.112.231.169:8084";
+	public static final String SHARED_ADDR = "http://137.112.231.143:8084";
 	public static final String BILLING_PAID = "";
 	// public static String QUOTA_ADDR_notify = "http://localhost:8082/";
 	public static String BILLING_BASE = "/"; // TODO put this in a config file

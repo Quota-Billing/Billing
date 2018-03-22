@@ -3,6 +3,8 @@ package edu.rosehulman.billing.datastore;
 import java.util.List;
 
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Product;
@@ -31,6 +33,10 @@ public class QuotaDatastore {
 	public void addQuota(Quota quota){
 		try {
 			this.datastore.save(quota);
+			Query<Product> query = this.datastore.createQuery(Product.class).field("id")
+					.equal(quota.getProduct().getObjectId());
+			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).push("quotas", quota);
+			this.datastore.update(query, op);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -40,6 +46,10 @@ public class QuotaDatastore {
 	public void deleteQuota(Quota quota){
 		try {
 			this.datastore.delete(quota);
+			Query<Product> query = this.datastore.createQuery(Product.class).field("id")
+					.equal(quota.getProduct().getObjectId());
+			UpdateOperations<Product> op = this.datastore.createUpdateOperations(Product.class).removeAll("quotas", quota);
+			this.datastore.update(query, op);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

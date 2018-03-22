@@ -23,13 +23,20 @@ public class BillingDatastore {
 	}
 	
 	public Billing getBilling(String userId, String partnerId, String productId){
-		List<Billing> billings = datastore.createQuery(Billing.class).field("partnerId").equal(partnerId)
-				.field("userId").equal("userId").field("productId").equal(productId).asList();
+		List<Billing> billings = datastore.createQuery(Billing.class).asList();
 		if(billings.size() == 0){
 			System.out.println("wrong billing/partner/product ids");
 			return null;
 		}
-		return billings.get(0);
+		
+		for(Billing b: billings){
+			User user = b.getUser();
+			if(user.getId().equals(userId))
+				if(user.getPartner().getId().equals(partnerId) && user.getProduct().getId().equals(productId)){
+					return b;
+				} 
+		}
+		return null;
 	}
 	
 	public void addBilling(String userID, String partnerId, String productId, String plan, double fee){

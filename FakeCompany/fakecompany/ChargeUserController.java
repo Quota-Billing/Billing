@@ -20,7 +20,7 @@ public class ChargeUserController implements Route {
 		// connecting braintree or other payment tools api here
 		Database db = Database.getInstance();
 		User user = db.getUser(userId);
-		Tier tier = db.getTier(tierId);
+		Tier tier = new Tier("ThePaidTierId", "ThePaidTierName", 5, 10.0, 0);
 		
 		ArrayList<String> merchant = new ArrayList<String>();
 		merchant.add("yukariyukari-facilitator@126.com");

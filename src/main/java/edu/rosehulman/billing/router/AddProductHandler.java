@@ -13,6 +13,10 @@ import spark.Route;
 public class AddProductHandler implements Route {
 	PartnerDatastore Partnerstore;
 	ProductDatastore Productstore;
+	
+	public AddProductHandler(){
+		
+	}
 
 	public AddProductHandler(PartnerDatastore Partnerstore, ProductDatastore Productstore) {
 		this.Partnerstore = Partnerstore;

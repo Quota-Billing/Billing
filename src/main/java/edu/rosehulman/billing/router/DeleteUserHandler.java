@@ -9,6 +9,10 @@ import spark.Route;
 public class DeleteUserHandler implements Route {
 	UserDatastore userstore;
 
+	public DeleteUserHandler(){
+		
+	}
+	
 	public DeleteUserHandler(UserDatastore userstore) {
 		this.userstore = userstore;
 	}

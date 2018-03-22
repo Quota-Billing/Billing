@@ -17,6 +17,10 @@ import com.mashape.unirest.http.Unirest;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
+import edu.rosehulman.billing.datastore.BillingDatastore;
+import edu.rosehulman.billing.datastore.BillingHistoryDatastore;
+import edu.rosehulman.billing.datastore.QuotaDatastore;
+import edu.rosehulman.billing.datastore.TierDatastore;
 import edu.rosehulman.billing.router.AddBillingHandler;
 import edu.rosehulman.billing.router.AddPartnerHandler;
 import edu.rosehulman.billing.router.AddProductHandler;
@@ -34,6 +38,9 @@ import edu.rosehulman.billing.router.GetBillingHistoryHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
 import edu.rosehulman.billing.router.UpdatePartnerHandler;
+import edu.rosehulman.datastore.PartnerDatastore;
+import edu.rosehulman.datastore.ProductDatastore;
+import edu.rosehulman.datastore.UserDatastore;
 
 public class NewBillingServer {
 	public static void main(String[] args) {
@@ -70,21 +77,29 @@ public class NewBillingServer {
 		Datastore datastore = morphia.createDatastore(mongoClient, "billingpart");
 		
 		
+		BillingDatastore billingstore = new BillingDatastore(datastore);
+		BillingHistoryDatastore billinghistorystore = new BillingHistoryDatastore(datastore);
+		PartnerDatastore partnerstore = new PartnerDatastore(datastore);
+		ProductDatastore productstore = new ProductDatastore(datastore);
+		QuotaDatastore quotastore = new QuotaDatastore(datastore);
+		TierDatastore tierstore = new TierDatastore(datastore);
+		UserDatastore userstore = new UserDatastore(datastore);
+		
 		post("/addUser/partner/:partnerId/product/:productId/user/:userId", (req, res) -> {
 			// after getting post call, call sharedclient to pull updates
 			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"),
 					req.params(":userId"));
 		});
-		post(Routes.QUOTA_REACHED, new QuotaReachedHandler());
+		post(Routes.QUOTA_REACHED, new QuotaReachedHandler(billingstore, billinghistorystore, tierstore));
 
-		post(Routes.ADD_BILLING, new AddBillingHandler());
-		post(Routes.ADD_USER, new AddUserHandler());
-		post(Routes.ADD_PARTNER, new AddPartnerHandler());
-		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler());
-		post(Routes.ADD_QUOTA, new AddQuotaHandler());
-		post(Routes.ADD_Tier, new AddTierHandler());
+		post(Routes.ADD_BILLING, new AddBillingHandler(billingstore, billinghistorystore));
+		post(Routes.ADD_USER, new AddUserHandler(userstore));
+		post(Routes.ADD_PARTNER, new AddPartnerHandler(partnerstore));
+		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler(partnerstore, productstore));
+		post(Routes.ADD_QUOTA, new AddQuotaHandler(quotastore));
+		post(Routes.ADD_Tier, new AddTierHandler(tierstore));
     //Fakecompany
-		post(Routes.ADD_Tier_TO_USER, new AddTierToUserHandler());
+		post(Routes.ADD_Tier_TO_USER, new AddTierToUserHandler(userstore, tierstore));
 		post(Routes.BILLING_PAID, new BillingPaidHandler());
 		//master
 		get(Routes.BILLINGHISTORY, new GetBillingHistoryHandler());

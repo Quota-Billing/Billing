@@ -21,7 +21,7 @@ public class Database {
 				new MongoClientURI("mongodb://team18:123456@ds161016.mlab.com:61016/fakecompany"));
 		Morphia morphia = new Morphia();
 		morphia.mapPackage("fakecompany");
-		this.datastore = morphia.createDatastore(this.mongoClient, "billingpart");
+		this.datastore = morphia.createDatastore(this.mongoClient, "fakecompany");
 
 	}
 
@@ -66,6 +66,7 @@ public class Database {
 
 	public User getUser(String userId) {
 		List<User> users = datastore.createQuery(User.class).field("userId").equal(userId).asList();
+		System.out.println(userId);
 		if (users.size() == 0) {
 			System.out.println("wrong userId"); // debugging
 			return null;

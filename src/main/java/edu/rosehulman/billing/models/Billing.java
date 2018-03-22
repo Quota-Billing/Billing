@@ -50,6 +50,10 @@ public class Billing {
 		return this.id;
 	}
 	
+	public User getUser(){
+		return this.user;
+	}
+	
 	public void setPaid(){
 		this.paid = true;
 	}

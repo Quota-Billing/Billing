@@ -13,6 +13,10 @@ import spark.Route;
 public class DeleteProductHandler implements Route {
 	PartnerDatastore Partnerstore;
 	ProductDatastore Productstore;
+	
+	public DeleteProductHandler(){
+		
+	}
 
 	public DeleteProductHandler(PartnerDatastore Partnerstore, ProductDatastore Productstore) {
 		this.Partnerstore = Partnerstore;

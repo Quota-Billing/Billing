@@ -11,6 +11,10 @@ import spark.Route;
 public class AddUserHandler implements Route {
 	UserDatastore userstore;
 
+	public AddUserHandler(){
+		
+	}
+	
 	public AddUserHandler(UserDatastore userstore) {
 		this.userstore = userstore;
 	}
