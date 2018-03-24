@@ -1,5 +1,9 @@
 package Paypal;
 
+import java.io.File;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.NullProgressMonitor;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -8,14 +12,15 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.paypal.base.rest.PayPalRESTException;
 
+import edu.rosehulman.billing.models.Tier;
+
 public class main {
 	public main() {
 
 	}
-
-	public static void main(String[] args)
-			throws JsonSyntaxException, JsonIOException, PayPalRESTException, IOException, InterruptedException {
-		// x.deleteAllDraft("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
+	
+	public static void dostuff() throws IOException, PayPalRESTException, InterruptedException {
+		Tier tier = new Tier("ThePaidTierId", "ThePaidTierName", 5, 10.0, 10);
 		ArrayList<String> merchant = new ArrayList<String>();
 		merchant.add("yukariyukari-facilitator@126.com");
 		merchant.add("Mercury");
@@ -40,18 +45,14 @@ public class main {
 		billing.add("98765");
 		billing.add("US");
 
-		int[] amounts = new int[2];
-		int[] value = new int[2];
-		int[] tax = new int[2];
-		String[] names = new String[2];
-		names[0] = "Zoom System wireless headphones";
-		names[1] = "Bluetooth speaker";
-		value[0] = 120;
-		value[1] = 145;
-		amounts[0] = 2;
-		amounts[1] = 1;
+		int[] amounts = new int[1];
+		int[] value = new int[1];
+		int[] tax = new int[1];
+		String[] names = new String[1];
+		names[0] = tier.getName();
+		value[0] = 10;
+		amounts[0] = 1;
 		tax[0] = 8;
-		tax[1] = 8;
 
 		ArrayList<String> discount = new ArrayList<String>();
 		int dispercent = 1;
@@ -61,8 +62,8 @@ public class main {
 		String[] notes = new String[2];
 		notes[0] = "Thank you for your business.";
 		notes[1] = "No refunds after 30 days.";
-		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes, "1.json");
-		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes, "2.json");
+		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes,
+				"FakeCompany/2.json");
 		TimeUnit.SECONDS.sleep(5);
 		// items[0][0] = "Zoom System wireless headphones";
 		// items[0][1] = "2";
@@ -72,20 +73,25 @@ public class main {
 		// JsonPharser.pharse(merchant, billing, items2, discount, notes, "2.json");
 		//
 		InvoiceHandler x = new InvoiceHandler();
-		 x.createNewContext("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
-		 "ECXxIJXBQkbkJn3yv9A8lIqsRGUjtzOY4i1UklqFbesdZiKDYJxoN_HgU1rJ-Ot5-zqguqQ4AHIw_UIT");
+//		x.deleteAllDraft("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
+		x.createNewContext("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
+				"ECXxIJXBQkbkJn3yv9A8lIqsRGUjtzOY4i1UklqFbesdZiKDYJxoN_HgU1rJ-Ot5-zqguqQ4AHIw_UIT");
 		// x.createNewInvoiceAndSend("invoice_create.json",
 		// "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		// x.createNewInvoiceAndSend("2.json",
 		// "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		//
-//		 System.getProperty("user.dir");
-		 x.createNewInvoiceAndSend("1.json",
-		 "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
+		x.createNewInvoiceAndSend("2.json",
+				"ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
 		// x.createNewInvoiceAndSend("2.json",
 		// "ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM");
-		 x.cancelAllInvoice("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM",
-		 "p",
-		 "p");
+		x.cancelAllInvoice("ASVNc8isqUIaRsPYu-qVt8mjYCQcUaIEUdA_3DCWdYDawgo5Bg_mOW7UqdT7vFRBu6hqfSSoKWePm8LM", "p",
+				"p");
+	}
+
+	public static void main(String[] args)
+			throws JsonSyntaxException, JsonIOException, PayPalRESTException, IOException, InterruptedException {
+		File file = new File("FakeCompany\\2.json");
+		dostuff();
 	}
 }
