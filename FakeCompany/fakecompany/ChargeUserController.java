@@ -62,7 +62,7 @@ public class ChargeUserController implements Route {
 		String[] notes = new String[2];
 		notes[0] = "Thank you for your business.";
 		notes[1] = "No refunds after 30 days.";
-		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes, "2.json");
+		JsonPharser.pharse(merchant, billing, amounts, value, tax, names, discount, dispercent, notes, "FakeCompany/2.json");
 		TimeUnit.SECONDS.sleep(5);
 
 		InvoiceHandler x = new InvoiceHandler();
