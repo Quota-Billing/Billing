@@ -58,6 +58,10 @@ public class Billing {
 		this.paid = true;
 	}
 	
+	public boolean getPaid() {
+		return this.paid;
+	}
+	
 	public void setUser(User user) {
 		this.user = user;
 	}

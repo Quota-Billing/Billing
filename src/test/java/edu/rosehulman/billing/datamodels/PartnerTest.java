@@ -60,9 +60,4 @@ public class PartnerTest {
 		assertEquals("apiKey", a.getApiKey());
 	}
 
-	@Test
-	public void testToString() {
-
-	}
-
 }

@@ -1,4 +1,4 @@
-package edu.rosehulman.billing;
+package edu.rosehulman.billing.router;
 
 import static org.junit.Assert.*;
 

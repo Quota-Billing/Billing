@@ -1,7 +1,10 @@
 package edu.rosehulman.billing.datamodels;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.easymock.EasyMock;
 import org.junit.Test;
 
 import edu.rosehulman.billing.models.Billing;
@@ -10,28 +13,83 @@ import edu.rosehulman.billing.models.User;
 public class BillingTest {
 
 	@Test
-	public void TestBilling() {
-		User user = new User("123");
-		Billing billing = new Billing(user, "1", 1.0);
-		// test billing
-		assertEquals("123", billing.getUserId());
-
-		assertEquals(1.0, billing.getFee(), 0.001);
-
-		assertEquals("1", billing.getPlan());
+	public void testSetAndGetUser() {
+		User userMock = EasyMock.createMock(User.class);
+		Billing billing = new Billing();
+		billing.setUser(userMock);
+		assertEquals(billing.getUser(), userMock);
 	}
 
 	@Test
-	public void TestBillingSet() {
-		User user = new User("123");
-		Billing billing = new Billing(user, "1", 1.0);
-		// test billing
-		assertEquals("123", billing.getUserId());
+	public void testSetAndGetUserId() {
+		User userMock = EasyMock.createMock(User.class);
+		Billing billing = new Billing();
+		billing.setUser(userMock);
 
-		assertEquals(1.0, billing.getFee(), 0.001);
+		EasyMock.expect(userMock.getId()).andReturn("userID");
+		EasyMock.replay(userMock);
 
-		assertEquals("1", billing.getPlan());
-		billing.setFee(2.9);
-		assertEquals(2.9, billing.getFee(), 0.001);
+		assertEquals("userID", billing.getUserId());
+
+		EasyMock.verify(userMock);
+	}
+
+	@Test
+	public void testSetAndGetFeeZero() {
+		Billing billing = new Billing();
+		billing.setFee(0.0);
+
+		assertEquals(0.0, billing.getFee(), 0.00001);
+	}
+
+	@Test
+	public void testSetAndGetFeePositive() {
+		Billing billing = new Billing();
+		billing.setFee(5.5);
+
+		assertEquals(5.5, billing.getFee(), 0.00001);
+	}
+
+	@Test
+	public void testSetAndGetFeeNegative() {
+		Billing billing = new Billing();
+		billing.setFee(-5.5);
+
+		assertEquals(-5.5, billing.getFee(), 0.00001);
+	}
+
+	@Test
+	public void testSetAndGetPlan() {
+		Billing billing = new Billing();
+		billing.setPlan("APlan");
+
+		assertEquals("APlan", billing.getPlan());
+	}
+
+	@Test
+	public void testSetAndGetPaid() {
+		Billing billing = new Billing();
+
+		assertFalse(billing.getPaid());
+
+		billing.setPaid();
+		assertTrue(billing.getPaid());
+	}
+
+	@Test
+	public void testConstructor() {
+		User userMock = EasyMock.createMock(User.class);
+		EasyMock.expect(userMock.getId()).andReturn("userID");
+		EasyMock.replay(userMock);
+
+		Billing b = new Billing(userMock, "aPlan", 5.0);
+
+		assertFalse(b.getPaid());
+		assertEquals("aPlan", b.getPlan());
+		assertEquals(5.0, b.getFee(), 0.00001);
+		assertEquals(userMock, b.getUser());
+		assertEquals("userID", b.getUserId());
+
+		EasyMock.verify(userMock);
 	}
 }

@@ -21,7 +21,6 @@ public class AddBillingHandler implements Route {
 	}
 
 	public Object handle(Request request, Response response) throws Exception {
-		// TODO Auto-generated method stub
 		String billingId = request.params(":billingId");
 		String userID = request.params(":userID");
 		String plan = request.params(":plan");
