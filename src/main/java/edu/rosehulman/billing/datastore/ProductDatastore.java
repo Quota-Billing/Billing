@@ -1,4 +1,4 @@
-package edu.rosehulman.datastore;
+package edu.rosehulman.billing.datastore;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;

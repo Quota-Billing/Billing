@@ -2,9 +2,9 @@ package edu.rosehulman.billing.router;
 
 import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.datastore.TierDatastore;
+import edu.rosehulman.billing.datastore.UserDatastore;
 import edu.rosehulman.billing.models.Tier;
 import edu.rosehulman.billing.models.User;
-import edu.rosehulman.datastore.UserDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;

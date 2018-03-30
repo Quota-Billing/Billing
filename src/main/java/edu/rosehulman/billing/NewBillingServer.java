@@ -19,8 +19,11 @@ import com.mongodb.MongoClientURI;
 
 import edu.rosehulman.billing.datastore.BillingDatastore;
 import edu.rosehulman.billing.datastore.BillingHistoryDatastore;
+import edu.rosehulman.billing.datastore.PartnerDatastore;
+import edu.rosehulman.billing.datastore.ProductDatastore;
 import edu.rosehulman.billing.datastore.QuotaDatastore;
 import edu.rosehulman.billing.datastore.TierDatastore;
+import edu.rosehulman.billing.datastore.UserDatastore;
 import edu.rosehulman.billing.router.AddBillingHandler;
 import edu.rosehulman.billing.router.AddPartnerHandler;
 import edu.rosehulman.billing.router.AddProductHandler;
@@ -38,9 +41,6 @@ import edu.rosehulman.billing.router.GetBillingHistoryHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
 import edu.rosehulman.billing.router.UpdatePartnerHandler;
-import edu.rosehulman.datastore.PartnerDatastore;
-import edu.rosehulman.datastore.ProductDatastore;
-import edu.rosehulman.datastore.UserDatastore;
 
 public class NewBillingServer {
 	public static void main(String[] args) {
