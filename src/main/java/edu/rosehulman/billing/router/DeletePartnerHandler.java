@@ -2,8 +2,8 @@ package edu.rosehulman.billing.router;
 
 import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
+import edu.rosehulman.billing.datastore.PartnerDatastore;
 import edu.rosehulman.billing.models.Partner;
-import edu.rosehulman.datastore.PartnerDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;

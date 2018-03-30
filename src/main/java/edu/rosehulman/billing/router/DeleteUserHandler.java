@@ -1,7 +1,7 @@
 package edu.rosehulman.billing.router;
 
 import edu.rosehulman.billing.Database;
-import edu.rosehulman.datastore.UserDatastore;
+import edu.rosehulman.billing.datastore.UserDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;

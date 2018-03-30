@@ -46,10 +46,10 @@ public class ChargeUserController implements Route {
 		billing.add("98765");
 		billing.add("US");
 
-		int[] amounts = new int[2];
-		int[] value = new int[2];
-		int[] tax = new int[2];
-		String[] names = new String[2];
+		int[] amounts = new int[1];
+		int[] value = new int[1];
+		int[] tax = new int[1];
+		String[] names = new String[1];
 		names[0] = tier.getName();
 		value[0] = tier.getValue();
 		amounts[0] = 1;
