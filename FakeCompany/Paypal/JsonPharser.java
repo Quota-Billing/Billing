@@ -31,10 +31,11 @@ public class JsonPharser {
 	public static void pharse(ArrayList<String> merchant, ArrayList<String> billing, int[] amounts, int[] value,
 			int[] taxs, String[] names, ArrayList<String> discount, int dispercent, String[] notes, String filename)
 			throws IOException {
+		
 
 		FileWriter writer;
 
-		writer = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\java\\" + filename);
+		writer = new FileWriter(filename);
 
 		HashMap<String, Object> object = new HashMap<String, Object>() {
 			{

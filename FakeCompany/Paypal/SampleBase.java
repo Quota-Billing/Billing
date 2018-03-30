@@ -23,16 +23,16 @@ public class SampleBase<T> {
 	 * @throws JsonIOException
 	 * @throws FileNotFoundException
 	 */
-	public SampleBase(T instance) throws PayPalRESTException, JsonSyntaxException,
-			JsonIOException, FileNotFoundException {
+	public SampleBase(T instance)
+			throws PayPalRESTException, JsonSyntaxException, JsonIOException, FileNotFoundException {
 		this.instance = instance;
 	}
 
 	protected <C> C load(String jsonFile, Class<C> clazz) throws IOException {
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(new File(
-					getClass().getClassLoader().getResource(jsonFile).getFile())));
+			br = new BufferedReader(new FileReader(new File(getClass().getClassLoader()
+					.getResource(jsonFile).getFile())));
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 
@@ -41,7 +41,7 @@ public class SampleBase<T> {
 				sb.append(System.getProperty("line.separator"));
 				line = br.readLine();
 			}
-			return (C)JSONFormatter.fromJSON(sb.toString(), clazz);
+			return (C) JSONFormatter.fromJSON(sb.toString(), clazz);
 		} finally {
 			if (br != null) {
 				try {

@@ -47,27 +47,15 @@
     },
     "items": [
         {
-            "quantity": 2,
-            "name": "Zoom System wireless headphones",
-            "tax": {
-                "name": "Tax",
-                "percent": 8
-            },
-            "unit_price": {
-                "currency": "USD",
-                "value": 120
-            }
-        },
-        {
             "quantity": 1,
-            "name": "Bluetooth speaker",
+            "name": "ThePaidTierName",
             "tax": {
                 "name": "Tax",
                 "percent": 8
             },
             "unit_price": {
                 "currency": "USD",
-                "value": 145
+                "value": 10
             }
         }
     ]
