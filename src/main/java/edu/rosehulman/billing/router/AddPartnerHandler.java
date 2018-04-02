@@ -19,7 +19,6 @@ public class AddPartnerHandler implements Route {
 	}
 
 	public Object handle(Request request, Response response) throws Exception {
-		// TODO Auto-generated method stub
 		String partnerId = request.params(":partnerId");
 
 		Partner partner = SharedClient.getInstance().UpdatePartner(partnerId);
