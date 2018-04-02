@@ -13,15 +13,14 @@ import spark.Route;
 
 public class DeleteTierHandler implements Route {
 	private TierDatastore tierdatastore;
-	
-	public DeleteTierHandler(){
-		
-	}
-	
-	public DeleteTierHandler( TierDatastore d2){
-		this.tierdatastore = d2;
+
+	public DeleteTierHandler() {
+
 	}
 
+	public DeleteTierHandler(TierDatastore d2) {
+		this.tierdatastore = d2;
+	}
 
 	@Override
 	public Object handle(Request request, Response response) throws Exception {
@@ -32,10 +31,11 @@ public class DeleteTierHandler implements Route {
 		Partner partner = Database.getInstance().getPartner(partnerId);
 		Product product = partner.getProduct(productId);
 		Quota quota = product.getQuota(quotaId);
-//		Database.getInstance().addTier(partnerId, productId, quotaId, tierId, name, max, price);
-		System.out.println("fasdfgwe");
+		// Database.getInstance().addTier(partnerId, productId, quotaId, tierId, name,
+		// max, price);
+		// System.out.println("fasdfgwe");
 		Tier tier = SharedClient.getInstance().UpdateTier(partnerId, productId, quotaId, tierId);
-		System.out.println(tier==null);
+		// System.out.println(tier==null);
 		tier.setPartner(partner);
 		tier.setProduct(product);
 		tier.setQuota(quota);

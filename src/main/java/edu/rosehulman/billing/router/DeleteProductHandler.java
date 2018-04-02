@@ -1,6 +1,5 @@
 package edu.rosehulman.billing.router;
 
-import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
 import edu.rosehulman.billing.datastore.PartnerDatastore;
 import edu.rosehulman.billing.datastore.ProductDatastore;
@@ -13,9 +12,9 @@ import spark.Route;
 public class DeleteProductHandler implements Route {
 	PartnerDatastore Partnerstore;
 	ProductDatastore Productstore;
-	
-	public DeleteProductHandler(){
-		
+
+	public DeleteProductHandler() {
+
 	}
 
 	public DeleteProductHandler(PartnerDatastore Partnerstore, ProductDatastore Productstore) {
@@ -24,12 +23,11 @@ public class DeleteProductHandler implements Route {
 	}
 
 	public Object handle(Request request, Response response) throws Exception {
-		// TODO Auto-generated method stub
 		String productId = request.params(":productId");
 		String partnerId = request.params(":partnerId");
 		Partner partner = Partnerstore.getPartner(partnerId);
-		Product product =  SharedClient.getInstance().UpdateProduct(productId, partnerId);
-		System.out.println(product);
+		Product product = SharedClient.getInstance().UpdateProduct(productId, partnerId);
+		// System.out.println(product);
 		Productstore.deleteProductDirect(product, partner);
 
 		return "";

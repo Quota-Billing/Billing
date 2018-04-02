@@ -1,6 +1,5 @@
 package edu.rosehulman.billing.router;
 
-import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
 import edu.rosehulman.billing.datastore.PartnerDatastore;
 import edu.rosehulman.billing.models.Partner;
@@ -10,12 +9,12 @@ import spark.Route;
 
 public class AddPartnerHandler implements Route {
 	PartnerDatastore Partnerstore;
-	
-	public AddPartnerHandler(){
-		
+
+	public AddPartnerHandler() {
+
 	}
-	
-	public AddPartnerHandler(PartnerDatastore Partnerstore){
+
+	public AddPartnerHandler(PartnerDatastore Partnerstore) {
 		this.Partnerstore = Partnerstore;
 	}
 
