@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity("user")
 
@@ -32,13 +33,13 @@ public class User {
 		this.userId = id;
 
 	}
-	
-	public void setTier(Tier tier){
+
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
-	
+
 	@JsonIgnore
-	public Tier getTier(){
+	public Tier getTier() {
 		return this.tier;
 	}
 
@@ -64,7 +65,7 @@ public class User {
 	public Partner getPartner() {
 		return this.partner;
 	}
-	
+
 	public String toString() {
 		return "User: " + this.userId + "\nProduct: " + this.product.toString() + "\nPartner: "
 				+ this.partner.toString();
@@ -72,7 +73,6 @@ public class User {
 
 	@JsonIgnore
 	public ObjectId getObjectId() {
-		// TODO Auto-generated method stub
 		return this.id;
 	}
 }

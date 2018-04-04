@@ -1,6 +1,5 @@
 package edu.rosehulman.billing.router;
 
-import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.datastore.UserDatastore;
 import spark.Request;
 import spark.Response;
@@ -9,17 +8,16 @@ import spark.Route;
 public class DeleteUserHandler implements Route {
 	UserDatastore userstore;
 
-	public DeleteUserHandler(){
-		
+	public DeleteUserHandler() {
+
 	}
-	
+
 	public DeleteUserHandler(UserDatastore userstore) {
 		this.userstore = userstore;
 	}
 
 	@Override
 	public Object handle(Request request, Response response) throws Exception {
-		// TODO Auto-generated method stub
 		String partnerId = request.params(":partnerId");
 		String productId = request.params(":productId");
 		String userId = request.params(":userId");

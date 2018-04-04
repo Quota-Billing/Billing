@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import edu.rosehulman.billing.ObjectIdDeserializer;
+
 @Entity("partner")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Partner {
@@ -40,6 +41,7 @@ public class Partner {
 	@Property
 	@JsonProperty("webhook")
 	private String webhook;
+
 	public Partner() {
 		this.products = new ArrayList<Product>();
 	}
@@ -51,23 +53,23 @@ public class Partner {
 		this.apikey = apikey;
 		this.products = new ArrayList<Product>();
 	}
-	
-	public void setWebhook(String webhook){
+
+	public void setWebhook(String webhook) {
 		this.webhook = webhook;
 	}
 
-	public String getWebhook(){
+	public String getWebhook() {
 		return this.webhook;
 	}
-	
+
 	public void addProduct(Product product) {
 		this.products.add(product);
 	}
-	
+
 	@JsonIgnore
 	public Product getProduct(String productId) {
-		for(Product p: this.products){
-			if(p.getId().equals(productId)){
+		for (Product p : this.products) {
+			if (p.getId().equals(productId)) {
 				return p;
 			}
 		}
@@ -75,10 +77,10 @@ public class Partner {
 	}
 
 	@JsonIgnore
-	public List<Product> getAllProducts(){
+	public List<Product> getAllProducts() {
 		return this.products;
 	}
-	
+
 	public void removeProduct(Product product) {
 		this.products.remove(product);
 	}
@@ -91,9 +93,9 @@ public class Partner {
 	public String getId() {
 		return this.partnerId;
 	}
-	
+
 	@JsonIgnore
-	public ObjectId getObjectId(){
+	public ObjectId getObjectId() {
 		return this.id;
 	}
 
@@ -105,11 +107,11 @@ public class Partner {
 	public String getName() {
 		return this.name;
 	}
-	
-	public void setPassword(String password){
+
+	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	@JsonIgnore
 	public String getApiKey() {
 		return this.apikey;
@@ -127,8 +129,6 @@ public class Partner {
 
 	@JsonIgnore
 	public String getPassword() {
-		// TODO Auto-generated method stub
 		return this.password;
 	}
 }
-

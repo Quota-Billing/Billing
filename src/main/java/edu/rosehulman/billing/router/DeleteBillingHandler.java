@@ -1,8 +1,6 @@
 package edu.rosehulman.billing.router;
 
-import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.datastore.BillingDatastore;
-import edu.rosehulman.billing.datastore.BillingHistoryDatastore;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -10,15 +8,16 @@ import spark.Route;
 public class DeleteBillingHandler implements Route {
 
 	private BillingDatastore billingdatastore;
-	public DeleteBillingHandler(){
-		
+
+	public DeleteBillingHandler() {
+
 	}
-	
-	public DeleteBillingHandler(BillingDatastore store){
+
+	public DeleteBillingHandler(BillingDatastore store) {
 		this.billingdatastore = store;
 	}
+
 	public Object handle(Request request, Response response) throws Exception {
-		// TODO Auto-generated method stub
 		String billingId = request.params(":billingId");
 		String userID = request.params(":userID");
 		String plan = request.params(":plan");
