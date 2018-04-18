@@ -1,11 +1,11 @@
 package edu.rosehulman.billing.router;
 
-import edu.rosehulman.billing.Database;
 import edu.rosehulman.billing.SharedClient;
 import edu.rosehulman.billing.datastore.PartnerDatastore;
 import edu.rosehulman.billing.datastore.ProductDatastore;
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Product;
+import edu.rosehulman.sharedservice.ProductSharedService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -13,14 +13,16 @@ import spark.Route;
 public class AddProductHandler implements Route {
 	PartnerDatastore Partnerstore;
 	ProductDatastore Productstore;
+	ProductSharedService service;
 	
 	public AddProductHandler(){
 		
 	}
 
-	public AddProductHandler(PartnerDatastore Partnerstore, ProductDatastore Productstore) {
+	public AddProductHandler(PartnerDatastore Partnerstore, ProductDatastore Productstore, ProductSharedService productSharedService) {
 		this.Partnerstore = Partnerstore;
 		this.Productstore = Productstore;
+		this.service = productSharedService;
 	}
 
 	public Object handle(Request request, Response response) throws Exception {
@@ -28,7 +30,7 @@ public class AddProductHandler implements Route {
 		String productId = request.params(":productId");
 		String partnerId = request.params(":partnerId");
 		Partner partner = Partnerstore.getPartner(partnerId);
-		Product product = SharedClient.getInstance().UpdateProduct(productId, partnerId);
+		Product product = this.service.UpdateProduct(productId, partnerId);
 		Productstore.addProductDirect(product, partner);
 
 		return "";

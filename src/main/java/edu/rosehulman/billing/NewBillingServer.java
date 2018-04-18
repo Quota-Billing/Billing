@@ -41,6 +41,10 @@ import edu.rosehulman.billing.router.GetBillingHistoryHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
 import edu.rosehulman.billing.router.UpdatePartnerHandler;
+import edu.rosehulman.sharedservice.PartnerSharedService;
+import edu.rosehulman.sharedservice.ProductSharedService;
+import edu.rosehulman.sharedservice.QuotaSharedService;
+import edu.rosehulman.sharedservice.TierSharedService;
 
 public class NewBillingServer {
 	public static void main(String[] args) {
@@ -76,6 +80,10 @@ public class NewBillingServer {
 		morphia.mapPackage("edu.rosehulman.billingpart");
 		Datastore datastore = morphia.createDatastore(mongoClient, "billingpart");
 		
+		PartnerSharedService partnerSharedService = new PartnerSharedService();
+		ProductSharedService productSharedService = new ProductSharedService();
+		QuotaSharedService quotaSharedService = new QuotaSharedService();
+		TierSharedService tierSharedService = new TierSharedService();
 		
 		BillingDatastore billingstore = new BillingDatastore(datastore);
 		BillingHistoryDatastore billinghistorystore = new BillingHistoryDatastore(datastore);
@@ -94,10 +102,10 @@ public class NewBillingServer {
 
 		post(Routes.ADD_BILLING, new AddBillingHandler(billingstore, billinghistorystore));
 		post(Routes.ADD_USER, new AddUserHandler(userstore));
-		post(Routes.ADD_PARTNER, new AddPartnerHandler(partnerstore));
-		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler(partnerstore, productstore));
-		post(Routes.ADD_QUOTA, new AddQuotaHandler(quotastore));
-		post(Routes.ADD_Tier, new AddTierHandler(tierstore));
+		post(Routes.ADD_PARTNER, new AddPartnerHandler(partnerstore, partnerSharedService));
+		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler(partnerstore, productstore, productSharedService));
+		post(Routes.ADD_QUOTA, new AddQuotaHandler(quotastore, quotaSharedService));
+		post(Routes.ADD_Tier, new AddTierHandler(tierstore, tierSharedService));
     //Fakecompany
 		post(Routes.ADD_Tier_TO_USER, new AddTierToUserHandler(userstore, tierstore));
 		post(Routes.BILLING_PAID, new BillingPaidHandler());
