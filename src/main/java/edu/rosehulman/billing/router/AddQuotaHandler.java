@@ -12,7 +12,7 @@ import spark.Route;
 
 public class AddQuotaHandler implements Route {
 
-	private QuotaDatastore datastore;
+	private QuotaDatastore quotaDatastore;
 	private QuotaSharedService service;
 	private PartnerDatastore partnerDatastore;
 
@@ -21,7 +21,7 @@ public class AddQuotaHandler implements Route {
 	}
 
 	public AddQuotaHandler(QuotaDatastore datastore, QuotaSharedService service, PartnerDatastore partnerDatastore) {
-		this.datastore = datastore;
+		this.quotaDatastore = datastore;
 		this.service = service;
 		this.partnerDatastore = partnerDatastore;
 	}
@@ -36,7 +36,7 @@ public class AddQuotaHandler implements Route {
 		Product product = partner.getProduct(productId);
 		quota.setPartner(partner);
 		quota.setProduct(product);
-		this.datastore.addQuota(quota);
+		this.quotaDatastore.addQuota(quota);
 		return "";
 	}
 

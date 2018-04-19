@@ -40,6 +40,7 @@ public class AddTierHandlerTest {
 		partner = EasyMock.createMock(Partner.class);
 		quota = EasyMock.createMock(Quota.class);
 		tier = EasyMock.createMock(Tier.class);
+		product = EasyMock.createMock(Product.class);
 	}
 
 	@Test
@@ -48,20 +49,25 @@ public class AddTierHandlerTest {
 		EasyMock.expect(request.params(":productId")).andReturn("testProductId");
 		EasyMock.expect(request.params(":tierId")).andReturn("testTierId");
 		EasyMock.expect(request.params(":quotaId")).andReturn("testQuotaId");
-
-		// TODO: get partner mock
+		EasyMock.expect(partnerDatastore.getPartner("testPartnerId")).andReturn(partner);
 		EasyMock.expect(partner.getProduct("testProductId")).andReturn(product);
 		EasyMock.expect(product.getQuota("testQuotaId")).andReturn(quota);
-
+		EasyMock.expect(service.UpdateTier("testPartnerId", "testProductId", "testQuotaId", "testTierId"))
+				.andReturn(tier);
+		tier.setPartner(partner);
+		EasyMock.expectLastCall();
+		tier.setProduct(product);
+		EasyMock.expectLastCall();
+		tier.setQuota(quota);
+		EasyMock.expectLastCall();
 		tierDatastore.addTier(tier);
 		EasyMock.expectLastCall();
 
-		EasyMock.replay(tier, tierDatastore, request, response, partner, quota);
-		// TODO: not done
+		EasyMock.replay(tier, tierDatastore, request, response, partner, quota, service, partnerDatastore, product);
 
 		handler.handle(request, response);
 
-		EasyMock.verify(tier, tierDatastore, request, response, partner, quota);
+		EasyMock.verify(tier, tierDatastore, request, response, partner, quota, service, partnerDatastore, product);
 	}
 
 }

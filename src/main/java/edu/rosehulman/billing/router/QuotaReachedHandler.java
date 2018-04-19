@@ -33,8 +33,6 @@ public class QuotaReachedHandler implements Route {
 	}
 
 	public Object handle(Request request, Response response) throws Exception {
-		// System.out.println(request.body());
-		// System.out.println(request.toString());
 		String partnerId = request.params(":partnerId");
 		String productId = request.params(":productId");
 		String userId = request.params(":userId");

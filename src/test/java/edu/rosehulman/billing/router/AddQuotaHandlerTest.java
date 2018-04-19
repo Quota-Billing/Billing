@@ -28,7 +28,6 @@ public class AddQuotaHandlerTest {
 	@Before
 	public void setUp() throws Exception {
 		quotaDatastore = EasyMock.createMock(QuotaDatastore.class);
-		// billingMock = EasyMock.createMock(Billing.class);
 		service = EasyMock.createMock(QuotaSharedService.class);
 		partnerDatastore = EasyMock.createMock(PartnerDatastore.class);
 
@@ -42,8 +41,27 @@ public class AddQuotaHandlerTest {
 	}
 
 	@Test
-	public void test() {
-		// TODO
+	public void test() throws Exception {
+		EasyMock.expect(request.params(":partnerId")).andReturn("testPartnerId");
+		EasyMock.expect(request.params(":productId")).andReturn("testProductId");
+		EasyMock.expect(request.params(":quotaId")).andReturn("testQuotaId");
+
+		EasyMock.expect(service.UpdateQuota("testProductId", "testPartnerId", "testQuotaId")).andReturn(quota);
+		EasyMock.expect(partnerDatastore.getPartner("testPartnerId")).andReturn(partner);
+		EasyMock.expect(partner.getProduct("testProductId")).andReturn(product);
+
+		quota.setPartner(partner);
+		EasyMock.expectLastCall();
+		quota.setProduct(product);
+		EasyMock.expectLastCall();
+		quotaDatastore.addQuota(quota);
+		EasyMock.expectLastCall();
+
+		EasyMock.replay(quotaDatastore, service, partnerDatastore, request, response, quota, partner, product);
+
+		handler.handle(request, response);
+
+		EasyMock.verify(quotaDatastore, service, partnerDatastore, request, response, quota, partner, product);
 	}
 
 }

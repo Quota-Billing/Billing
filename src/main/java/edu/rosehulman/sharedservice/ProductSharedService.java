@@ -21,7 +21,6 @@ public class ProductSharedService {
 			Product product = response.getBody();
 			return product;
 		} catch (UnirestException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
