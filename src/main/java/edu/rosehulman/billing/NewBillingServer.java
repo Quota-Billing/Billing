@@ -41,6 +41,10 @@ import edu.rosehulman.billing.router.GetBillingHistoryHandler;
 import edu.rosehulman.billing.router.QuotaReachedHandler;
 import edu.rosehulman.billing.router.Routes;
 import edu.rosehulman.billing.router.UpdatePartnerHandler;
+import edu.rosehulman.sharedservice.PartnerSharedService;
+import edu.rosehulman.sharedservice.ProductSharedService;
+import edu.rosehulman.sharedservice.QuotaSharedService;
+import edu.rosehulman.sharedservice.TierSharedService;
 
 public class NewBillingServer {
 	public static void main(String[] args) {
@@ -69,14 +73,18 @@ public class NewBillingServer {
 				}
 			}
 		});
-		
+
 		MongoClient mongoClient = new MongoClient(
 				new MongoClientURI("mongodb://admin:admin@ds117495.mlab.com:17495/billingpart"));
 		Morphia morphia = new Morphia();
 		morphia.mapPackage("edu.rosehulman.billingpart");
 		Datastore datastore = morphia.createDatastore(mongoClient, "billingpart");
-		
-		
+
+		PartnerSharedService partnerSharedService = new PartnerSharedService();
+		ProductSharedService productSharedService = new ProductSharedService();
+		QuotaSharedService quotaSharedService = new QuotaSharedService();
+		TierSharedService tierSharedService = new TierSharedService();
+
 		BillingDatastore billingstore = new BillingDatastore(datastore);
 		BillingHistoryDatastore billinghistorystore = new BillingHistoryDatastore(datastore);
 		PartnerDatastore partnerstore = new PartnerDatastore(datastore);
@@ -84,7 +92,7 @@ public class NewBillingServer {
 		QuotaDatastore quotastore = new QuotaDatastore(datastore);
 		TierDatastore tierstore = new TierDatastore(datastore);
 		UserDatastore userstore = new UserDatastore(datastore);
-		
+
 		post("/addUser/partner/:partnerId/product/:productId/user/:userId", (req, res) -> {
 			// after getting post call, call sharedclient to pull updates
 			return SharedClient.getInstance().addUserInfo(req.params(":partnerId"), req.params(":productId"),
@@ -94,25 +102,24 @@ public class NewBillingServer {
 
 		post(Routes.ADD_BILLING, new AddBillingHandler(billingstore, billinghistorystore));
 		post(Routes.ADD_USER, new AddUserHandler(userstore));
-		post(Routes.ADD_PARTNER, new AddPartnerHandler(partnerstore));
-		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler(partnerstore, productstore));
-		post(Routes.ADD_QUOTA, new AddQuotaHandler(quotastore));
-		post(Routes.ADD_Tier, new AddTierHandler(tierstore));
-    //Fakecompany
+		post(Routes.ADD_PARTNER, new AddPartnerHandler(partnerstore, partnerSharedService));
+		post(Routes.ADD_PRODUCT_TO_PARTNER, new AddProductHandler(partnerstore, productstore, productSharedService));
+		post(Routes.ADD_QUOTA, new AddQuotaHandler(quotastore, quotaSharedService, partnerstore));
+		post(Routes.ADD_Tier, new AddTierHandler(tierstore, tierSharedService, partnerstore));
+		// Fakecompany
 		post(Routes.ADD_Tier_TO_USER, new AddTierToUserHandler(userstore, tierstore));
 		post(Routes.BILLING_PAID, new BillingPaidHandler());
-		//master
+		// master
 		get(Routes.BILLINGHISTORY, new GetBillingHistoryHandler());
 
-		
 		delete(Routes.DELETE_BILLING, new DeleteBillingHandler());
 		delete(Routes.DELETE_USER, new DeleteUserHandler());
 		delete(Routes.DELETE_PARTNER, new DeletePartnerHandler());
 		delete(Routes.DELETE_PRODUCT_TO_PARTNER, new DeleteProductHandler());
 		delete(Routes.DELETE_QUOTA, new DeleteQuotaHandler());
 		delete(Routes.DELETE_Tier, new DeleteTierHandler());
-    //Fakecompany
-    put(Routes.UPDATE_PARTNER, new UpdatePartnerHandler());
+		// Fakecompany
+		put(Routes.UPDATE_PARTNER, new UpdatePartnerHandler());
 
 		// BrainTree br =new BrainTree();
 

@@ -4,10 +4,12 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.rosehulman.billing.datastore.PartnerDatastore;
 import edu.rosehulman.billing.datastore.QuotaDatastore;
 import edu.rosehulman.billing.models.Partner;
 import edu.rosehulman.billing.models.Product;
 import edu.rosehulman.billing.models.Quota;
+import edu.rosehulman.sharedservice.QuotaSharedService;
 import spark.Request;
 import spark.Response;
 
@@ -17,6 +19,8 @@ public class AddQuotaHandlerTest {
 	Request request;
 	Response response;
 	AddQuotaHandler handler;
+	QuotaSharedService service;
+	PartnerDatastore partnerDatastore;
 	Quota quota;
 	Partner partner;
 	Product product;
@@ -25,8 +29,10 @@ public class AddQuotaHandlerTest {
 	public void setUp() throws Exception {
 		quotaDatastore = EasyMock.createMock(QuotaDatastore.class);
 		// billingMock = EasyMock.createMock(Billing.class);
-		//
-		handler = new AddQuotaHandler(quotaDatastore);
+		service = EasyMock.createMock(QuotaSharedService.class);
+		partnerDatastore = EasyMock.createMock(PartnerDatastore.class);
+
+		handler = new AddQuotaHandler(quotaDatastore, service, partnerDatastore);
 
 		request = EasyMock.createMock(Request.class);
 		response = EasyMock.createMock(Response.class);
@@ -37,7 +43,7 @@ public class AddQuotaHandlerTest {
 
 	@Test
 	public void test() {
-
+		// TODO
 	}
 
 }
